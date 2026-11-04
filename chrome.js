@@ -382,39 +382,51 @@
       fb_suggest: "建议",
       fb_bug: "问题",
       fb_other: "其他",
-      fb_content: "反馈内容",
-      fb_contact: "邮箱或微信，选填",
-      fb_send: "发送",
-      fb_cancel: "取消",
-      fb_opened: "已打开反馈页面",
-      fb_issues: "或在 GitHub 打开 Issues",
-      fb_need: "请先填写反馈内容",
       fb_type: "类型",
-      fb_message: "内容",
+      fb_content: "反馈内容",
+      fb_content_ph: "说说你遇到的问题，或想改进的地方…",
+      fb_required: "必填",
       fb_contactLabel: "联系方式",
-      fb_title: "反馈："
+      fb_optional: "选填 · 邮箱或微信",
+      fb_contact_ph: "方便我们回复你时填写",
+      fb_send: "发送",
+      fb_sending: "发送中…",
+      fb_cancel: "取消",
+      fb_need: "请先填写反馈内容",
+      fb_fail: "发送失败，请稍后再试",
+      fb_note: "提交后我们会在后台查看，无需 GitHub",
+      fb_ok_title: "已收到",
+      fb_ok_body: "感谢反馈。我们会在后台查看，有需要时再联系你。",
+      fb_close: "关闭"
     },
     en: {
       feedback: "Feedback & suggestions",
       fb_suggest: "Suggestion",
       fb_bug: "Bug",
       fb_other: "Other",
-      fb_content: "Feedback",
-      fb_contact: "Email or WeChat (optional)",
-      fb_send: "Send",
-      fb_cancel: "Cancel",
-      fb_opened: "Opened the feedback page",
-      fb_issues: "Or open Issues on GitHub",
-      fb_need: "Write your feedback first",
       fb_type: "Type",
-      fb_message: "Message",
+      fb_content: "Feedback",
+      fb_content_ph: "Tell us what went wrong, or what you'd like improved…",
+      fb_required: "Required",
       fb_contactLabel: "Contact",
-      fb_title: "Feedback: "
+      fb_optional: "Optional · email or WeChat",
+      fb_contact_ph: "Add this if you'd like a reply",
+      fb_send: "Send",
+      fb_sending: "Sending…",
+      fb_cancel: "Cancel",
+      fb_need: "Write your feedback first",
+      fb_fail: "Couldn't send. Please try again.",
+      fb_note: "We'll read this in the background. No GitHub account needed.",
+      fb_ok_title: "Received",
+      fb_ok_body: "Thanks for the feedback. We'll review it, and contact you if we need to.",
+      fb_close: "Close"
     }
   };
   var feedbackType = "suggest";
   var feedbackLastFocus = null;
   var feedbackBound = false;
+  var feedbackSending = false;
+  var feedbackSuccessAt = 0;
 
   function feedbackPack() {
     return guideLang() === "zh" ? FEEDBACK_TEXT.zh : FEEDBACK_TEXT.en;
@@ -425,11 +437,17 @@
     if (type === "other") return pack.fb_other;
     return pack.fb_suggest;
   }
-  function feedbackIssueUrl(content, contact) {
-    var pack = feedbackPack();
-    var title = pack.fb_title + feedbackLabel(feedbackType);
-    var body = pack.fb_type + ": " + feedbackLabel(feedbackType) + "\n\n" + pack.fb_message + ":\n" + content + "\n\n" + pack.fb_contactLabel + ": " + contact;
-    return "https://github.com/pizazzwhh/transparent-background-tool/issues/new?title=" + encodeURIComponent(title) + "&body=" + encodeURIComponent(body);
+  function feedbackPayload(message, contact) {
+    var page = "/";
+    try { page = (location && location.pathname) || "/"; } catch (e) {}
+    return {
+      type: feedbackType,
+      message: message,
+      contact: contact || "",
+      page: page,
+      lang: currentLang(),
+      userAgent: (navigator && navigator.userAgent) || ""
+    };
   }
   function setFeedbackType(type) {
     feedbackType = type === "bug" || type === "other" ? type : "suggest";
@@ -442,53 +460,128 @@
       buttons[i].setAttribute("aria-pressed", on ? "true" : "false");
     }
   }
+  function clearFeedbackError() {
+    var error = document.getElementById("feedbackError");
+    var field = document.getElementById("feedbackContent");
+    if (field) {
+      field.removeAttribute("aria-invalid");
+      field.removeAttribute("aria-describedby");
+    }
+    if (!error) return;
+    error.hidden = true;
+    error.setAttribute("data-i18n", "fb_need");
+    error.textContent = feedbackPack().fb_need;
+  }
+  function showFeedbackError(key) {
+    var error = document.getElementById("feedbackError");
+    var field = document.getElementById("feedbackContent");
+    var text = feedbackPack()[key] || "";
+    if (error) {
+      error.setAttribute("data-i18n", key);
+      error.textContent = text;
+      error.hidden = false;
+    }
+    if (key === "fb_need" && field) {
+      field.setAttribute("aria-invalid", "true");
+      field.setAttribute("aria-describedby", "feedbackError");
+      field.focus();
+    }
+  }
+  function setSendBusy(busy) {
+    var send = document.getElementById("feedbackSend");
+    if (!send) return;
+    var key = busy ? "fb_sending" : "fb_send";
+    send.disabled = !!busy;
+    send.setAttribute("data-i18n", key);
+    send.textContent = feedbackPack()[key] || "";
+  }
+  function showFeedbackSuccess() {
+    feedbackSuccessAt = Date.now();
+    var form = document.getElementById("feedbackForm");
+    var success = document.getElementById("feedbackSuccess");
+    var card = document.querySelector("#feedbackModal .feedbackCard");
+    if (form) form.hidden = true;
+    if (success) success.hidden = false;
+    if (card) card.setAttribute("aria-labelledby", "feedbackSuccessTitle");
+    var closeBtn = document.getElementById("feedbackSuccessClose");
+    if (closeBtn) closeBtn.focus();
+  }
+  function resetFeedbackForm() {
+    feedbackSending = false;
+    setFeedbackType("suggest");
+    var field = document.getElementById("feedbackContent");
+    var contactEl = document.getElementById("feedbackContact");
+    var form = document.getElementById("feedbackForm");
+    var success = document.getElementById("feedbackSuccess");
+    var card = document.querySelector("#feedbackModal .feedbackCard");
+    if (field) field.value = "";
+    if (contactEl) contactEl.value = "";
+    clearFeedbackError();
+    setSendBusy(false);
+    if (form) form.hidden = false;
+    if (success) success.hidden = true;
+    if (card) card.setAttribute("aria-labelledby", "feedbackTitle");
+  }
   function openFeedback() {
     var modal = document.getElementById("feedbackModal");
     if (!modal) return;
     feedbackLastFocus = document.activeElement;
-    var error = document.getElementById("feedbackError");
-    var ok = document.getElementById("feedbackOk");
-    var field = document.getElementById("feedbackContent");
-    if (error) error.hidden = true;
-    if (ok) ok.hidden = true;
-    if (field) field.removeAttribute("aria-invalid");
+    var success = document.getElementById("feedbackSuccess");
+    if (success && !success.hidden) resetFeedbackForm();
+    clearFeedbackError();
+    var form = document.getElementById("feedbackForm");
+    if (form) form.hidden = false;
     modal.hidden = false;
     document.body.classList.add("feedback-open");
+    var field = document.getElementById("feedbackContent");
     if (field) field.focus();
   }
   function closeFeedback() {
     var modal = document.getElementById("feedbackModal");
     if (!modal || modal.hidden) return;
+    var success = document.getElementById("feedbackSuccess");
+    var fromSuccess = !!(success && !success.hidden);
     modal.hidden = true;
     document.body.classList.remove("feedback-open");
+    if (fromSuccess) resetFeedbackForm();
     if (feedbackLastFocus && feedbackLastFocus.focus) feedbackLastFocus.focus();
   }
+  function deliverFeedback(payload, done) {
+    // TODO: Wire fetch once a destination is chosen (API, form service, or inbox).
+    // POST JSON payload { type, message, contact, page, lang, userAgent }.
+    // On failure call done(error) so the card can show fb_fail.
+    // Temporary local no-op: succeed in place. Do not window.open GitHub Issues.
+    void payload;
+    done(null);
+  }
   function sendFeedback() {
+    if (feedbackSending) return;
     var field = document.getElementById("feedbackContent");
     var contactEl = document.getElementById("feedbackContact");
-    var error = document.getElementById("feedbackError");
-    var ok = document.getElementById("feedbackOk");
     var content = field ? field.value.replace(/\r\n/g, "\n").trim() : "";
     var contact = contactEl ? contactEl.value.trim() : "";
     if (!content) {
-      if (error) error.hidden = false;
-      if (ok) ok.hidden = true;
-      if (field) {
-        field.setAttribute("aria-invalid", "true");
-        field.focus();
+      showFeedbackError("fb_need");
+      return;
+    }
+    clearFeedbackError();
+    var payload = feedbackPayload(content, contact);
+    feedbackSending = true;
+    setSendBusy(true);
+    deliverFeedback(payload, function (err) {
+      feedbackSending = false;
+      setSendBusy(false);
+      if (err) {
+        showFeedbackError("fb_fail");
+        return;
       }
-      return;
-    }
-    if (field) field.removeAttribute("aria-invalid");
-    if (error) error.hidden = true;
-    var url = feedbackIssueUrl(content, contact);
-    var popup = window.open(url, "_blank");
-    if (popup) {
-      try { popup.opener = null; } catch (e) {}
-      if (ok) ok.hidden = false;
-      return;
-    }
-    location.href = url;
+      var modal = document.getElementById("feedbackModal");
+      if (!modal || modal.hidden) {
+        resetFeedbackForm();
+        return;
+      }
+      showFeedbackSuccess();
+    });
   }
   function bindFeedback() {
     if (feedbackBound) return;
@@ -512,6 +605,9 @@
       }
       if (target.closest("[data-feedback-close]")) {
         event.preventDefault();
+        var closer = target.closest("[data-feedback-close]");
+        // A double-click on Send can land on the backdrop once the card shrinks into the success state.
+        if (closer.classList.contains("feedbackBackdrop") && Date.now() - feedbackSuccessAt < 400) return;
         closeFeedback();
       }
     });
@@ -520,10 +616,42 @@
     });
     document.addEventListener("input", function (event) {
       if (!event.target || event.target.id !== "feedbackContent") return;
+      if (!(event.target.value || "").trim()) return;
       event.target.removeAttribute("aria-invalid");
+      event.target.removeAttribute("aria-describedby");
       var error = document.getElementById("feedbackError");
       if (error) error.hidden = true;
     });
+  }
+  function feedbackCloseButton() {
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "feedbackClose";
+    button.setAttribute("data-feedback-close", "");
+    button.setAttribute("data-chrome-aria", "fb_close");
+    button.setAttribute("aria-label", feedbackPack().fb_close);
+    button.title = feedbackPack().fb_close;
+    button.textContent = "\u00d7";
+    return button;
+  }
+  function feedbackCheckIcon() {
+    var wrap = document.createElement("div");
+    wrap.className = "feedbackSuccessIcon";
+    wrap.setAttribute("aria-hidden", "true");
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "24");
+    svg.setAttribute("height", "24");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("fill", "none");
+    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", "M5 12.5l4.2 4.2L19 7");
+    path.setAttribute("stroke", "currentColor");
+    path.setAttribute("stroke-width", "2.2");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+    svg.appendChild(path);
+    wrap.appendChild(svg);
+    return wrap;
   }
   function ensureFeedbackLink() {
     var footers = document.querySelectorAll(".siteFooter");
@@ -549,6 +677,22 @@
       else footer.appendChild(line);
     });
     if (!document.getElementById("feedbackModal")) {
+      var pack = feedbackPack();
+      var hintLabel = function (forId, labelKey, hintKey, hintClass) {
+        var label = document.createElement("label");
+        label.className = "feedbackLabel";
+        label.htmlFor = forId;
+        var name = document.createElement("span");
+        name.setAttribute("data-i18n", labelKey);
+        name.textContent = pack[labelKey];
+        var hint = document.createElement("span");
+        hint.className = hintClass;
+        hint.setAttribute("data-i18n", hintKey);
+        hint.textContent = pack[hintKey];
+        label.appendChild(name);
+        label.appendChild(hint);
+        return label;
+      };
       var modal = document.createElement("div");
       modal.id = "feedbackModal";
       modal.className = "feedbackModal";
@@ -561,14 +705,27 @@
       card.setAttribute("role", "dialog");
       card.setAttribute("aria-modal", "true");
       card.setAttribute("aria-labelledby", "feedbackTitle");
+      var form = document.createElement("div");
+      form.id = "feedbackForm";
       var title = document.createElement("h2");
       title.id = "feedbackTitle";
       title.setAttribute("data-i18n", "feedback");
-      title.textContent = "反馈 & 建议";
+      title.textContent = pack.feedback;
+      var head = document.createElement("div");
+      head.className = "feedbackHead";
+      head.appendChild(title);
+      head.appendChild(feedbackCloseButton());
+      var typeField = document.createElement("div");
+      typeField.className = "feedbackField";
+      var typeLabel = document.createElement("div");
+      typeLabel.className = "feedbackLabel";
+      typeLabel.id = "fbTypeLabel";
+      typeLabel.setAttribute("data-i18n", "fb_type");
+      typeLabel.textContent = pack.fb_type;
       var types = document.createElement("div");
       types.className = "feedbackTypes";
       types.setAttribute("role", "group");
-      types.setAttribute("data-chrome-aria", "fb_type");
+      types.setAttribute("aria-labelledby", "fbTypeLabel");
       ["suggest", "bug", "other"].forEach(function (type) {
         var button = document.createElement("button");
         button.type = "button";
@@ -577,22 +734,35 @@
         button.textContent = feedbackLabel(type);
         types.appendChild(button);
       });
+      typeField.appendChild(typeLabel);
+      typeField.appendChild(types);
       var content = document.createElement("textarea");
       content.id = "feedbackContent";
-      content.setAttribute("data-chrome-aria", "fb_content");
+      content.rows = 5;
+      content.setAttribute("data-i18n-ph", "fb_content_ph");
+      content.setAttribute("placeholder", pack.fb_content_ph);
       var error = document.createElement("p");
       error.id = "feedbackError";
       error.className = "feedbackError";
       error.hidden = true;
       error.setAttribute("role", "alert");
       error.setAttribute("data-i18n", "fb_need");
-      error.textContent = "请先填写反馈内容";
+      error.textContent = pack.fb_need;
+      var contentField = document.createElement("div");
+      contentField.className = "feedbackField";
+      contentField.appendChild(hintLabel("feedbackContent", "fb_content", "fb_required", "req"));
+      contentField.appendChild(content);
+      contentField.appendChild(error);
       var contact = document.createElement("input");
       contact.id = "feedbackContact";
       contact.type = "text";
-      contact.setAttribute("data-i18n-ph", "fb_contact");
-      contact.setAttribute("data-chrome-aria", "fb_contactLabel");
+      contact.setAttribute("data-i18n-ph", "fb_contact_ph");
+      contact.setAttribute("placeholder", pack.fb_contact_ph);
       contact.autocomplete = "on";
+      var contactField = document.createElement("div");
+      contactField.className = "feedbackField";
+      contactField.appendChild(hintLabel("feedbackContact", "fb_contactLabel", "fb_optional", "opt"));
+      contactField.appendChild(contact);
       var actions = document.createElement("div");
       actions.className = "feedbackActions";
       var cancel = document.createElement("button");
@@ -600,39 +770,58 @@
       cancel.className = "secondary";
       cancel.setAttribute("data-feedback-close", "");
       cancel.setAttribute("data-i18n", "fb_cancel");
-      cancel.textContent = "取消";
+      cancel.textContent = pack.fb_cancel;
       var send = document.createElement("button");
       send.type = "button";
       send.className = "primary";
       send.id = "feedbackSend";
       send.setAttribute("data-i18n", "fb_send");
-      send.textContent = "发送";
+      send.textContent = pack.fb_send;
       actions.appendChild(cancel);
       actions.appendChild(send);
-      var ok = document.createElement("p");
-      ok.id = "feedbackOk";
-      ok.className = "feedbackOk";
-      ok.hidden = true;
-      ok.setAttribute("role", "status");
-      ok.setAttribute("data-i18n", "fb_opened");
-      ok.textContent = "已打开反馈页面";
-      var issues = document.createElement("p");
-      issues.className = "feedbackIssues";
-      var issuesLink = document.createElement("a");
-      issuesLink.href = "https://github.com/pizazzwhh/transparent-background-tool/issues";
-      issuesLink.target = "_blank";
-      issuesLink.rel = "noopener noreferrer";
-      issuesLink.setAttribute("data-i18n", "fb_issues");
-      issuesLink.textContent = "或在 GitHub 打开 Issues";
-      issues.appendChild(issuesLink);
-      card.appendChild(title);
-      card.appendChild(types);
-      card.appendChild(content);
-      card.appendChild(error);
-      card.appendChild(contact);
-      card.appendChild(actions);
-      card.appendChild(ok);
-      card.appendChild(issues);
+      var note = document.createElement("p");
+      note.className = "feedbackNote";
+      note.setAttribute("data-i18n", "fb_note");
+      note.textContent = pack.fb_note;
+      form.appendChild(head);
+      form.appendChild(typeField);
+      form.appendChild(contentField);
+      form.appendChild(contactField);
+      form.appendChild(actions);
+      form.appendChild(note);
+      var success = document.createElement("div");
+      success.id = "feedbackSuccess";
+      success.hidden = true;
+      var successHead = document.createElement("div");
+      successHead.className = "feedbackHead feedbackHeadEnd";
+      successHead.appendChild(feedbackCloseButton());
+      var successBody = document.createElement("div");
+      successBody.className = "feedbackSuccess";
+      var successTitle = document.createElement("h2");
+      successTitle.id = "feedbackSuccessTitle";
+      successTitle.setAttribute("data-i18n", "fb_ok_title");
+      successTitle.textContent = pack.fb_ok_title;
+      var successText = document.createElement("p");
+      successText.setAttribute("data-i18n", "fb_ok_body");
+      successText.textContent = pack.fb_ok_body;
+      var successActions = document.createElement("div");
+      successActions.className = "feedbackActions";
+      var successClose = document.createElement("button");
+      successClose.type = "button";
+      successClose.className = "primary";
+      successClose.id = "feedbackSuccessClose";
+      successClose.setAttribute("data-feedback-close", "");
+      successClose.setAttribute("data-i18n", "fb_close");
+      successClose.textContent = pack.fb_close;
+      successActions.appendChild(successClose);
+      successBody.appendChild(feedbackCheckIcon());
+      successBody.appendChild(successTitle);
+      successBody.appendChild(successText);
+      successBody.appendChild(successActions);
+      success.appendChild(successHead);
+      success.appendChild(successBody);
+      card.appendChild(form);
+      card.appendChild(success);
       modal.appendChild(backdrop);
       modal.appendChild(card);
       document.body.appendChild(modal);
@@ -790,7 +979,9 @@
     });
     document.querySelectorAll("[data-chrome-aria]").forEach(function (el) {
       var value = textFor(el.getAttribute("data-chrome-aria")) || pack()[el.getAttribute("data-chrome-aria")];
-      if (value) el.setAttribute("aria-label", value);
+      if (!value) return;
+      el.setAttribute("aria-label", value);
+      if (el.classList.contains("feedbackClose")) el.title = value;
     });
     var summary = document.querySelector(".advanced > summary");
     if (summary) summary.textContent = pack().advanced;

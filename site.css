@@ -10,6 +10,7 @@
   --accent-hover: #1D4ED8;
   --accent-soft: #EFF6FF;
   --ok: #059669;
+  --ok-soft: #ECFDF5;
   --danger: #DC2626;
   --radius-sm: 6px;
   --radius: 10px;
@@ -174,42 +175,93 @@ body.tool button.feedbackOpen:hover { color: var(--accent); background: none; }
 }
 .feedbackCard {
   position: relative;
-  width: min(420px, 100%);
+  width: min(440px, 100%);
   max-height: calc(100vh - 32px);
   overflow: auto;
   background: var(--surface);
   color: var(--ink);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
+  box-shadow: 0 12px 32px rgba(17, 24, 39, .12), 0 2px 8px rgba(17, 24, 39, .06);
   padding: var(--space-5);
   text-align: start;
 }
-.feedbackCard h2 {
+.feedbackHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
   margin: 0 0 var(--space-4);
+}
+.feedbackHeadEnd {
+  justify-content: flex-end;
+  margin-bottom: 0;
+}
+.feedbackCard h2 {
+  margin: 0;
   font-size: var(--fs-lg);
   font-weight: var(--fw-bold);
   letter-spacing: -0.02em;
   line-height: 1.35;
 }
+body .feedbackCard .feedbackClose {
+  appearance: none;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  margin: -4px -6px 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 20px;
+  font-weight: var(--fw-normal);
+  line-height: 1;
+  cursor: pointer;
+}
+body .feedbackCard .feedbackClose:hover { background: var(--bg); color: var(--ink); }
+.feedbackField { margin: 0 0 var(--space-3); }
+.feedbackField:last-of-type { margin-bottom: var(--space-4); }
+.feedbackLabel {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 0 0 6px;
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-med);
+  line-height: 1.35;
+}
+.feedbackLabel .opt,
+.feedbackLabel .req {
+  color: var(--muted);
+  font-weight: var(--fw-normal);
+  font-size: var(--fs-xs);
+}
 .feedbackTypes {
   display: flex;
   gap: 4px;
-  margin: 0 0 var(--space-3);
+  margin: 0;
   padding: 3px;
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: var(--radius);
 }
 body .feedbackCard .feedbackTypes button {
+  appearance: none;
   flex: 1;
-  min-height: 32px;
+  min-height: 34px;
   margin: 0;
   padding: 6px 8px;
   border: 0;
   border-radius: var(--radius-sm);
   background: transparent;
   color: var(--ink-2);
+  font: inherit;
   font-size: var(--fs-sm);
   font-weight: var(--fw-med);
   line-height: 1.3;
@@ -220,11 +272,15 @@ body .feedbackCard .feedbackTypes button.is-on {
   color: var(--ink);
   box-shadow: var(--shadow);
 }
+body .feedbackCard .feedbackTypes button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
 .feedbackCard textarea,
 .feedbackCard input[type="text"] {
   display: block;
   width: 100%;
-  margin: 0 0 var(--space-3);
+  margin: 0;
   padding: 10px 12px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -234,25 +290,44 @@ body .feedbackCard .feedbackTypes button.is-on {
   font-size: var(--fs-sm);
   line-height: 1.5;
 }
-.feedbackCard textarea { min-height: 120px; resize: vertical; }
-.feedbackCard textarea[aria-invalid="true"] { border-color: var(--danger); }
-.feedbackError,
-.feedbackOk {
-  margin: 0 0 var(--space-3);
-  font-size: var(--fs-sm);
+.feedbackCard textarea {
+  min-height: 132px;
+  resize: vertical;
+}
+.feedbackCard textarea::placeholder,
+.feedbackCard input::placeholder { color: var(--muted); }
+.feedbackCard textarea:focus,
+.feedbackCard input[type="text"]:focus,
+.feedbackCard textarea:focus-visible,
+.feedbackCard input[type="text"]:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.feedbackCard textarea[aria-invalid="true"],
+.feedbackCard textarea[aria-invalid="true"]:focus,
+.feedbackCard textarea[aria-invalid="true"]:focus-visible {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px #FEE2E2;
+}
+.feedbackError {
+  margin: 6px 0 0;
+  color: var(--danger);
+  font-size: var(--fs-xs);
   line-height: 1.45;
 }
-.feedbackError { color: var(--danger); }
-.feedbackOk { color: var(--ok); }
 .feedbackActions {
   display: flex;
   justify-content: flex-end;
   gap: var(--space-2);
+  margin: 0 0 var(--space-3);
 }
 body .feedbackCard .feedbackActions button {
+  appearance: none;
   min-height: 40px;
   padding: 8px 14px;
   border-radius: var(--radius);
+  font: inherit;
   font-size: var(--fs-sm);
   font-weight: var(--fw-bold);
   cursor: pointer;
@@ -261,19 +336,70 @@ body .feedbackCard .feedbackActions button.secondary {
   background: var(--surface);
   color: var(--ink);
   border: 1px solid #6B7280;
+  min-height: 40px;
 }
+body .feedbackCard .feedbackActions button.secondary:hover { background: var(--bg); }
 body .feedbackCard .feedbackActions button.primary {
   background: var(--accent);
   border: 1px solid var(--accent);
   color: #fff;
+  min-width: 88px;
+  min-height: 40px;
 }
 body .feedbackCard .feedbackActions button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-.feedbackIssues {
-  margin: var(--space-4) 0 0;
-  text-align: center;
-  font-size: var(--fs-sm);
+body .feedbackCard .feedbackActions button.primary:disabled {
+  background: #E5E7EB;
+  border-color: #E5E7EB;
+  color: #6B7280;
+  cursor: not-allowed;
 }
-.feedbackIssues a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 2px; }
+.feedbackNote {
+  margin: 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  text-align: center;
+}
+.feedbackSuccess {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 12px 8px 4px;
+}
+.feedbackSuccessIcon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin: 4px 0 16px;
+  border-radius: 999px;
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+.feedbackSuccessIcon svg { display: block; }
+.feedbackSuccess h2 {
+  margin: 0 0 8px;
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+.feedbackSuccess p {
+  margin: 0 0 24px;
+  max-width: 28em;
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+}
+.feedbackSuccess .feedbackActions {
+  width: 100%;
+  justify-content: center;
+  margin: 0;
+}
+body .feedbackCard .feedbackSuccess .feedbackActions button.primary { min-width: 112px; }
 body.feedback-open { overflow: hidden; }
 /* Tool pages place the same sponsor line under related tools, not in the footer. */
 body.tool main.shell > .quietLinks,
