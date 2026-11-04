@@ -58,7 +58,7 @@
   <meta name="apple-mobile-web-app-title" content="imagec" />
   <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"图片格式转换工具","alternateName":"imagec","url":"https://imagec.xin/convert","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"在线免费图片格式转换工具，支持 PNG、JPG、WebP、BMP 互转。JPG/WebP 可调质量。所有处理在浏览器本地完成，图片不上传服务器。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["PNG/JPG/WebP/BMP 互转","JPG/WebP 质量可调","转换前后大小对比","JPG 自动白色填充背景","浏览器本地处理不上传"],"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","ratingCount":"1"},"screenshot":"https://imagec.xin/og-image.jpg"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"格式转换","item":"https://imagec.xin/convert"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"图片格式转换会上传我的图吗？","acceptedAnswer":{"@type":"Answer","text":"不会。PNG/JPG/WebP/BMP 互转都在浏览器本地完成，图片不会离开这台设备。"}},{"@type":"Question","name":"支持哪些格式？","acceptedAnswer":{"@type":"Answer","text":"输入与输出均支持 PNG、JPG、WebP、BMP。HEIC 等格式请先转成上述之一再处理。"}},{"@type":"Question","name":"转成 JPG 后透明背景怎么没了？","acceptedAnswer":{"@type":"Answer","text":"JPG 不支持透明。转 JPG 时透明区域会自动用白色填充；若要保留透明请选 PNG（或 WebP，视浏览器导出支持而定，以页面选项为准）。"}},{"@type":"Question","name":"质量和体积怎么选？","acceptedAnswer":{"@type":"Answer","text":"数值越高画质越好、文件通常越大。网页展示可先试中等质量，对照预览与体积再微调。"}},{"@type":"Question","name":"和「批量压缩」有什么区别？","acceptedAnswer":{"@type":"Answer","text":"本页适合单张精细选格式与质量；一次多张压缩/转换并打包 ZIP，请用「批量压缩图片」(/batch)。单张只想缩小体积也可看「在线图片压缩」(/compress)。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"图片格式转换会上传我的图吗？","acceptedAnswer":{"@type":"Answer","text":"不会。转换在浏览器本地完成。"}},{"@type":"Question","name":"支持哪些格式？","acceptedAnswer":{"@type":"Answer","text":"PNG、JPG、WebP、BMP。"}},{"@type":"Question","name":"转成 JPG 后透明怎么没了？","acceptedAnswer":{"@type":"Answer","text":"JPG 不支持透明，透明区域会填成白色。要保留透明请用 PNG。"}}]}</script>
   <link rel="stylesheet" href="/site.css" />
 </head>
 <body class="tool">
@@ -144,47 +144,37 @@
   </section>
 
   <section class="seoContent" id="guide" aria-labelledby="guide-title">
-    <h2 id="guide-title">适合这些情况</h2>
+    <h2 id="guide-title" data-i18n="g_fitTitle">适合这些情况</h2>
     <ol>
-      <li>网页或博客需要 WebP/JPG，手头却是 PNG，想快速互转再上传。</li>
-      <li>带透明通道的 PNG 要交给只收 JPG 的系统：先转 JPG（透明区会填白），再提交。</li>
-      <li>设计导出 BMP/大图，需要换成更通用的 PNG 或 JPG 再分享。</li>
-      <li>想对比同一张图转成不同格式后的体积，边调质量边看预览。</li>
-      <li>隐私图或不便上传的素材，只想在本机浏览器完成格式转换。</li>
+      <li data-i18n="g_fit1">在 PNG、WebP、JPG 之间互转。</li>
+      <li data-i18n="g_fit2">透明 PNG 要交给只收 JPG 的系统（透明处会填白）。</li>
+      <li data-i18n="g_fit3">对比体积，并调节质量。</li>
     </ol>
-    <h2>怎么用</h2>
+    <h2 data-i18n="g_howTitle">怎么用</h2>
     <ol>
-      <li>点击、拖入或粘贴图片（PNG / JPG / WebP / BMP）。</li>
-      <li>选择目标格式；若为 JPG 或 WebP，按需调节质量滑杆。</li>
-      <li>对照预览与「原始/转换后大小」，满意后下载。</li>
+      <li data-i18n="g_how1">点击、拖入或粘贴 PNG、JPG、WebP、BMP。</li>
+      <li data-i18n="g_how2">选择目标格式；JPG 或 WebP 可调质量。</li>
+      <li data-i18n="g_how3">看过体积预览后下载。</li>
     </ol>
-    <h2>为什么用 imagec</h2>
+    <h2 data-i18n="g_whyTitle">为什么用 imagec</h2>
     <ul>
-      <li>转换在浏览器本地完成，图片不上传服务器；已打开的页面断网也可继续用。</li>
-      <li>支持 PNG、JPG、WebP、BMP 互转，JPG/WebP 质量可调，并显示转换前后体积。</li>
-      <li>免费、无水印、不必注册；限制：转 JPG 不保留透明（透明区自动白底填充）；HEIC 等未列出的格式请先另转。需要裁切尺寸时，可用「<a href="/crop">图片裁剪缩放</a>」(<a href="/crop">/crop</a>)。</li>
+      <li data-i18n="g_why1">本地转换，不上传。</li>
+      <li data-i18n="g_why2">PNG、JPG、WebP、BMP 互转，质量可调。</li>
+      <li data-i18n="g_why3">免费。JPG 没有透明；HEIC 请先另转。</li>
     </ul>
-    <h2>常见问题</h2>
+    <h2 data-i18n="g_faqTitle">常见问题</h2>
     <dl class="seoFaq">
       <div>
-        <dt>图片格式转换会上传我的图吗？</dt>
-        <dd>不会。PNG/JPG/WebP/BMP 互转都在浏览器本地完成，图片不会离开这台设备。</dd>
+        <dt data-i18n="g_q1">图片格式转换会上传我的图吗？</dt>
+        <dd data-i18n="g_a1">不会。转换在浏览器本地完成。</dd>
       </div>
       <div>
-        <dt>支持哪些格式？</dt>
-        <dd>输入与输出均支持 PNG、JPG、WebP、BMP。HEIC 等格式请先转成上述之一再处理。</dd>
+        <dt data-i18n="g_q2">支持哪些格式？</dt>
+        <dd data-i18n="g_a2">PNG、JPG、WebP、BMP。</dd>
       </div>
       <div>
-        <dt>转成 JPG 后透明背景怎么没了？</dt>
-        <dd>JPG 不支持透明。转 JPG 时透明区域会自动用白色填充；若要保留透明请选 PNG（或 WebP，视浏览器导出支持而定，以页面选项为准）。</dd>
-      </div>
-      <div>
-        <dt>质量和体积怎么选？</dt>
-        <dd>数值越高画质越好、文件通常越大。网页展示可先试中等质量，对照预览与体积再微调。</dd>
-      </div>
-      <div>
-        <dt>和「批量压缩」有什么区别？</dt>
-        <dd>本页适合单张精细选格式与质量；一次多张压缩/转换并打包 ZIP，请用「<a href="/batch">批量压缩图片</a>」(<a href="/batch">/batch</a>)。单张只想缩小体积也可看「<a href="/compress">在线图片压缩</a>」(<a href="/compress">/compress</a>)。</dd>
+        <dt data-i18n="g_q3">转成 JPG 后透明怎么没了？</dt>
+        <dd data-i18n="g_a3">JPG 不支持透明，透明区域会填成白色。要保留透明请用 PNG。</dd>
       </div>
     </dl>
   </section>

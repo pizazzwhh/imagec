@@ -58,7 +58,7 @@
   <meta name="apple-mobile-web-app-title" content="imagec" />
   <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"在线图片压缩","alternateName":"imagec","url":"https://imagec.xin/compress","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"在线图片压缩，支持 PNG、JPG、WebP 格式，多级压缩等级选择，PNG智能压缩，实时预览。所有处理在浏览器本地完成，图片不上传服务器。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["多级压缩等级选择","PNG/JPG/WebP 压缩","PNG智能压缩","智能格式推荐","实时压缩预览","浏览器本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"图片压缩","item":"https://imagec.xin/compress"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"在线图片压缩会上传我的图吗？","acceptedAnswer":{"@type":"Answer","text":"不会。压缩在浏览器本地完成。"}},{"@type":"Question","name":"支持哪些格式？","acceptedAnswer":{"@type":"Answer","text":"PNG、JPG、WebP。HEIC 请先转成 JPG 或 PNG。"}},{"@type":"Question","name":"选哪个压缩等级？","acceptedAnswer":{"@type":"Answer","text":"多数情况用「标准」；要尽量小选「强力/极致」，并看预览是否可接受。"}},{"@type":"Question","name":"压缩后画质会差很多吗？","acceptedAnswer":{"@type":"Answer","text":"取决于等级与原图。轻度几乎看不出；极致体积更小，细节可能变软，以预览为准。"}},{"@type":"Question","name":"和批量压缩有什么区别？","acceptedAnswer":{"@type":"Answer","text":"本页适合单张精细调参与预览；多张请用「批量压缩图片」(/batch)。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"在线图片压缩会上传我的图吗？","acceptedAnswer":{"@type":"Answer","text":"不会。压缩在浏览器本地完成。"}},{"@type":"Question","name":"支持哪些格式？","acceptedAnswer":{"@type":"Answer","text":"PNG、JPG、WebP。HEIC 请先转成 JPG 或 PNG。"}},{"@type":"Question","name":"选哪个压缩等级？","acceptedAnswer":{"@type":"Answer","text":"多数情况用「标准」；要更小选「强力/极致」，并看预览是否可接受。"}}]}</script>
   <link rel="stylesheet" href="/site.css" />
 </head>
 <body class="tool">
@@ -170,47 +170,37 @@
   </section>
 
   <section class="seoContent" id="guide" aria-labelledby="guide-title">
-    <h2 id="guide-title">适合这些情况</h2>
+    <h2 id="guide-title" data-i18n="g_fitTitle">适合这些情况</h2>
     <ol>
-      <li>网页、博客配图体积过大，需要压到合适大小再上传。</li>
-      <li>微信、邮件发图受限，先在线压缩再发送。</li>
-      <li>设计导出原图像素够用但文件太大，想在尽量保画质下调体积。</li>
-      <li>批量前先单张试「标准 / 强力」档，确认观感再决定参数。</li>
-      <li>隐私图不想传到第三方压缩站，只在本机压缩。</li>
+      <li data-i18n="g_fit1">网页、博客配图太大，先压再上传。</li>
+      <li data-i18n="g_fit2">微信、邮件发图受限，在本机压缩后再发。</li>
+      <li data-i18n="g_fit3">想保住画质、减小体积，并且不上传。</li>
     </ol>
-    <h2>怎么用</h2>
+    <h2 data-i18n="g_howTitle">怎么用</h2>
     <ol>
-      <li>选择或拖入（可粘贴）PNG / JPG / WebP。</li>
-      <li>选压缩等级（轻度→极致），需要时再调质量与宽度缩放。</li>
-      <li>对照预览后下载压缩结果。</li>
+      <li data-i18n="g_how1">选择、拖入或粘贴 PNG、JPG、WebP。</li>
+      <li data-i18n="g_how2">选压缩等级（轻度到极致），按需再调质量与宽度。</li>
+      <li data-i18n="g_how3">对照预览后下载。</li>
     </ol>
-    <h2>为什么用 imagec</h2>
+    <h2 data-i18n="g_whyTitle">为什么用 imagec</h2>
     <ul>
-      <li>本地压缩，不上传服务器。</li>
-      <li>多级预设 + 可调质量，PNG 有智能压缩路径，并可实时预览。</li>
-      <li>免费使用；暂不支持 HEIC（需先转为 JPG/PNG）。</li>
+      <li data-i18n="g_why1">本地压缩，不上传。</li>
+      <li data-i18n="g_why2">多级预设，可调质量，并可预览。</li>
+      <li data-i18n="g_why3">免费；暂不支持 HEIC，请先转为 JPG 或 PNG。</li>
     </ul>
-    <h2>常见问题</h2>
+    <h2 data-i18n="g_faqTitle">常见问题</h2>
     <dl class="seoFaq">
       <div>
-        <dt>在线图片压缩会上传我的图吗？</dt>
-        <dd>不会。压缩在浏览器本地完成。</dd>
+        <dt data-i18n="g_q1">在线图片压缩会上传我的图吗？</dt>
+        <dd data-i18n="g_a1">不会。压缩在浏览器本地完成。</dd>
       </div>
       <div>
-        <dt>支持哪些格式？</dt>
-        <dd>PNG、JPG、WebP。HEIC 请先转成 JPG 或 PNG。</dd>
+        <dt data-i18n="g_q2">支持哪些格式？</dt>
+        <dd data-i18n="g_a2">PNG、JPG、WebP。HEIC 请先转成 JPG 或 PNG。</dd>
       </div>
       <div>
-        <dt>选哪个压缩等级？</dt>
-        <dd>多数情况用「标准」；要尽量小选「强力/极致」，并看预览是否可接受。</dd>
-      </div>
-      <div>
-        <dt>压缩后画质会差很多吗？</dt>
-        <dd>取决于等级与原图。轻度几乎看不出；极致体积更小，细节可能变软，以预览为准。</dd>
-      </div>
-      <div>
-        <dt>和批量压缩有什么区别？</dt>
-        <dd>本页适合单张精细调参与预览；多张请用「<a href="/batch">批量压缩图片</a>」(<a href="/batch">/batch</a>)。</dd>
+        <dt data-i18n="g_q3">选哪个压缩等级？</dt>
+        <dd data-i18n="g_a3">多数情况用「标准」；要更小选「强力/极致」，并看预览是否可接受。</dd>
       </div>
     </dl>
   </section>

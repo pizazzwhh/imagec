@@ -47,7 +47,7 @@
   <meta name="apple-mobile-web-app-title" content="imagec" />
   <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"免费生成二维码","alternateName":"imagec","url":"https://imagec.xin/qr","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"免费在线二维码生成。输入链接或文字，本地生成二维码并下载 PNG。本地生成，不上传服务器。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["免费生成二维码","链接转二维码","文字生成二维码","纠错等级 L/M/Q/H","边距","前景色与背景色","尺寸预设","下载 PNG","本地生成不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"二维码生成","item":"https://imagec.xin/qr"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"生成二维码收费吗？","acceptedAnswer":{"@type":"Answer","text":"免费，可直接下载 PNG。"}},{"@type":"Question","name":"我输入的链接会上传吗？","acceptedAnswer":{"@type":"Answer","text":"不会。二维码在浏览器本地绘制，不上传服务器。"}},{"@type":"Question","name":"纠错等级怎么选？","acceptedAnswer":{"@type":"Answer","text":"普通屏幕展示用 M 即可；易遮挡或印刷场景可提高到 Q/H（码会更密）。"}},{"@type":"Question","name":"边距为什么常设为 4？","acceptedAnswer":{"@type":"Answer","text":"四周留白按模块计，常见扫码器对 quiet zone 有要求，4 是稳妥起点。"}},{"@type":"Question","name":"能做成透明底吗？","acceptedAnswer":{"@type":"Answer","text":"本页导出为彩色 PNG；若需透明底可先导出再在其他工具处理，或把背景设为纯白后按需再加工。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"我输入的内容会上传吗？","acceptedAnswer":{"@type":"Answer","text":"不会。二维码在浏览器本地绘制。"}},{"@type":"Question","name":"纠错等级怎么选？","acceptedAnswer":{"@type":"Answer","text":"屏幕展示用 M；印刷或容易遮挡时用 Q 或 H。"}},{"@type":"Question","name":"生成二维码收费吗？","acceptedAnswer":{"@type":"Answer","text":"不收费，可直接下载 PNG。"}}]}</script>
   <link rel="stylesheet" href="/site.css" />
 </head>
 <body class="tool qr">
@@ -142,47 +142,37 @@
   </section>
 
   <section class="seoContent" id="guide" aria-labelledby="guide-title">
-    <h2 id="guide-title">适合这些情况</h2>
+    <h2 id="guide-title" data-i18n="g_fitTitle">适合这些情况</h2>
     <ol>
-      <li>活动海报、名片需要放一个可扫的链接二维码。</li>
-      <li>Wi‑Fi、表单、文档短链做成二维码方便当面扫。</li>
-      <li>打印物料要固定尺寸、深色前景的二维码 PNG。</li>
-      <li>需要较高容错（遮挡、印刷误差）时提高纠错等级。</li>
-      <li>不想把链接内容提交到不明生成站，仅在浏览器本地生成。</li>
+      <li data-i18n="g_fit1">海报或名片上放一个可扫的链接码。</li>
+      <li data-i18n="g_fit2">Wi-Fi、表单或短链，方便当面扫。</li>
+      <li data-i18n="g_fit3">打印用固定尺寸、可调颜色的 PNG。</li>
     </ol>
-    <h2>怎么用</h2>
+    <h2 data-i18n="g_howTitle">怎么用</h2>
     <ol>
-      <li>输入链接或文字。</li>
-      <li>按需设置纠错等级、边距、前景/背景色、尺寸。</li>
-      <li>下载 PNG；不需要时点清空。</li>
+      <li data-i18n="g_how1">输入链接或文字。</li>
+      <li data-i18n="g_how2">设置纠错、边距、颜色和尺寸。</li>
+      <li data-i18n="g_how3">下载 PNG。</li>
     </ol>
-    <h2>为什么用 imagec</h2>
+    <h2 data-i18n="g_whyTitle">为什么用 imagec</h2>
     <ul>
-      <li>本地生成二维码，内容不上传服务器。</li>
-      <li>纠错、边距、颜色、尺寸可调，导出 PNG 便于印刷或贴图。</li>
-      <li>免费、即开即用。</li>
+      <li data-i18n="g_why1">本地生成，内容不上传。</li>
+      <li data-i18n="g_why2">纠错、边距、颜色和尺寸可调。</li>
+      <li data-i18n="g_why3">免费，导出 PNG。</li>
     </ul>
-    <h2>常见问题</h2>
+    <h2 data-i18n="g_faqTitle">常见问题</h2>
     <dl class="seoFaq">
       <div>
-        <dt>生成二维码收费吗？</dt>
-        <dd>免费，可直接下载 PNG。</dd>
+        <dt data-i18n="g_q1">我输入的内容会上传吗？</dt>
+        <dd data-i18n="g_a1">不会。二维码在浏览器本地绘制。</dd>
       </div>
       <div>
-        <dt>我输入的链接会上传吗？</dt>
-        <dd>不会。二维码在浏览器本地绘制，不上传服务器。</dd>
+        <dt data-i18n="g_q2">纠错等级怎么选？</dt>
+        <dd data-i18n="g_a2">屏幕展示用 M；印刷或容易遮挡时用 Q 或 H。</dd>
       </div>
       <div>
-        <dt>纠错等级怎么选？</dt>
-        <dd>普通屏幕展示用 M 即可；易遮挡或印刷场景可提高到 Q/H（码会更密）。</dd>
-      </div>
-      <div>
-        <dt>边距为什么常设为 4？</dt>
-        <dd>四周留白按模块计，常见扫码器对 quiet zone 有要求，4 是稳妥起点。</dd>
-      </div>
-      <div>
-        <dt>能做成透明底吗？</dt>
-        <dd>本页导出为彩色 PNG；若需透明底可先导出再在其他工具处理，或把背景设为纯白后按需再加工。</dd>
+        <dt data-i18n="g_q3">生成二维码收费吗？</dt>
+        <dd data-i18n="g_a3">不收费，可直接下载 PNG。</dd>
       </div>
     </dl>
   </section>
@@ -488,6 +478,7 @@ setLanguage(language);
   } catch(e2) {}
 })();
 </script>
+<footer class="siteFooter"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" id="icp">ICP备案号申请中</a></footer>
 <script src="/tool-cards.js"></script>
 <script src="/chrome.js"></script>
 </body>

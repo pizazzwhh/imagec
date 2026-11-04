@@ -47,7 +47,7 @@
   <meta name="apple-mobile-web-app-title" content="imagec" />
   <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"图片加圆角阴影","alternateName":"imagec","url":"https://imagec.xin/round","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"在线给图片加圆角和投影。可调圆角半径，以及阴影的模糊、偏移、颜色和不透明度。棋盘格预览，导出 PNG。本地处理，不上传服务器。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["圆角阴影","图片加圆角","图片加阴影","圆角半径","阴影模糊","阴影偏移","阴影颜色","阴影不透明度","棋盘格预览","下载 PNG","本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"圆角阴影","item":"https://imagec.xin/round"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"加圆角后还能保留透明吗？","acceptedAnswer":{"@type":"Answer","text":"可以。导出 PNG，透明区域会保留；预览区棋盘格用于确认。"}},{"@type":"Question","name":"图片会上传吗？","acceptedAnswer":{"@type":"Answer","text":"不会，圆角与阴影都在浏览器本地计算。"}},{"@type":"Question","name":"阴影太重或太淡怎么办？","acceptedAnswer":{"@type":"Answer","text":"降低/提高不透明度，或减小/增大模糊与偏移，边看预览边调。"}},{"@type":"Question","name":"只想圆角不要阴影？","acceptedAnswer":{"@type":"Answer","text":"关闭阴影相关开关（或把不透明度调到 0，以页面实际控件为准），只保留圆角半径。"}},{"@type":"Question","name":"支持哪些格式？","acceptedAnswer":{"@type":"Answer","text":"PNG、JPG、WebP；HEIC 需先转换。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"加圆角后还能保留透明吗？","acceptedAnswer":{"@type":"Answer","text":"可以。导出 PNG 会保留透明区域。"}},{"@type":"Question","name":"图片会上传吗？","acceptedAnswer":{"@type":"Answer","text":"不会。圆角和阴影都在浏览器本地计算。"}},{"@type":"Question","name":"只想要圆角、不要阴影？","acceptedAnswer":{"@type":"Answer","text":"关掉阴影即可。"}}]}</script>
   <link rel="stylesheet" href="/site.css" />
 </head>
 <body class="tool round">
@@ -140,47 +140,37 @@
   </section>
 
   <section class="seoContent" id="guide" aria-labelledby="guide-title">
-    <h2 id="guide-title">适合这些情况</h2>
+    <h2 id="guide-title" data-i18n="g_fitTitle">适合这些情况</h2>
     <ol>
-      <li>头像、应用截图做成圆角卡片风格。</li>
-      <li>海报、封面需要轻微投影让主体浮起。</li>
-      <li>商详/落地页素材统一圆角半径，保持视觉一致。</li>
-      <li>透明底 PNG 加圆角后仍保留透明区域（棋盘格预览可核对）。</li>
-      <li>快速出一版带阴影的分享图，不必开重型设计软件。</li>
+      <li data-i18n="g_fit1">头像或截图做成圆角卡片。</li>
+      <li data-i18n="g_fit2">海报需要轻微投影。</li>
+      <li data-i18n="g_fit3">商品详情统一圆角。</li>
     </ol>
-    <h2>怎么用</h2>
+    <h2 data-i18n="g_howTitle">怎么用</h2>
     <ol>
-      <li>上传或粘贴 PNG / JPG / WebP。</li>
-      <li>调圆角半径；需要阴影时打开并设置模糊、偏移、颜色、不透明度。</li>
-      <li>预览后下载 PNG。</li>
+      <li data-i18n="g_how1">上传或粘贴 PNG、JPG、WebP。</li>
+      <li data-i18n="g_how2">调圆角；需要时打开阴影。</li>
+      <li data-i18n="g_how3">预览后下载 PNG。</li>
     </ol>
-    <h2>为什么用 imagec</h2>
+    <h2 data-i18n="g_whyTitle">为什么用 imagec</h2>
     <ul>
-      <li>圆角与阴影同一页调完，本地处理不上传。</li>
-      <li>参数可视可调，棋盘格便于看透明边缘。</li>
-      <li>轻量在线完成，适合「只改圆角/阴影」的快需求。</li>
+      <li data-i18n="g_why1">同一页调完，本地处理，不上传。</li>
+      <li data-i18n="g_why2">效果可以边看边调。</li>
+      <li data-i18n="g_why3">轻量，只改圆角或阴影即可。</li>
     </ul>
-    <h2>常见问题</h2>
+    <h2 data-i18n="g_faqTitle">常见问题</h2>
     <dl class="seoFaq">
       <div>
-        <dt>加圆角后还能保留透明吗？</dt>
-        <dd>可以。导出 PNG，透明区域会保留；预览区棋盘格用于确认。</dd>
+        <dt data-i18n="g_q1">加圆角后还能保留透明吗？</dt>
+        <dd data-i18n="g_a1">可以。导出 PNG 会保留透明区域。</dd>
       </div>
       <div>
-        <dt>图片会上传吗？</dt>
-        <dd>不会，圆角与阴影都在浏览器本地计算。</dd>
+        <dt data-i18n="g_q2">图片会上传吗？</dt>
+        <dd data-i18n="g_a2">不会。圆角和阴影都在浏览器本地计算。</dd>
       </div>
       <div>
-        <dt>阴影太重或太淡怎么办？</dt>
-        <dd>降低/提高不透明度，或减小/增大模糊与偏移，边看预览边调。</dd>
-      </div>
-      <div>
-        <dt>只想圆角不要阴影？</dt>
-        <dd>关闭阴影相关开关（或把不透明度调到 0，以页面实际控件为准），只保留圆角半径。</dd>
-      </div>
-      <div>
-        <dt>支持哪些格式？</dt>
-        <dd>PNG、JPG、WebP；HEIC 需先转换。</dd>
+        <dt data-i18n="g_q3">只想要圆角、不要阴影？</dt>
+        <dd data-i18n="g_a3">关掉阴影即可。</dd>
       </div>
     </dl>
   </section>
