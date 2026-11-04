@@ -47,7 +47,7 @@
   <meta name="apple-mobile-web-app-title" content="imagec" />
   <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"批量压缩图片","alternateName":"imagec","url":"https://imagec.xin/batch","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"批量压缩图片，一次压缩或转换多张 PNG、JPG、WebP。失败的可以单独重试，成功的可以逐张下载或打包成一个 ZIP。所有处理在浏览器本地完成。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["多图队列","批量压缩","批量格式转换","失败单独重试","逐张下载","打包 ZIP","浏览器本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"批量压缩与格式转换","item":"https://imagec.xin/batch"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"批量压缩会上传图片吗？","acceptedAnswer":{"@type":"Answer","text":"不会。多图都在浏览器本地处理。"}},{"@type":"Question","name":"一次能处理多少张？","acceptedAnswer":{"@type":"Answer","text":"受设备内存与浏览器限制；建议分批，若卡顿就减少单次数量。"}},{"@type":"Question","name":"压缩和转换有什么区别？","acceptedAnswer":{"@type":"Answer","text":"压缩侧重减小体积；转换可输出 PNG / JPG / WebP / BMP 等目标格式（以页面选项为准）。"}},{"@type":"Question","name":"失败了怎么办？","acceptedAnswer":{"@type":"Answer","text":"可对失败项单独重试，不必清空全部重来。"}},{"@type":"Question","name":"和「在线图片压缩」页怎么选？","acceptedAnswer":{"@type":"Answer","text":"单张要仔细预览用 /compress；多张、要 ZIP 用本页 /batch。"}}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"批量处理会上传图片吗？","acceptedAnswer":{"@type":"Answer","text":"不会。多张图都在浏览器本地处理。"}},{"@type":"Question","name":"一次能处理多少张？","acceptedAnswer":{"@type":"Answer","text":"受这台设备的内存限制。"}},{"@type":"Question","name":"和 /compress 怎么选？","acceptedAnswer":{"@type":"Answer","text":"单张用 /compress；多张、要 ZIP 用本页。"}}]}</script>
   <link rel="stylesheet" href="/site.css" />
 </head>
 <body class="tool batch">
@@ -154,47 +154,37 @@
   </section>
 
   <section class="seoContent" id="guide" aria-labelledby="guide-title">
-    <h2 id="guide-title">适合这些情况</h2>
+    <h2 id="guide-title" data-i18n="g_fitTitle">适合这些情况</h2>
     <ol>
-      <li>相册、资料包几十张图要统一压小再上传网盘或 CMS。</li>
-      <li>一批导出图要转成统一格式（如都转 WebP 或 JPG）。</li>
-      <li>部分失败不想整批重来，只要重试失败项。</li>
-      <li>处理完打包成一个 ZIP 发给同事或归档。</li>
-      <li>敏感截图批量处理，不愿上传到云端压缩服务。</li>
+      <li data-i18n="g_fit1">多张图统一压小。</li>
+      <li data-i18n="g_fit2">批量转成同一种格式。</li>
+      <li data-i18n="g_fit3">打包成 ZIP，失败的可以重试。</li>
     </ol>
-    <h2>怎么用</h2>
+    <h2 data-i18n="g_howTitle">怎么用</h2>
     <ol>
-      <li>一次拖入多张 PNG / JPG / WebP（可粘贴）。</li>
-      <li>选择「压缩」或「转换」，设好质量/等级或目标格式。</li>
-      <li>处理完成后：逐张下载，或打包 ZIP；失败项单独重试。</li>
+      <li data-i18n="g_how1">一次拖入多张图片。</li>
+      <li data-i18n="g_how2">选择压缩或转换，并设置质量或格式。</li>
+      <li data-i18n="g_how3">单张下载或打包 ZIP；失败的可以重试。</li>
     </ol>
-    <h2>为什么用 imagec</h2>
+    <h2 data-i18n="g_whyTitle">为什么用 imagec</h2>
     <ul>
-      <li>批量压缩与格式转换同页完成，本地处理不上传。</li>
-      <li>支持失败重试、单张下载与 ZIP 打包。</li>
-      <li>与单张 <a href="/compress">/compress</a> 分工清晰：多图走 batch，单张精调走 compress。</li>
+      <li data-i18n="g_why1">批量在同一页本地完成。</li>
+      <li data-i18n="g_why2">失败可以重试，也可以打包 ZIP。</li>
+      <li data-i18n="g_why3">单张精细调整请用 /compress。</li>
     </ul>
-    <h2>常见问题</h2>
+    <h2 data-i18n="g_faqTitle">常见问题</h2>
     <dl class="seoFaq">
       <div>
-        <dt>批量压缩会上传图片吗？</dt>
-        <dd>不会。多图都在浏览器本地处理。</dd>
+        <dt data-i18n="g_q1">批量处理会上传图片吗？</dt>
+        <dd data-i18n="g_a1">不会。多张图都在浏览器本地处理。</dd>
       </div>
       <div>
-        <dt>一次能处理多少张？</dt>
-        <dd>受设备内存与浏览器限制；建议分批，若卡顿就减少单次数量。</dd>
+        <dt data-i18n="g_q2">一次能处理多少张？</dt>
+        <dd data-i18n="g_a2">受这台设备的内存限制。</dd>
       </div>
       <div>
-        <dt>压缩和转换有什么区别？</dt>
-        <dd>压缩侧重减小体积；转换可输出 PNG / JPG / WebP / BMP 等目标格式（以页面选项为准）。</dd>
-      </div>
-      <div>
-        <dt>失败了怎么办？</dt>
-        <dd>可对失败项单独重试，不必清空全部重来。</dd>
-      </div>
-      <div>
-        <dt>和「在线图片压缩」页怎么选？</dt>
-        <dd>单张要仔细预览用 <a href="/compress">/compress</a>；多张、要 ZIP 用本页 <a href="/batch">/batch</a>。</dd>
+        <dt data-i18n="g_q3">和 /compress 怎么选？</dt>
+        <dd data-i18n="g_a3">单张用 /compress；多张、要 ZIP 用本页。</dd>
       </div>
     </dl>
   </section>

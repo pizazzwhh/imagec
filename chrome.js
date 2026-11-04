@@ -54,6 +54,380 @@
   };
   var DIRECT = ["heroTitle","heroSubtitle","advanced","sponsorText","sponsorCta","blogLabel","relatedTools","moreTools","relatedTitle","blog1Tag","blog1Title","blog1Desc","blog2Tag","blog2Title","blog2Desc","blog3Tag","blog3Title","blog3Desc","swatchWhite","swatchBlue","swatchRed","swatchLight","swatchBlack","swatchGreen","swatchYellow","heicTip","spliceMin","linkQrUrl","linkQrText","linkRound","linkRoundCorner","linkRoundShadow"];
 
+  /* Page guides: Simplified Chinese and English only. Any other language uses English. */
+  var GUIDE_HEAD = {
+    zh: { g_fitTitle: "适合这些情况", g_howTitle: "怎么用", g_whyTitle: "为什么用 imagec", g_faqTitle: "常见问题" },
+    en: { g_fitTitle: "Good for", g_howTitle: "How to use", g_whyTitle: "Why imagec", g_faqTitle: "FAQ" }
+  };
+  var GUIDE = {
+    compress: {
+      zh: {
+        g_fit1: "网页、博客配图太大，先压再上传。",
+        g_fit2: "微信、邮件发图受限，在本机压缩后再发。",
+        g_fit3: "想保住画质、减小体积，并且不上传。",
+        g_how1: "选择、拖入或粘贴 PNG、JPG、WebP。",
+        g_how2: "选压缩等级（轻度到极致），按需再调质量与宽度。",
+        g_how3: "对照预览后下载。",
+        g_why1: "本地压缩，不上传。",
+        g_why2: "多级预设，可调质量，并可预览。",
+        g_why3: "免费；暂不支持 HEIC，请先转为 JPG 或 PNG。",
+        g_q1: "在线图片压缩会上传我的图吗？",
+        g_a1: "不会。压缩在浏览器本地完成。",
+        g_q2: "支持哪些格式？",
+        g_a2: "PNG、JPG、WebP。HEIC 请先转成 JPG 或 PNG。",
+        g_q3: "选哪个压缩等级？",
+        g_a3: "多数情况用「标准」；要更小选「强力/极致」，并看预览是否可接受。"
+      },
+      en: {
+        g_fit1: "Web or blog images that are too large — compress them before you upload.",
+        g_fit2: "Chat or email size limits — compress on this device, then send.",
+        g_fit3: "Shrink the file while keeping quality, without uploading it.",
+        g_how1: "Choose, drop, or paste a PNG, JPG, or WebP.",
+        g_how2: "Pick a level from Light to Extreme, then adjust quality or width if you need to.",
+        g_how3: "Compare the preview, then download.",
+        g_why1: "Compressed locally. Nothing is uploaded.",
+        g_why2: "Presets, adjustable quality, and a live preview.",
+        g_why3: "Free. HEIC isn’t supported — convert to JPG or PNG first.",
+        g_q1: "Does compression upload my image?",
+        g_a1: "No. It stays in your browser.",
+        g_q2: "Which formats are supported?",
+        g_a2: "PNG, JPG, and WebP. Convert HEIC to JPG or PNG first.",
+        g_q3: "Which compression level should I use?",
+        g_a3: "Start with Standard. For a smaller file, try Strong or Extreme and check the preview."
+      }
+    },
+    whitebg: {
+      zh: {
+        g_fit1: "商品图去白底，导出透明 PNG。",
+        g_fit2: "签名、印章或 Logo 要透明底。",
+        g_fit3: "不想把图片上传到第三方抠图站。",
+        g_how1: "点击、拖入或粘贴 PNG、JPG、WebP。",
+        g_how2: "调白色阈值和边缘柔化；按需处理浅灰底，或只去除外侧白底。",
+        g_how3: "预览后导出透明 PNG。",
+        g_why1: "本地处理，不上传。",
+        g_why2: "阈值和边缘可以调整。",
+        g_why3: "免费、无水印，导出透明 PNG。",
+        g_q1: "图片会上传到服务器吗？",
+        g_a1: "不会。去白底在浏览器本地完成。",
+        g_q2: "支持哪些格式？导出是什么？",
+        g_a2: "输入 PNG、JPG、WebP，导出透明 PNG。",
+        g_q3: "边缘还有白边怎么办？",
+        g_a3: "略增白色阈值或加大边缘柔化；只要清外边时可勾选「仅去除外侧白底」。"
+      },
+      en: {
+        g_fit1: "Product shots — remove the white and export a transparent PNG.",
+        g_fit2: "Signatures, stamps, and logos that need a transparent background.",
+        g_fit3: "Keep the image on this device instead of a third-party cutout site.",
+        g_how1: "Click, drop, or paste a PNG, JPG, or WebP.",
+        g_how2: "Adjust the white threshold and edge softness. Use light-gray removal, or clear only the outer white, if you need to.",
+        g_how3: "Preview, then export a transparent PNG.",
+        g_why1: "Processed locally. Nothing is uploaded.",
+        g_why2: "Threshold and edge softness are adjustable.",
+        g_why3: "Free, with no watermark. The file is a transparent PNG.",
+        g_q1: "Is my image uploaded?",
+        g_a1: "No. Removing the white background stays in your browser.",
+        g_q2: "Which formats can I use, and what is the export?",
+        g_a2: "PNG, JPG, or WebP in. A transparent PNG out.",
+        g_q3: "A white fringe is still left. What should I do?",
+        g_a3: "Raise the threshold or soften the edge. To clear only the outer white, turn on outside-only removal."
+      }
+    },
+    qr: {
+      zh: {
+        g_fit1: "海报或名片上放一个可扫的链接码。",
+        g_fit2: "Wi-Fi、表单或短链，方便当面扫。",
+        g_fit3: "打印用固定尺寸、可调颜色的 PNG。",
+        g_how1: "输入链接或文字。",
+        g_how2: "设置纠错、边距、颜色和尺寸。",
+        g_how3: "下载 PNG。",
+        g_why1: "本地生成，内容不上传。",
+        g_why2: "纠错、边距、颜色和尺寸可调。",
+        g_why3: "免费，导出 PNG。",
+        g_q1: "我输入的内容会上传吗？",
+        g_a1: "不会。二维码在浏览器本地绘制。",
+        g_q2: "纠错等级怎么选？",
+        g_a2: "屏幕展示用 M；印刷或容易遮挡时用 Q 或 H。",
+        g_q3: "生成二维码收费吗？",
+        g_a3: "不收费，可直接下载 PNG。"
+      },
+      en: {
+        g_fit1: "A scannable link code for a poster or a card.",
+        g_fit2: "Wi-Fi, a form, or a short link to scan in person.",
+        g_fit3: "A print PNG with a fixed size and custom colors.",
+        g_how1: "Enter a link or some text.",
+        g_how2: "Set error correction, margin, colors, and size.",
+        g_how3: "Download the PNG.",
+        g_why1: "Generated locally. What you type is not uploaded.",
+        g_why2: "Error correction, margin, colors, and size are adjustable.",
+        g_why3: "Free PNG.",
+        g_q1: "Is what I type uploaded?",
+        g_a1: "No. The QR code is drawn in your browser.",
+        g_q2: "Which error-correction level should I use?",
+        g_a2: "Use M on a screen. Use Q or H for print, or when the code may be covered.",
+        g_q3: "Is this free?",
+        g_a3: "Yes. Download the PNG at no charge."
+      }
+    },
+    round: {
+      zh: {
+        g_fit1: "头像或截图做成圆角卡片。",
+        g_fit2: "海报需要轻微投影。",
+        g_fit3: "商品详情统一圆角。",
+        g_how1: "上传或粘贴 PNG、JPG、WebP。",
+        g_how2: "调圆角；需要时打开阴影。",
+        g_how3: "预览后下载 PNG。",
+        g_why1: "同一页调完，本地处理，不上传。",
+        g_why2: "效果可以边看边调。",
+        g_why3: "轻量，只改圆角或阴影即可。",
+        g_q1: "加圆角后还能保留透明吗？",
+        g_a1: "可以。导出 PNG 会保留透明区域。",
+        g_q2: "图片会上传吗？",
+        g_a2: "不会。圆角和阴影都在浏览器本地计算。",
+        g_q3: "只想要圆角、不要阴影？",
+        g_a3: "关掉阴影即可。"
+      },
+      en: {
+        g_fit1: "Avatars or screenshots as rounded cards.",
+        g_fit2: "A light shadow on a poster.",
+        g_fit3: "The same corner radius on product images.",
+        g_how1: "Upload or paste a PNG, JPG, or WebP.",
+        g_how2: "Set the corner radius, and turn a shadow on if you want one.",
+        g_how3: "Preview, then download the PNG.",
+        g_why1: "Adjust it on this page. Processing stays local.",
+        g_why2: "The preview follows the controls.",
+        g_why3: "Lightweight when you only need corners or a shadow.",
+        g_q1: "Does rounding keep transparency?",
+        g_a1: "Yes. The PNG export keeps transparent areas.",
+        g_q2: "Is the image uploaded?",
+        g_a2: "No. Corners and shadow are calculated in your browser.",
+        g_q3: "I only want rounded corners, not a shadow.",
+        g_a3: "Turn the shadow off."
+      }
+    },
+    batch: {
+      zh: {
+        g_fit1: "多张图统一压小。",
+        g_fit2: "批量转成同一种格式。",
+        g_fit3: "打包成 ZIP，失败的可以重试。",
+        g_how1: "一次拖入多张图片。",
+        g_how2: "选择压缩或转换，并设置质量或格式。",
+        g_how3: "单张下载或打包 ZIP；失败的可以重试。",
+        g_why1: "批量在同一页本地完成。",
+        g_why2: "失败可以重试，也可以打包 ZIP。",
+        g_why3: "单张精细调整请用 /compress。",
+        g_q1: "批量处理会上传图片吗？",
+        g_a1: "不会。多张图都在浏览器本地处理。",
+        g_q2: "一次能处理多少张？",
+        g_a2: "受这台设备的内存限制。",
+        g_q3: "和 /compress 怎么选？",
+        g_a3: "单张用 /compress；多张、要 ZIP 用本页。"
+      },
+      en: {
+        g_fit1: "Shrink many photos to a similar size.",
+        g_fit2: "Convert a batch to one format.",
+        g_fit3: "Download a ZIP, and retry any file that fails.",
+        g_how1: "Drop in several images.",
+        g_how2: "Choose compress or convert, then set quality or the format.",
+        g_how3: "Download files one by one, or as a ZIP. Retry any that fail.",
+        g_why1: "The batch stays on this page and on this device.",
+        g_why2: "You can retry a failure and download a ZIP.",
+        g_why3: "For one image with finer control, use /compress.",
+        g_q1: "Are the images uploaded?",
+        g_a1: "No. Every file is processed in your browser.",
+        g_q2: "How many images can I add?",
+        g_a2: "As many as memory on this device allows.",
+        g_q3: "When should I use /compress instead?",
+        g_a3: "Use /compress for one image. Use this page for many images and a ZIP."
+      }
+    },
+    convert: {
+      zh: {
+        g_fit1: "在 PNG、WebP、JPG 之间互转。",
+        g_fit2: "透明 PNG 要交给只收 JPG 的系统（透明处会填白）。",
+        g_fit3: "对比体积，并调节质量。",
+        g_how1: "点击、拖入或粘贴 PNG、JPG、WebP、BMP。",
+        g_how2: "选择目标格式；JPG 或 WebP 可调质量。",
+        g_how3: "看过体积预览后下载。",
+        g_why1: "本地转换，不上传。",
+        g_why2: "PNG、JPG、WebP、BMP 互转，质量可调。",
+        g_why3: "免费。JPG 没有透明；HEIC 请先另转。",
+        g_q1: "图片格式转换会上传我的图吗？",
+        g_a1: "不会。转换在浏览器本地完成。",
+        g_q2: "支持哪些格式？",
+        g_a2: "PNG、JPG、WebP、BMP。",
+        g_q3: "转成 JPG 后透明怎么没了？",
+        g_a3: "JPG 不支持透明，透明区域会填成白色。要保留透明请用 PNG。"
+      },
+      en: {
+        g_fit1: "Switch between PNG, WebP, and JPG.",
+        g_fit2: "Hand a transparent PNG to a system that only accepts JPG (transparent areas fill white).",
+        g_fit3: "Compare file size and adjust quality.",
+        g_how1: "Click, drop, or paste a PNG, JPG, WebP, or BMP.",
+        g_how2: "Pick the target format. For JPG or WebP, set the quality.",
+        g_how3: "Check the size preview, then download.",
+        g_why1: "Converted locally. Nothing is uploaded.",
+        g_why2: "Four formats, with adjustable quality.",
+        g_why3: "Free. JPG has no transparency. Convert HEIC somewhere else first.",
+        g_q1: "Is my image uploaded?",
+        g_a1: "No. Conversion stays in your browser.",
+        g_q2: "Which formats are supported?",
+        g_a2: "PNG, JPG, WebP, and BMP.",
+        g_q3: "Why did transparency disappear in the JPG?",
+        g_a3: "JPG has no transparency, so those areas fill white. Use PNG to keep it."
+      }
+    },
+    crop: {
+      zh: {
+        g_fit1: "拖选，只要画面里的一块。",
+        g_fit2: "封面或头像要固定像素。",
+        g_fit3: "用 16:9 预设做封面。",
+        g_how1: "上传或粘贴图片。",
+        g_how2: "裁剪时拖选区域，或缩放时输入宽高（可锁定比例，也可用预设）。",
+        g_how3: "预览后下载。",
+        g_why1: "同一页本地完成。",
+        g_why2: "可以拖选、输入数值，也可以用预设。",
+        g_why3: "免费。去白底请用 /whitebg。",
+        g_q1: "裁剪缩放会上传图片吗？",
+        g_a1: "不会。选区和缩放都在浏览器本地处理。",
+        g_q2: "裁剪和缩放有什么区别？",
+        g_a2: "裁剪切掉多余部分；缩放改变尺寸。",
+        g_q3: "怎样避免拉变形？",
+        g_a3: "锁定宽高比。"
+      },
+      en: {
+        g_fit1: "Drag a selection when you only need one part of the picture.",
+        g_fit2: "A cover or avatar at an exact pixel size.",
+        g_fit3: "A 16:9 preset for a cover.",
+        g_how1: "Upload or paste an image.",
+        g_how2: "Crop by dragging a selection, or resize by entering width and height. You can lock the ratio or use a preset.",
+        g_how3: "Preview, then download.",
+        g_why1: "Crop and resize on this page, locally.",
+        g_why2: "Drag a selection, type a size, or use a preset.",
+        g_why3: "Free. To remove a white background, use /whitebg.",
+        g_q1: "Is the image uploaded?",
+        g_a1: "No. The selection and the resize stay in your browser.",
+        g_q2: "What is the difference between crop and resize?",
+        g_a2: "Crop cuts away the extra. Resize changes the dimensions.",
+        g_q3: "How do I avoid stretching the image?",
+        g_a3: "Lock the aspect ratio."
+      }
+    },
+    idphoto: {
+      zh: {
+        g_fit1: "蓝底改白底，用于简历或报名。",
+        g_fit2: "红底或浅蓝底，用于材料打印。",
+        g_fit3: "证件照不想上传到不明网站。",
+        g_how1: "上传证件照（建议纯色底）。",
+        g_how2: "选预设颜色或自定义颜色，并调容差与柔化。",
+        g_how3: "预览后下载。",
+        g_why1: "本地换底，不上传。",
+        g_why2: "有预设色，也可以自定义。",
+        g_why3: "免费。面向纯色底，不是通用 AI 抠图。",
+        g_q1: "证件照会上传到服务器吗？",
+        g_a1: "不会。换底色在浏览器本地完成。",
+        g_q2: "能换哪些颜色？",
+        g_a2: "白、蓝、红、浅蓝，以及自定义颜色。",
+        g_q3: "边缘还有残留怎么办？",
+        g_a3: "增加容差或加大边缘柔化。"
+      },
+      en: {
+        g_fit1: "Change a blue background to white for a resume or an application.",
+        g_fit2: "Red or light-blue backgrounds for printed forms.",
+        g_fit3: "Keep an ID photo off unknown upload sites.",
+        g_how1: "Upload an ID photo. A solid background works best.",
+        g_how2: "Pick a preset color or a custom one, then adjust tolerance and softness.",
+        g_how3: "Preview, then download.",
+        g_why1: "The background change stays on this device.",
+        g_why2: "Preset colors, plus a custom color.",
+        g_why3: "Free. It is for solid backgrounds, not a general AI cutout.",
+        g_q1: "Is the ID photo uploaded?",
+        g_a1: "No. The background change stays in your browser.",
+        g_q2: "Which colors can I use?",
+        g_a2: "White, blue, red, light blue, and a custom color.",
+        g_q3: "Color is still left along the edge. What should I do?",
+        g_a3: "Raise the tolerance or soften the edge."
+      }
+    }
+  };
+
+  function pageId() {
+    var parts = (location.pathname || "").split("/");
+    var last = "";
+    for (var i = parts.length - 1; i >= 0; i--) {
+      if (parts[i]) { last = parts[i]; break; }
+    }
+    return last.replace(/\.html$/i, "") || "index";
+  }
+  function guideLang() {
+    var htmlCode = (document.documentElement.lang || "").toLowerCase().slice(0, 2);
+    if (htmlCode === "zh") return "zh";
+    if (htmlCode) return "en";
+    return currentLang() === "zh" ? "zh" : "en";
+  }
+  function guideStrings() {
+    var page = GUIDE[pageId()];
+    if (!page) return null;
+    var lang = guideLang();
+    var head = GUIDE_HEAD[lang];
+    var body = page[lang];
+    var out = {};
+    var key;
+    for (key in head) if (Object.prototype.hasOwnProperty.call(head, key)) out[key] = head[key];
+    for (key in body) if (Object.prototype.hasOwnProperty.call(body, key)) out[key] = body[key];
+    return out;
+  }
+  function ensureFeedbackLink() {
+    var footers = document.querySelectorAll(".siteFooter");
+    if (!footers.length) {
+      var created = document.createElement("footer");
+      created.className = "siteFooter";
+      document.body.appendChild(created);
+      footers = [created];
+    }
+    Array.prototype.forEach.call(footers, function (footer) {
+      if (footer.querySelector('[data-i18n="feedback"]')) return;
+      var line = document.createElement("p");
+      line.className = "quietLinks feedbackLine";
+      var link = document.createElement("a");
+      link.href = "https://github.com/pizazzwhh/transparent-background-tool/issues";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.setAttribute("data-i18n", "feedback");
+      link.textContent = "反馈 & 建议";
+      line.appendChild(link);
+      var icp = footer.querySelector("#icp");
+      if (icp) footer.insertBefore(line, icp);
+      else footer.appendChild(line);
+    });
+  }
+  function syncFaqJsonLd() {
+    var root = document.querySelector("#guide .seoFaq");
+    if (!root) return;
+    var entities = [];
+    var child = root.firstElementChild;
+    while (child) {
+      if (child.tagName === "DIV") {
+        var q = child.querySelector("dt");
+        var a = child.querySelector("dd");
+        var name = q ? (q.textContent || "").replace(/\s+/g, " ").trim() : "";
+        var text = a ? (a.textContent || "").replace(/\s+/g, " ").trim() : "";
+        if (name && text) {
+          entities.push({ "@type": "Question", name: name, acceptedAnswer: { "@type": "Answer", text: text } });
+        }
+      }
+      child = child.nextElementSibling;
+    }
+    if (!entities.length) return;
+    var scripts = document.querySelectorAll('script[type="application/ld+json"]');
+    for (var s = 0; s < scripts.length; s++) {
+      var data;
+      try { data = JSON.parse(scripts[s].textContent); } catch (e) { continue; }
+      if (!data || data["@type"] !== "FAQPage") continue;
+      data.mainEntity = entities;
+      scripts[s].textContent = JSON.stringify(data);
+    }
+  }
+
   function currentLang() {
     var saved = "";
     try { saved = localStorage.getItem("language") || ""; } catch (e) {}
@@ -66,6 +440,12 @@
 
   function textFor(key) {
     if ((key === "heroTitle" || key === "heroSubtitle") && !document.body.classList.contains("home")) return null;
+    if (key === "feedback") return guideLang() === "zh" ? "反馈 & 建议" : "Feedback & suggestions";
+    if (key && key.indexOf("g_") === 0) {
+      var guide = guideStrings();
+      if (!guide || guide[key] == null) return null;
+      return guide[key];
+    }
     var p = pack();
     if (NAME_KEYS[key]) return p[NAME_KEYS[key]];
     if (DESC_KEYS[key]) return p[DESC_KEYS[key]];
@@ -122,6 +502,7 @@
   function applyCopy() {
     syncBlogCards();
     ensureRedeemLinks();
+    ensureFeedbackLink();
     document.querySelectorAll("[data-i18n]").forEach(function (el) {
       var value = textFor(el.getAttribute("data-i18n"));
       if (value != null) el.textContent = value;
@@ -141,6 +522,7 @@
       var titleValue = textFor(titleKey);
       if (titleValue) document.title = titleValue + " | imagec";
     }
+    syncFaqJsonLd();
   }
 
   function showBanner(message) {

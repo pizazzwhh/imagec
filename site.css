@@ -135,6 +135,7 @@ button, input, select { font: inherit; color: inherit; }
 .siteFooter a, body.studio > footer a { color: var(--ink-2); text-decoration: none; }
 .siteFooter a:hover, body.studio > footer a:hover { color: var(--accent); }
 .quietLinks, .sponsorLinks { margin: 0 0 8px; color: var(--ink-2); font-size: var(--fs-sm); }
+.siteFooter .feedbackLine { margin: 0 0 8px; }
 .quietLinks a, .sponsorLinks a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 2px; }
 /* Tool pages place the same sponsor line under related tools, not in the footer. */
 body.tool main.shell > .quietLinks,
