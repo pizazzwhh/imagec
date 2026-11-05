@@ -29,15 +29,74 @@
       <ul class="sponsorWall" id="sponsorWall"></ul>
       <p class="sponsorEmpty" id="wallEmpty" data-i18n="wallEmpty">名单还空着。</p>
       <p class="sponsorLinks">
-        <a href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="wallCta">去爱发电</a> <span aria-hidden="true">·</span> <a href="/sponsor.html" data-i18n="sponsorRedeem">赞助兑换</a>
+        <a href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="wallCta">去爱发电</a>
       </p>
     </div>
   </section>
 </main>
 <footer class="siteFooter"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" id="icp">ICP备案号申请中</a></footer>
-<script src="/sponsor.js"></script>
 <script>
-imagecSponsor.bootLang();
+(function () {
+  var LANGS = [
+    {code:"zh",name:"中文",dir:"ltr"},
+    {code:"en",name:"English",dir:"ltr"},
+    {code:"ja",name:"日本語",dir:"ltr"},
+    {code:"ko",name:"한국어",dir:"ltr"},
+    {code:"es",name:"Español",dir:"ltr"},
+    {code:"fr",name:"Français",dir:"ltr"},
+    {code:"de",name:"Deutsch",dir:"ltr"},
+    {code:"ru",name:"Русский",dir:"ltr"},
+    {code:"pt",name:"Português",dir:"ltr"},
+    {code:"ar",name:"العربية",dir:"rtl"},
+    {code:"vi",name:"Tiếng Việt",dir:"ltr"},
+    {code:"id",name:"Bahasa Indonesia",dir:"ltr"},
+    {code:"th",name:"ไทย",dir:"ltr"}
+  ];
+  var LANG_SET = {};
+  LANGS.forEach(function (item) { LANG_SET[item.code] = item; });
+
+  function detectLang() {
+    try {
+      var param = new URL(location.href).searchParams.get("lang");
+      if (param && LANG_SET[param]) return param;
+    } catch (e) {}
+    try {
+      var saved = localStorage.getItem("language");
+      if (saved && LANG_SET[saved]) return saved;
+    } catch (e2) {}
+    var list = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || ""];
+    for (var i = 0; i < list.length; i++) {
+      var code = String(list[i] || "").toLowerCase().slice(0, 2);
+      if (code === "zh") return "zh";
+      if (LANG_SET[code]) return code;
+    }
+    return "en";
+  }
+
+  function applyLang(code) {
+    var item = LANG_SET[code] || LANG_SET.en;
+    try { localStorage.setItem("language", item.code); } catch (e) {}
+    document.documentElement.lang = item.code === "zh" ? "zh-CN" : item.code;
+    document.documentElement.dir = item.dir;
+  }
+
+  var sel = document.getElementById("langSelect");
+  if (sel) {
+    var lang = detectLang();
+    applyLang(lang);
+    LANGS.forEach(function (item) {
+      var opt = document.createElement("option");
+      opt.value = item.code;
+      opt.textContent = item.name;
+      sel.appendChild(opt);
+    });
+    sel.value = lang;
+    sel.addEventListener("change", function () {
+      applyLang(sel.value);
+      if (window.imagecApplyChrome) window.imagecApplyChrome();
+    });
+  }
+})();
 (function () {
   var list = document.getElementById("sponsorWall");
   var empty = document.getElementById("wallEmpty");

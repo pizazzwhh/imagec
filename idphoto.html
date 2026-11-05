@@ -119,7 +119,7 @@
               <span data-i18n="customColor">自定义颜色：</span><code id="colorCode">#FFFFFF</code>
             </div>
           </div>
-          <div class="controlGroup" id="sizePack" hidden>
+          <div class="controlGroup" id="sizePack">
             <label data-i18n="sizePackLabel">证件照尺寸</label>
             <div class="sizePresets" id="sizePresets">
               <button type="button" data-size="1inch" data-w="295" data-h="413" data-i18n="size1" title="295×413">1寸</button>
@@ -351,7 +351,6 @@ langSelect.onchange=()=>setLanguage(langSelect.value);
 setLanguage(language);
 </script>
 
-<script src="/sponsor.js"></script>
 <script>
 (function(){
   const dropzone = document.getElementById('dropzone');
@@ -376,7 +375,6 @@ setLanguage(language);
   let outputSize = null;
   const sizePack = document.getElementById('sizePack');
   const sizePresets = document.getElementById('sizePresets');
-  if (window.imagecSponsor && imagecSponsor.isUnlocked() && sizePack) sizePack.hidden = false;
 
   function hexToRgb(hex){
     const m = hex.replace('#','');
@@ -446,10 +444,6 @@ setLanguage(language);
 
   function render(){
     if(!sourceImage || !originalBg) return;
-    if(outputSize && (!window.imagecSponsor || !imagecSponsor.isUnlocked())){
-      outputSize = null;
-      if(sizePack) sizePack.hidden = true;
-    }
 
     let w, h, sx, sy, sw, sh;
     if(outputSize){

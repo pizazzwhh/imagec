@@ -72,7 +72,7 @@ HTTP and SEO (Node 20+; the live script has no npm dependencies):
 npm run smoke:live
 ```
 
-Covers `/`, `/whitebg`, `/compress`, `/qr`, `/round`, `/batch`, `/convert`, `/crop`, `/idphoto`, and `/sponsors`: status 200, `Age` / `Last-Modified` / `ETag`, a title, a visible `h1`, and a canonical URL without `.html`. Tool pages must have `#guide` and a visible FAQ whose questions match the FAQPage JSON-LD. `/sponsors` must link「免费在线图片工具」to `/`. Same-site tool links such as `/compress.html` fail. External URLs are ignored. `/sponsor.html`, `/stats.html`, `/index.html`, and `/blog/*.html` are allowed, as are the legacy cross-links that still sit in `.heroLinks`. The same `.html` tool path outside that block fails.
+Covers `/`, `/whitebg`, `/compress`, `/qr`, `/round`, `/batch`, `/convert`, `/crop`, `/idphoto`, and `/sponsors`: status 200, `Age` / `Last-Modified` / `ETag`, a title, a visible `h1`, and a canonical URL without `.html`. Tool pages must have `#guide` and a visible FAQ whose questions match the FAQPage JSON-LD. `/sponsors` must link「免费在线图片工具」to `/`. Same-site tool links such as `/compress.html` fail. External URLs are ignored. `/stats.html`, `/index.html`, and `/blog/*.html` are allowed, as are the legacy cross-links that still sit in `.heroLinks`. The same `.html` tool path outside that block fails. A link to `/sponsor` or `/sponsor.html`, or a `sponsorRedeem` control, fails.
 
 Mobile first screen (Playwright, 375×812). Install the browser once:
 
