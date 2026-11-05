@@ -11,7 +11,8 @@
  * Tool routes linked from the fetched HTML must be extensionless
  * (/compress, not /compress.html). External URLs are ignored. Known
  * non-tool documents that still ship as .html are allowed:
- * /sponsor.html, /stats.html, /index.html, and /blog/*.html.
+ * /stats.html, /index.html, and /blog/*.html.
+ * A link to /sponsor or the redeem control (sponsorRedeem) fails.
  * Extension links that only appear inside .heroLinks are the remaining
  * legacy cross-links; the same /compress.html href anywhere else fails.
  */
@@ -47,7 +48,7 @@ const TOOL_SLUGS = new Set([
   "filter",
 ]);
 
-const LEGACY_HTML_PATHS = new Set(["/sponsor.html", "/stats.html", "/index.html"]);
+const LEGACY_HTML_PATHS = new Set(["/stats.html", "/index.html"]);
 
 const SPONSORS_PHRASE = "免费在线图片工具";
 
@@ -212,6 +213,15 @@ function faqMismatch(visible, jsonLd) {
   return null;
 }
 
+function redeemLeak(html) {
+  const hits = [];
+  if (/data-i18n=["']sponsorRedeem["']/.test(html)) hits.push("sponsorRedeem");
+  if (/\/sponsor\.js\b/.test(html)) hits.push("sponsor.js");
+  if (/href\s*=\s*["'][^"']*\/sponsor(?:\.html)?(?:[?#][^"']*)?["']/i.test(html)) hits.push("href /sponsor");
+  if (/imagec\.xin\/sponsor(?:\.html)?(?![a-z0-9])/i.test(html)) hits.push("url /sponsor");
+  return hits;
+}
+
 function sponsorsLinkOk(html, pageUrl, originHost) {
   const re = /<a\b([^>]*)>([\s\S]*?)<\/a>/gi;
   const found = [];
@@ -371,6 +381,9 @@ async function checkPage(origin, page) {
       mark(!mismatch, "FAQ", mismatch || `${countLabel} FAQPage JSON-LD`);
     }
   }
+
+  const redeem = redeemLeak(html);
+  mark(redeem.length === 0, "no redeem", redeem.length ? redeem.join(", ") : "absent");
 
   if (page.sponsors) {
     const link = sponsorsLinkOk(html, url, host);

@@ -93,12 +93,12 @@
             <button data-preset="cold" data-i18n="pCold">冷色</button>
             <button data-preset="highcontrast" data-i18n="pHighcontrast">高对比</button>
             <button data-preset="softfocus" data-i18n="pSoftfocus">柔焦</button>
-            <button type="button" data-preset="clear" data-i18n="presetClear" class="sponsorPreset" hidden>清透</button>
-            <button type="button" data-preset="warmtone" data-i18n="presetWarmtone" class="sponsorPreset" hidden>暖调</button>
-            <button type="button" data-preset="cooltone" data-i18n="presetCooltone" class="sponsorPreset" hidden>冷调</button>
-            <button type="button" data-preset="mono" data-i18n="presetMono" class="sponsorPreset" hidden>黑白</button>
-            <button type="button" data-preset="softlight" data-i18n="presetSoftlight" class="sponsorPreset" hidden>柔光</button>
-            <button type="button" data-preset="shopsharp" data-i18n="presetShopsharp" class="sponsorPreset" hidden>锐化电商</button>
+            <button data-preset="clear" data-i18n="presetClear">清透</button>
+            <button data-preset="warmtone" data-i18n="presetWarmtone">暖调</button>
+            <button data-preset="cooltone" data-i18n="presetCooltone">冷调</button>
+            <button data-preset="mono" data-i18n="presetMono">黑白</button>
+            <button data-preset="softlight" data-i18n="presetSoftlight">柔光</button>
+            <button data-preset="shopsharp" data-i18n="presetShopsharp">锐化电商</button>
           </div>
         </div>
 
@@ -146,7 +146,6 @@
 
 </main>
 
-<script src="/sponsor.js"></script>
 <script>
 const $ = s => document.querySelector(s);
 const file = $('#file'), drop = $('#drop'), canvas = $('#canvas'), ctx = canvas.getContext('2d');
@@ -155,10 +154,6 @@ const empty = $('#empty');
 let source = null;
 let name = 'image';
 let currentPreset = 'original';
-const SPONSOR_PRESETS = { clear: 1, warmtone: 1, cooltone: 1, mono: 1, softlight: 1, shopsharp: 1 };
-if (window.imagecSponsor && imagecSponsor.isUnlocked()) {
-  document.querySelectorAll('.sponsorPreset').forEach(function (el) { el.hidden = false; });
-}
 
 const filters = { brightness: 0, contrast: 0, saturate: 0, sepia: 0, grayscale: 0, invert: 0, hueRotate: 0, blur: 0, sharpen: 0 };
 
@@ -376,7 +371,6 @@ function render() {
 }
 
 function applyPreset(preset) {
-  if (SPONSOR_PRESETS[preset] && !(window.imagecSponsor && imagecSponsor.isUnlocked())) return;
   const p = presets[preset];
   if (!p) return;
   currentPreset = preset;
@@ -414,7 +408,6 @@ document.addEventListener('paste', e => {
 $('#presetGrid').addEventListener('click', e => {
   const btn = e.target.closest('button');
   if (!btn || btn.hidden) return;
-  if (SPONSOR_PRESETS[btn.dataset.preset] && !(window.imagecSponsor && imagecSponsor.isUnlocked())) return;
   document.querySelectorAll('#presetGrid button').forEach(b => b.classList.toggle('active', b === btn));
   applyPreset(btn.dataset.preset);
 });

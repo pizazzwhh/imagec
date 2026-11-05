@@ -539,7 +539,85 @@ a.toolCard .tc-body strong {
 a.toolCard .tc-desc { margin: 0; color: #57534E; font-size: var(--fs-sm); line-height: 1.45; }
 body.home .searchEmpty { display: none; padding: var(--space-5) 0; color: #57534E; }
 body.home .searchEmpty.show { display: block; }
-body.home .siteFooter { padding-top: 28px; padding-bottom: 36px; }
+body.home .siteFooter { padding: 32px 20px 40px; }
+body.home .siteFooter .sponsorLine {
+  margin: 0 0 18px;
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-normal);
+  line-height: 1.5;
+}
+body.home .siteFooter .sponsorLine a.afdian {
+  color: var(--accent);
+  font-weight: var(--fw-med);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+body.home .siteFooter .sponsorLine a.afdian:hover { color: var(--accent-hover); }
+body.home .siteFooter .actionRow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+body.home .siteFooter .action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+}
+body.home .siteFooter a.action:hover,
+body.home .siteFooter button.action:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+body.home .siteFooter button.action.feedbackOpen {
+  appearance: none;
+  margin: 0;
+  min-height: 40px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: var(--fw-bold);
+  line-height: 1.2;
+  text-decoration: none;
+}
+body.home .siteFooter .action.primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+body.home .siteFooter a.action.primary:hover {
+  background: #1f2937;
+  border-color: #1f2937;
+  color: #fff;
+}
+body.home .siteFooter .action:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+body.home .siteFooter a.icp {
+  display: inline-block;
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 11px;
+  text-decoration: none;
+}
+body.home .siteFooter a.icp:hover { color: var(--accent); }
 
 @keyframes homeCardIn {
   from { opacity: 0; translate: 0 6px; }
@@ -1256,62 +1334,13 @@ html[dir="rtl"] .toggle input:checked:after { transform: translateX(-18px); }
 html[dir="rtl"] body.home .searchWrap svg { left: auto; right: 14px; }
 html[dir="rtl"] body.home .searchInput { padding: 11px 40px 11px 14px; }
 
-/* ===== Sponsor redeem (quiet, secondary) =====
-   sponsorLinks matches .quietLinks. It is a separate class so chrome.js
-   does not append another redeem link into these rows. */
+/* Sponsors wall. sponsorLinks matches the quiet link row and stays its own class. */
 .sponsorSheet { max-width: 560px; }
-.sponsorForm,
-.sponsorSuccess,
 .sponsorWallBlock {
   border-top: 1px solid var(--line);
-  padding: 16px 24px 18px;
-}
-.sponsorForm {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0;
-  padding-bottom: 18px;
-}
-.sponsorForm label {
-  margin: 0 0 6px;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  line-height: 1.4;
-}
-.sponsorForm input { width: 100%; }
-.sponsorForm input::placeholder { color: var(--muted); }
-.sponsorForm input[aria-invalid="true"] { border-color: var(--danger); }
-.sponsorError {
-  margin: 6px 0 0;
-  color: var(--danger);
-  font-size: var(--fs-sm);
-  line-height: 1.45;
-}
-.sponsorForm button.secondary {
-  align-self: flex-start;
-  width: auto;
-  margin-top: 14px;
-  position: static;
-}
-.sponsorSuccess p {
-  margin: 0;
-  color: var(--ink);
-  font-size: var(--fs-sm);
-  line-height: 1.55;
-}
-.sponsorSuccess .sponsorNote {
-  margin: 6px 0 0;
-  color: var(--ink-2);
+  padding: 16px 24px 20px;
 }
 .sponsorSheet .sponsorLinks { margin: 12px 0 0; color: var(--ink-2); line-height: 1.6; }
-.sponsorFoot {
-  margin: 0;
-  border-top: 1px solid var(--line);
-  padding: 14px 24px 20px;
-}
-.sponsorFoot.sponsorLinks { margin: 0; }
-.sponsorWallBlock { padding-bottom: 20px; }
 .sponsorWall {
   margin: 0;
   padding: 0;
@@ -1351,16 +1380,11 @@ html[dir="rtl"] body.home .searchInput { padding: 11px 40px 11px 14px; }
 }
 .sponsorWallBlock .sponsorLinks { margin-top: 12px; }
 @media (max-width: 800px) {
-  .sponsorForm,
-  .sponsorSuccess,
-  .sponsorWallBlock,
-  .sponsorFoot {
+  .sponsorWallBlock {
     padding-left: 16px;
     padding-right: 16px;
   }
-  .sponsorSheet button,
-  .sponsorSheet .sponsorLinks,
-  .sponsorSheet .sponsorFoot {
+  .sponsorSheet .sponsorLinks {
     position: static;
     left: auto;
     right: auto;
