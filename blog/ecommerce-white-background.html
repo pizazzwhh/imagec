@@ -37,6 +37,7 @@
     "keywords": "商品图白底转透明,电商主图去白底,淘宝主图透明,拼多多白底图,商品图抠图"
   }
   </script>
+  <link rel="stylesheet" href="/site.css" />
   <style>
     :root{--ink:#111827;--ink-soft:#4B5563;--muted:#4B5563;--paper:#FAFAF9;--card:#FFFFFF;--line:#E5E7EB;--line-soft:#E5E7EB;--accent:#2563EB;--accent2:#EFF6FF;--serif:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",sans-serif;--sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",sans-serif;--shadow:0 1px 2px rgba(17,24,39,.06)}
     *{box-sizing:border-box}
@@ -82,7 +83,13 @@
     .ctaBottom p{color:var(--muted);margin:0 0 20px}
     .ctaBottom a{display:inline-block;padding:14px 36px;background:var(--accent);color:#fff;border-radius:99px;text-decoration:none;font-weight:700;font-size:16px}
     @media(max-width:640px){.article{padding:24px 20px}.shell{padding:20px 16px 40px}}
-  </style>
+  
+    .shell{width:auto}
+    a{color:revert}
+    :focus{outline:revert}
+    :focus-visible{outline:revert;outline-offset:revert}
+    .brand{flex:0 1 auto}
+</style>
 </head>
 <body>
 <div class="shell">
@@ -274,5 +281,16 @@ document.querySelectorAll('.faqQ').forEach(q => {
   });
 });
 </script>
+<footer class="siteFooter">
+  <p class="sponsorLine"><span data-i18n="homeSponsorLead">觉得好用？</span> <a class="afdian" href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="homeSponsorCta">请我来包辣条</a></p>
+  <div class="actionRow" role="group" aria-label="站务">
+    <button type="button" class="action feedbackOpen" data-i18n="feedback" aria-haspopup="dialog">反馈 &amp; 建议</button>
+    <a class="action primary" href="https://toolc.xin" target="_blank" rel="noopener noreferrer" data-i18n="homeSister">toolc·精选软件工具</a>
+  </div>
+  <div>
+    <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
+  </div>
+</footer>
+<script src="/chrome.js"></script>
 </body>
 </html>

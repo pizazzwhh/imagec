@@ -539,29 +539,63 @@ a.toolCard .tc-body strong {
 a.toolCard .tc-desc { margin: 0; color: #57534E; font-size: var(--fs-sm); line-height: 1.45; }
 body.home .searchEmpty { display: none; padding: var(--space-5) 0; color: #57534E; }
 body.home .searchEmpty.show { display: block; }
-body.home .siteFooter { padding: 32px 20px 40px; }
-body.home .siteFooter .sponsorLine {
+/* Scheme D footer on every public page. Values match :root so the homepage
+   does not change; restating them keeps blog :root overrides off the footer. */
+.siteFooter,
+.feedbackModal {
+  --bg: #FAFAF9;
+  --surface: #FFFFFF;
+  --ink: #111827;
+  --ink-2: #4B5563;
+  --muted: #9CA3AF;
+  --line: #E5E7EB;
+  --accent: #2563EB;
+  --accent-hover: #1D4ED8;
+  --accent-soft: #EFF6FF;
+  --ok: #059669;
+  --ok-soft: #ECFDF5;
+  --danger: #DC2626;
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-base: 15px;
+  --fs-lg: 18px;
+  --fw-normal: 400;
+  --fw-med: 500;
+  --fw-bold: 600;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --shadow: 0 1px 2px rgba(17, 24, 39, .06);
+}
+body > footer.siteFooter { padding: 32px 20px 40px; }
+.siteFooter .sponsorLine {
   margin: 0 0 18px;
   color: var(--ink-2);
   font-size: var(--fs-sm);
   font-weight: var(--fw-normal);
   line-height: 1.5;
 }
-body.home .siteFooter .sponsorLine a.afdian {
+.siteFooter .sponsorLine a.afdian {
   color: var(--accent);
   font-weight: var(--fw-med);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-body.home .siteFooter .sponsorLine a.afdian:hover { color: var(--accent-hover); }
-body.home .siteFooter .actionRow {
+.siteFooter .sponsorLine a.afdian:hover { color: var(--accent-hover); }
+.siteFooter .actionRow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
 }
-body.home .siteFooter .action {
+.siteFooter .action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -580,44 +614,57 @@ body.home .siteFooter .action {
   text-decoration: none;
   cursor: pointer;
 }
-body.home .siteFooter a.action:hover,
-body.home .siteFooter button.action:hover {
+.siteFooter a.action:hover,
+.siteFooter button.action:hover {
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-soft);
 }
-body.home .siteFooter button.action.feedbackOpen {
+body .siteFooter button.action.feedbackOpen {
   appearance: none;
   margin: 0;
   min-height: 40px;
+  padding: 8px 18px;
+  border: 1px solid var(--line);
   border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  font-family: inherit;
   font-size: 14px;
   font-weight: var(--fw-bold);
+  letter-spacing: -0.01em;
   line-height: 1.2;
   text-decoration: none;
+  cursor: pointer;
 }
-body.home .siteFooter .action.primary {
+body .siteFooter button.action.feedbackOpen:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.siteFooter .action.primary {
   background: var(--ink);
   border-color: var(--ink);
   color: #fff;
 }
-body.home .siteFooter a.action.primary:hover {
+.siteFooter a.action.primary:hover {
   background: #1f2937;
   border-color: #1f2937;
   color: #fff;
 }
-body.home .siteFooter .action:focus-visible {
+.siteFooter .action:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-body.home .siteFooter a.icp {
+.siteFooter a.icp {
   display: inline-block;
   margin-top: 18px;
   color: var(--muted);
   font-size: 11px;
   text-decoration: none;
 }
-body.home .siteFooter a.icp:hover { color: var(--accent); }
+.siteFooter a.icp:hover { color: var(--accent); }
 
 @keyframes homeCardIn {
   from { opacity: 0; translate: 0 6px; }
