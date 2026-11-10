@@ -46,8 +46,8 @@ Visit **[https://imagec.xin/](https://imagec.xin/)** — no installation needed.
 ### Run Locally
 
 ```bash
-git clone https://github.com/pizazzwhh/transparent-background-tool.git
-cd transparent-background-tool
+git clone https://github.com/pizazzwhh/imagec.git
+cd imagec
 python -m http.server 8080
 # Open http://localhost:8080
 ```
@@ -166,7 +166,7 @@ MIT License — free for personal and commercial use.
 
 If imagec saved you time, please:
 - ⭐ Star this repo
-- 🐛 Report bugs via [Issues](https://github.com/pizazzwhh/transparent-background-tool/issues)
+- 🐛 Report bugs via [Issues](https://github.com/pizazzwhh/imagec/issues)
 - 💬 Share with friends and colleagues
 - 🗳 Upvote on [Product Hunt](https://www.producthunt.com/)
 

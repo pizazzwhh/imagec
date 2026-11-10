@@ -59,7 +59,7 @@ function uploadToOSS(ossConfig, fileBuffer) {
 
 async function main() {
   const args = process.argv.slice(2);
-  const routineName = args[0] || "transparent-background-tool";
+  const routineName = args[0] || "imagec";
   const siteDir = args[1] || ".";
 
   const folderPath = path.resolve(siteDir);
