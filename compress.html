@@ -206,7 +206,6 @@
     <h2 data-i18n="moreTools">更多图片工具</h2>
     <div class="toolsGrid" data-tool-cards></div>
   </section>
-  <p class="quietLinks"><span data-i18n="sponsorText">赞助与合作请通过爱发电联系</span> <a href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="sponsorCta">发电支持</a> <span aria-hidden="true">·</span> <a href="https://toolc.xin" target="_blank" rel="noopener noreferrer" data-i18n="sisterSite">软件工具</a></p>
 
 </main>
 
@@ -778,7 +777,16 @@ init();
   } catch(e2) {}
 })();
 </script>
-<footer class="siteFooter"><a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" id="icp">ICP备案号申请中</a></footer>
+<footer class="siteFooter">
+  <p class="sponsorLine"><span data-i18n="homeSponsorLead">觉得好用？</span> <a class="afdian" href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="homeSponsorCta">请我来包辣条</a></p>
+  <div class="actionRow" role="group" aria-label="站务">
+    <button type="button" class="action feedbackOpen" data-i18n="feedback" aria-haspopup="dialog">反馈 &amp; 建议</button>
+    <a class="action primary" href="https://toolc.xin" target="_blank" rel="noopener noreferrer" data-i18n="homeSister">toolc·精选软件工具</a>
+  </div>
+  <div>
+    <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
+  </div>
+</footer>
 <script src="/tool-cards.js"></script>
 <script src="/chrome.js"></script>
 </body>

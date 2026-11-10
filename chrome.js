@@ -642,29 +642,97 @@
     wrap.appendChild(svg);
     return wrap;
   }
-  function ensureFeedbackLink() {
-    var footers = document.querySelectorAll(".siteFooter");
+  function footerHrefOk(el, href) {
+    return !!(el && el.getAttribute("href") === href && el.getAttribute("target") === "_blank");
+  }
+  function footerIsSchemeD(footer) {
+    var nodes = footer.children;
+    if (!nodes || nodes.length !== 3) return false;
+    var line = nodes[0];
+    var row = nodes[1];
+    var icpWrap = nodes[2];
+    if (!line.classList.contains("sponsorLine") || !row.classList.contains("actionRow")) return false;
+    if (row.getAttribute("role") !== "group") return false;
+    var lead = line.querySelector("span[data-i18n='homeSponsorLead']");
+    var cta = line.querySelector("a.afdian[data-i18n='homeSponsorCta']");
+    if (!lead || !footerHrefOk(cta, "https://afdian.com/a/imagec")) return false;
+    var button = row.querySelector("button.action.feedbackOpen[data-i18n='feedback']");
+    var sister = row.querySelector("a.action.primary[data-i18n='homeSister']");
+    if (!button || button.type !== "button" || button.getAttribute("aria-haspopup") !== "dialog") return false;
+    if (!footerHrefOk(sister, "https://toolc.xin")) return false;
+    var icp = icpWrap.querySelector("a.icp");
+    if (!icp || icp.id !== "icp" || !footerHrefOk(icp, "https://beian.miit.gov.cn/")) return false;
+    return true;
+  }
+  function buildSchemeDFooter(footer) {
+    var icpExisting = document.getElementById("icp");
+    if (icpExisting && !footer.contains(icpExisting)) icpExisting.removeAttribute("id");
+    footer.className = "siteFooter";
+    while (footer.firstChild) footer.removeChild(footer.firstChild);
+    var line = document.createElement("p");
+    line.className = "sponsorLine";
+    var lead = document.createElement("span");
+    lead.setAttribute("data-i18n", "homeSponsorLead");
+    lead.textContent = "觉得好用？";
+    var cta = document.createElement("a");
+    cta.className = "afdian";
+    cta.href = "https://afdian.com/a/imagec";
+    cta.target = "_blank";
+    cta.rel = "noopener noreferrer";
+    cta.setAttribute("data-i18n", "homeSponsorCta");
+    cta.textContent = "请我来包辣条";
+    line.appendChild(lead);
+    line.appendChild(document.createTextNode(" "));
+    line.appendChild(cta);
+    var row = document.createElement("div");
+    row.className = "actionRow";
+    row.setAttribute("role", "group");
+    row.setAttribute("aria-label", "站务");
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "action feedbackOpen";
+    button.setAttribute("data-i18n", "feedback");
+    button.setAttribute("aria-haspopup", "dialog");
+    button.textContent = "反馈 & 建议";
+    var sister = document.createElement("a");
+    sister.className = "action primary";
+    sister.href = "https://toolc.xin";
+    sister.target = "_blank";
+    sister.rel = "noopener noreferrer";
+    sister.setAttribute("data-i18n", "homeSister");
+    sister.textContent = "toolc·精选软件工具";
+    row.appendChild(button);
+    row.appendChild(sister);
+    var icpWrap = document.createElement("div");
+    var icp = document.createElement("a");
+    icp.className = "icp";
+    icp.id = "icp";
+    icp.href = "https://beian.miit.gov.cn/";
+    icp.target = "_blank";
+    icp.rel = "noopener noreferrer";
+    icp.textContent = "ICP备案号申请中";
+    icpWrap.appendChild(icp);
+    footer.appendChild(line);
+    footer.appendChild(row);
+    footer.appendChild(icpWrap);
+  }
+  function ensureSchemeDFooter() {
+    Array.prototype.forEach.call(document.querySelectorAll("footer"), function (footer) {
+      if (footer.classList.contains("siteFooter")) return;
+      if (footer.classList.contains("footer") || footer.getAttribute("data-i18n") === "footer") footer.remove();
+    });
+    var footers = Array.prototype.slice.call(document.querySelectorAll(".siteFooter"));
     if (!footers.length) {
       var created = document.createElement("footer");
       created.className = "siteFooter";
       document.body.appendChild(created);
       footers = [created];
     }
-    Array.prototype.forEach.call(footers, function (footer) {
-      if (footer.querySelector(".feedbackOpen")) return;
-      var line = document.createElement("p");
-      line.className = "feedbackLine";
-      var link = document.createElement("button");
-      link.type = "button";
-      link.className = "feedbackOpen";
-      link.setAttribute("data-i18n", "feedback");
-      link.setAttribute("aria-haspopup", "dialog");
-      link.textContent = "反馈 & 建议";
-      line.appendChild(link);
-      var icp = footer.querySelector("#icp");
-      if (icp) footer.insertBefore(line, icp);
-      else footer.appendChild(line);
-    });
+    for (var i = 1; i < footers.length; i++) footers[i].remove();
+    if (!footerIsSchemeD(footers[0])) buildSchemeDFooter(footers[0]);
+  }
+  function ensureFeedbackLink() {
+    ensureSchemeDFooter();
     if (!document.getElementById("feedbackModal")) {
       var pack = feedbackPack();
       var hintLabel = function (forId, labelKey, hintKey, hintClass) {

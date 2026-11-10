@@ -98,6 +98,7 @@
     ]
   }
   </script>
+  <link rel="stylesheet" href="/site.css" />
   <style>
     :root{--ink:#111827;--ink-soft:#4B5563;--muted:#4B5563;--paper:#FAFAF9;--card:#FFFFFF;--line:#E5E7EB;--line-soft:#E5E7EB;--accent:#2563EB;--accent2:#EFF6FF;--serif:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",sans-serif;--sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",sans-serif;--shadow:0 1px 2px rgba(17,24,39,.06)}
     *{box-sizing:border-box}
@@ -144,7 +145,13 @@
       .shell{padding:16px 12px 40px}
       h1{font-size:24px}
     }
-  </style>
+  
+    .shell{width:auto}
+    a{color:revert}
+    :focus{outline:revert}
+    :focus-visible{outline:revert;outline-offset:revert}
+    .brand{flex:0 1 auto}
+</style>
 </head>
 <body>
 <main class="shell">
@@ -537,9 +544,6 @@
       <a href="https://imagec.xin/idphoto.html" class="ctaBtn" target="_blank" rel="noopener">Go to imagec ID Photo →</a>
     </div>
 
-    <footer class="footer">
-      © 2026 imagec — Free, private, browser-based image tools. <a href="https://imagec.xin/">Back to homepage</a>
-    </footer>
   </article>
 </main>
 
@@ -551,5 +555,16 @@
     try { if (navigator.sendBeacon) navigator.sendBeacon(u); } catch(e2) {}
   })();
 </script>
+<footer class="siteFooter">
+  <p class="sponsorLine"><span data-i18n="homeSponsorLead">觉得好用？</span> <a class="afdian" href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="homeSponsorCta">请我来包辣条</a></p>
+  <div class="actionRow" role="group" aria-label="站务">
+    <button type="button" class="action feedbackOpen" data-i18n="feedback" aria-haspopup="dialog">反馈 &amp; 建议</button>
+    <a class="action primary" href="https://toolc.xin" target="_blank" rel="noopener noreferrer" data-i18n="homeSister">toolc·精选软件工具</a>
+  </div>
+  <div>
+    <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
+  </div>
+</footer>
+<script src="/chrome.js"></script>
 </body>
 </html>
