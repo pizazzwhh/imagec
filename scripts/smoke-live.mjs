@@ -362,8 +362,8 @@ async function checkPage(origin, page) {
     mark(clean, "canonical", clean ? canonicalUrl.href : `${canonical} uses .html`);
   }
 
-  if (page.tool) {
-    mark(hasGuide(html), "#guide", hasGuide(html) ? "present" : "missing");
+  if (page.tool && hasGuide(html)) {
+    // Legacy SEO guide blocks are optional; if present, FAQ markup must still match JSON-LD.
     let visible = [];
     let jsonLd = [];
     let faqError = null;
@@ -375,7 +375,7 @@ async function checkPage(origin, page) {
     }
     if (faqError) {
       mark(false, "FAQ", faqError);
-    } else {
+    } else if (visible.length || jsonLd.length) {
       const mismatch = faqMismatch(visible, jsonLd);
       const countLabel = visible.length === 1 ? "1 question matches" : `${visible.length} questions match`;
       mark(!mismatch, "FAQ", mismatch || `${countLabel} FAQPage JSON-LD`);

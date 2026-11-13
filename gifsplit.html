@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GIF 拆帧 - 导出每一帧 PNG｜imagec</title>
+  <meta name="description" content="把 GIF 拆成每一帧 PNG，显示帧数和间隔，可单张下载或打包 ZIP。浏览器本地处理，文件不上传。" />
+  <meta name="keywords" content="GIF拆帧,GIF转PNG,导出GIF帧,gif frames,本地处理" />
+  <meta name="author" content="imagec" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <meta name="googlebot" content="index,follow" />
+  <meta name="bingbot" content="index,follow" />
+  <meta name="msvalidate.01" content="6D09E7478DB0959D20C7BBBF26665B04" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="canonical" href="https://imagec.xin/gifsplit" />
+  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/gifsplit?lang=zh" />
+  <link rel="alternate" hreflang="en" href="https://imagec.xin/gifsplit?lang=en" />
+  <link rel="alternate" hreflang="ja" href="https://imagec.xin/gifsplit?lang=ja" />
+  <link rel="alternate" hreflang="ko" href="https://imagec.xin/gifsplit?lang=ko" />
+  <link rel="alternate" hreflang="es" href="https://imagec.xin/gifsplit?lang=es" />
+  <link rel="alternate" hreflang="fr" href="https://imagec.xin/gifsplit?lang=fr" />
+  <link rel="alternate" hreflang="de" href="https://imagec.xin/gifsplit?lang=de" />
+  <link rel="alternate" hreflang="ru" href="https://imagec.xin/gifsplit?lang=ru" />
+  <link rel="alternate" hreflang="pt" href="https://imagec.xin/gifsplit?lang=pt" />
+  <link rel="alternate" hreflang="ar" href="https://imagec.xin/gifsplit?lang=ar" />
+  <link rel="alternate" hreflang="vi" href="https://imagec.xin/gifsplit?lang=vi" />
+  <link rel="alternate" hreflang="id" href="https://imagec.xin/gifsplit?lang=id" />
+  <link rel="alternate" hreflang="th" href="https://imagec.xin/gifsplit?lang=th" />
+  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/gifsplit" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="imagec" />
+  <meta property="og:title" content="GIF 拆帧 - 导出每一帧 PNG｜imagec" />
+  <meta property="og:description" content="把 GIF 拆成每一帧 PNG，显示帧数和间隔，单张下载或打包 ZIP。本地处理，不上传。" />
+  <meta property="og:url" content="https://imagec.xin/gifsplit" />
+  <meta property="og:image" content="https://imagec.xin/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="GIF 拆帧 - 导出每一帧 PNG｜imagec" />
+  <meta name="twitter:description" content="把 GIF 拆成每一帧 PNG。本地处理，不上传服务器。" />
+  <meta name="twitter:image" content="https://imagec.xin/og-image.jpg" />
+  <meta name="theme-color" content="#FAFAF9" />
+  <meta name="application-name" content="imagec" />
+  <meta name="apple-mobile-web-app-title" content="imagec" />
+  <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"GIF 拆帧","alternateName":"imagec","url":"https://imagec.xin/gifsplit","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"把 GIF 拆成每一帧 PNG，显示帧数和间隔，可单张下载或打包 ZIP。浏览器本地处理，文件不上传。","inLanguage":["zh-CN","en"],"featureList":["拆出 GIF 每一帧","显示帧数和间隔","单帧下载 PNG","全部帧打包 ZIP","本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"GIF 拆帧","item":"https://imagec.xin/gifsplit"}]}</script>
+  <link rel="stylesheet" href="/site.css" />
+  <style>
+    body.tool .canvasWrap { height: min(280px, 38vh); min-height: 160px; }
+    .stage .queue { margin-top: 12px; }
+    .qItem { cursor: pointer; }
+    .qItem.on { border-color: #2563EB; box-shadow: inset 0 0 0 1px #2563EB; }
+  </style>
+</head>
+<body class="tool">
+<main class="shell">
+  <header class="topbar"><a class="brand" href="/"><span class="mark"><svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="6" fill="#FAFAF9"/><path fill="#1C1917" fill-rule="evenodd" d="M8 2h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6V8a6 6 0 0 1 6-6zm5 5h38a1 1 0 0 1 1 1v38a1 1 0 0 1-1 1H13a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><rect x="36" y="36" width="26" height="26" rx="6" fill="#2563EB"/></svg></span><span class="brand-name">imagec</span></a><div class="topbar-right"><a class="searchBtn" href="/?focus=search" aria-label="搜索工具" data-chrome-aria="searchTools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a><select class="langSelect" id="langSelect"></select></div></header>
+
+  <section class="panel">
+    <div class="hero">
+      <h1 data-i18n="title">GIF 拆帧</h1>
+      <p data-i18n="subtitle">把 GIF 拆成逐帧 PNG。</p>
+      <div class="privacyLine safeBadge">
+        <span data-i18n="privacy">本地处理 · 不上传服务器</span>
+      </div>
+      <p class="heroLinks"><a href="/convert" data-i18n="linkConvert">转换格式</a> <span aria-hidden="true">·</span> <a href="/compress" data-i18n="linkCompress">压缩图片</a></p>
+    </div>
+    <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
+    <div class="workspace">
+      <aside class="controls">
+        <label class="drop" id="drop" for="file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+          <strong data-i18n="upload">点击选择或拖入 GIF</strong>
+          <small data-i18n="formats">支持 GIF<br>在本机拆出每一帧</small>
+        </label>
+        <input id="file" type="file" accept="image/gif,.gif" />
+
+        <div class="pin">
+          <p class="notice" data-i18n="note">帧间隔来自文件里的延迟。没有写延迟的帧会标成「无间隔」。</p>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="download" type="button" disabled data-i18n="download">下载当前帧</button>
+          <button class="secondary" id="zipBtn" type="button" disabled data-i18n="zip">打包全部 ZIP</button>
+          <button class="secondary" id="clear" type="button" disabled data-i18n="clear">清空</button>
+        </div>
+      </aside>
+
+      <section class="stage" aria-label="preview">
+        <div class="stagebar">
+          <div class="meta" id="meta" data-i18n="waiting" aria-live="polite">等待 GIF</div>
+        </div>
+        <div class="canvasWrap" id="wrap">
+          <canvas id="canvas"></canvas>
+        </div>
+        <div class="queue" id="queue" role="list"></div>
+        <div class="empty" id="empty">
+          <strong data-i18n="emptyTitle">把 GIF 放进来，拆出每一帧</strong>
+        </div>
+      </section>
+    </div>
+  </section>
+
+<section class="relatedTools">
+    <h2 data-i18n="moreTools">更多图片工具</h2>
+    <div class="toolsGrid" data-tool-cards></div>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const LANGS=[
+  {code:'zh',name:'中文',dir:'ltr'},{code:'en',name:'English',dir:'ltr'},{code:'ja',name:'日本語',dir:'ltr'},
+  {code:'ko',name:'한국어',dir:'ltr'},{code:'es',name:'Español',dir:'ltr'},{code:'fr',name:'Français',dir:'ltr'},
+  {code:'de',name:'Deutsch',dir:'ltr'},{code:'ru',name:'Русский',dir:'ltr'},{code:'pt',name:'Português',dir:'ltr'},
+  {code:'ar',name:'العربية',dir:'rtl'},{code:'vi',name:'Tiếng Việt',dir:'ltr'},{code:'id',name:'Bahasa Indonesia',dir:'ltr'},
+  {code:'th',name:'ไทย',dir:'ltr'}
+];
+const GIF_FALLBACKS=[
+  'https://cdn.jsdelivr.net/npm/gifuct-js@2.1.2/+esm',
+  'https://fastly.jsdelivr.net/npm/gifuct-js@2.1.2/+esm',
+  'https://unpkg.com/gifuct-js@2.1.2/+esm'
+];
+const SEO={
+  zh:{title:'GIF 拆帧 - 导出每一帧 PNG｜imagec',desc:'把 GIF 拆成每一帧 PNG，显示帧数和间隔，可单张下载或打包 ZIP。浏览器本地处理，文件不上传。'},
+  en:{title:'Split a GIF into frames | PNG export | imagec',desc:'Split a GIF into PNG frames. Frame count and delay are shown when the file has them. Download one frame or a ZIP of all frames. Processed locally — nothing is uploaded.'}
+};
+const messages={
+  zh:{title:'GIF 拆帧',subtitle:'把 GIF 拆成逐帧 PNG。',privacy:'本地处理 · 不上传服务器',upload:'点击选择或拖入 GIF',formats:'支持 GIF<br>在本机拆出每一帧',note:'帧间隔来自文件里的延迟。没有写延迟的帧会标成「无间隔」。',download:'下载当前帧',zip:'打包全部 ZIP',clear:'清空',waiting:'等待 GIF',emptyTitle:'把 GIF 放进来拆成逐帧（最多 300 帧）',working:'正在拆帧…',workingN:'正在拆帧 {n} / {total}',ready:'第 {n} / {total} 帧 · {delay}',frameName:'第 {n} 帧',delay:'{ms} ms',noDelay:'无间隔',dl:'下载',errType:'请选择 GIF 文件。',errGif:'拆不开这个 GIF。文件可能已损坏。',errLib:'GIF 组件加载失败。请检查网络，或允许 jsDelivr 后刷新页面。',errBig:'这个 GIF 太大，浏览器内存不够拆。请换一个小一点的。',errExport:'导出失败，请重试。',moreTools:'更多图片工具',linkConvert:'转换格式',linkCompress:'压缩图片'},
+  en:{title:'Split a GIF',subtitle:'Split a GIF into PNG frames.',privacy:'Local · no upload',upload:'Choose or drop a GIF',formats:'GIF files<br>Frames are split on this device',note:'Delay comes from the file. Frames without a delay are marked as none.',download:'Download this frame',zip:'Download all as ZIP',clear:'Clear',waiting:'Waiting for a GIF',emptyTitle:'Drop a GIF to split frames (up to 300 frames)',working:'Splitting frames…',workingN:'Splitting {n} / {total}',ready:'Frame {n} / {total} · {delay}',frameName:'Frame {n}',delay:'{ms} ms',noDelay:'No delay',dl:'Download',errType:'Choose a GIF file.',errGif:'Could not split this GIF. The file may be damaged.',errLib:'The GIF library failed to load. Check the network, allow jsDelivr, and refresh.',errBig:'This GIF is too large to split in the browser. Try a smaller one.',errExport:'Could not export. Please try again.',moreTools:'More image tools',linkConvert:'Convert a format',linkCompress:'Compress an image'}
+};
+let language=detectLang();
+let frames=[];
+let selected=0;
+let baseName='gif';
+let seq=0;
+let busy=false;
+const langSelect=$('#langSelect');
+LANGS.forEach(l=>{
+  const opt=document.createElement('option');
+  opt.value=l.code;
+  opt.textContent=l.name;
+  langSelect.appendChild(opt);
+});
+function knownLang(code){return LANGS.some(l=>l.code===code);}
+function detectLang(){
+  const param=new URL(location.href).searchParams.get('lang');
+  if(param&&knownLang(param))return param;
+  let saved='';
+  try{saved=localStorage.getItem('language')||'';}catch(e){}
+  if(saved&&knownLang(saved))return saved;
+  const navLangs=navigator.languages||[navigator.language||'zh'];
+  for(const l of navLangs){
+    const lc=String(l).toLowerCase();
+    if(lc.startsWith('zh'))return 'zh';
+    const code=lc.slice(0,2);
+    if(knownLang(code))return code;
+  }
+  return 'zh';
+}
+function t(key){
+  const pack=messages[language];
+  if(pack&&pack[key]!=null)return pack[key];
+  if(messages.en&&messages.en[key]!=null)return messages.en[key];
+  if(messages.zh&&messages.zh[key]!=null)return messages.zh[key];
+  return key;
+}
+function tf(key,map){
+  let s=t(key);
+  Object.keys(map||{}).forEach(k=>{s=s.replaceAll('{'+k+'}',String(map[k]));});
+  return s;
+}
+function setMeta(attr,name,content){
+  let el=document.querySelector(`meta[${attr}="${name}"]`);
+  if(!el){el=document.createElement('meta');el.setAttribute(attr,name);document.head.appendChild(el);}
+  el.setAttribute('content',content);
+}
+function applyI18n(){
+  const def=LANGS.find(l=>l.code===language)||LANGS[0];
+  document.documentElement.lang=language==='zh'?'zh-CN':language;
+  document.documentElement.dir=def.dir;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    const value=t(key);
+    if(value!==key)el.innerHTML=value;
+  });
+  const seo=SEO[language]||SEO.en||SEO.zh;
+  document.title=seo.title;
+  setMeta('name','description',seo.desc);
+  setMeta('property','og:title',seo.title);
+  setMeta('property','og:description',seo.desc);
+  setMeta('name','twitter:title',seo.title);
+  setMeta('name','twitter:description',seo.desc);
+  const ld=document.querySelector('#ldjson');
+  if(ld){
+    try{
+      const obj=JSON.parse(ld.textContent);
+      obj.name=t('title');
+      obj.description=seo.desc;
+      ld.textContent=JSON.stringify(obj);
+    }catch(e){}
+  }
+  const banner=$('#libStatus');
+  if(banner&&!banner.hidden&&banner.dataset.key)banner.textContent=t(banner.dataset.key);
+  labelRows();
+  paintMeta();
+}
+function setLanguage(lang){
+  if(!knownLang(lang))lang='en';
+  language=lang;
+  try{localStorage.setItem('language',lang);}catch(e){}
+  langSelect.value=language;
+  applyI18n();
+}
+function showBanner(key){
+  const el=$('#libStatus');
+  if(!el)return;
+  if(!key){el.hidden=true;el.textContent='';delete el.dataset.key;return;}
+  el.dataset.key=key;
+  el.hidden=false;
+  el.textContent=t(key);
+}
+function delayText(ms){
+  if(!ms)return t('noDelay');
+  return tf('delay',{ms:ms});
+}
+function paintMeta(){
+  const meta=$('#meta');
+  if(!meta)return;
+  if(busy){meta.textContent=t('working');return;}
+  if(frames.length){
+    const frame=frames[selected];
+    meta.textContent=tf('ready',{n:selected+1,total:frames.length,delay:delayText(frame.delay)});
+    return;
+  }
+  meta.textContent=t('waiting');
+}
+function labelRows(){
+  $('#queue').querySelectorAll('.qItem').forEach((row,i)=>{
+    const frame=frames[i];
+    if(!frame)return;
+    row.querySelector('.qName').textContent=tf('frameName',{n:i+1});
+    row.querySelector('.qStatus').textContent=frame.canvas.width+' × '+frame.canvas.height+' · '+delayText(frame.delay);
+    const dl=row.querySelector('[data-act="dl"]');
+    if(dl)dl.textContent=t('dl');
+  });
+}
+function showFrame(){
+  const frame=frames[selected];
+  if(!frame)return;
+  const canvas=$('#canvas');
+  canvas.width=frame.canvas.width;
+  canvas.height=frame.canvas.height;
+  canvas.getContext('2d').drawImage(frame.canvas,0,0);
+  canvas.style.display='block';
+  $('#empty').style.display='none';
+  $('#queue').querySelectorAll('.qItem').forEach((el,i)=>el.classList.toggle('on',i===selected));
+  paintMeta();
+}
+function makeThumb(src){
+  const max=96;
+  const scale=Math.min(1,max/src.width,max/src.height);
+  const c=document.createElement('canvas');
+  c.width=Math.max(1,Math.round(src.width*scale));
+  c.height=Math.max(1,Math.round(src.height*scale));
+  c.getContext('2d').drawImage(src,0,0,c.width,c.height);
+  return c.toDataURL('image/png');
+}
+function addRow(i){
+  const frame=frames[i];
+  const row=document.createElement('article');
+  row.className='qItem'+(i===selected?' on':'');
+  row.setAttribute('role','listitem');
+  row.innerHTML='<img class="qThumb" alt=""><div class="qBody"><div class="qName"></div><div class="qStatus"></div></div><div class="qBtns"><button type="button" class="secondary" data-act="dl"></button></div>';
+  row.querySelector('.qThumb').src=makeThumb(frame.canvas);
+  row.querySelector('.qName').textContent=tf('frameName',{n:i+1});
+  row.querySelector('.qStatus').textContent=frame.canvas.width+' × '+frame.canvas.height+' · '+delayText(frame.delay);
+  const dl=row.querySelector('[data-act="dl"]');
+  dl.textContent=t('dl');
+  dl.addEventListener('click',ev=>{ev.stopPropagation();downloadFrame(i);});
+  row.addEventListener('click',()=>{selected=i;showFrame();});
+  $('#queue').appendChild(row);
+}
+function showEmpty(){
+  frames=[];
+  selected=0;
+  busy=false;
+  const canvas=$('#canvas');
+  canvas.width=0;
+  canvas.height=0;
+  canvas.style.display='none';
+  $('#queue').innerHTML='';
+  $('#empty').style.display='';
+  $('#download').disabled=true;
+  $('#zipBtn').disabled=true;
+  $('#clear').disabled=true;
+  $('#file').value='';
+  document.body.classList.remove('computing');
+  paintMeta();
+}
+let gifPromise=null;
+function ensureGif(){
+  if(!gifPromise){
+    gifPromise=import(GIF_URL).then(mod=>{
+      const parseGIF=mod.parseGIF||(mod.default&&mod.default.parseGIF);
+      const decompressFrames=mod.decompressFrames||(mod.default&&mod.default.decompressFrames);
+      if(typeof parseGIF!=='function'||typeof decompressFrames!=='function')throw new Error('lib');
+      return {parseGIF,decompressFrames};
+    }).catch(err=>{gifPromise=null;throw err;});
+  }
+  return gifPromise;
+}
+async function composite(gif,rawFrames,id){
+  const w=Math.max(1,(gif.lsd&&gif.lsd.width)||0);
+  const h=Math.max(1,(gif.lsd&&gif.lsd.height)||0);
+  if(w<1||h<1)throw new Error('gif');
+  if(rawFrames.length>300||w*h*rawFrames.length>30000000)throw new Error('big');
+  const base=document.createElement('canvas');
+  base.width=w;
+  base.height=h;
+  const ctx=base.getContext('2d',{willReadFrequently:true});
+  const out=[];
+  for(let i=0;i<rawFrames.length;i++){
+    if(id!==seq)return null;
+    const frame=rawFrames[i];
+    const dims=frame.dims||{left:0,top:0,width:w,height:h};
+    const disposal=frame.disposalType||0;
+    const prev=disposal===3?ctx.getImageData(0,0,w,h):null;
+    const patch=frame.patch;
+    const left=dims.left||0;
+    const top=dims.top||0;
+    const fw=dims.width||0;
+    const fh=dims.height||0;
+    if(patch&&fw>0&&fh>0&&left>=0&&top>=0&&left+fw<=w&&top+fh<=h&&patch.length>=fw*fh*4){
+      const existing=ctx.getImageData(left,top,fw,fh);
+      for(let p=0;p<fw*fh*4;p+=4){
+        if(patch[p+3]===0)continue;
+        existing.data[p]=patch[p];
+        existing.data[p+1]=patch[p+1];
+        existing.data[p+2]=patch[p+2];
+        existing.data[p+3]=255;
+      }
+      ctx.putImageData(existing,left,top);
+    }
+    const snap=document.createElement('canvas');
+    snap.width=w;
+    snap.height=h;
+    snap.getContext('2d').drawImage(base,0,0);
+    out.push({canvas:snap,delay:Number(frame.delay)||0});
+    if(disposal===2)ctx.clearRect(left,top,fw,fh);
+    else if(disposal===3&&prev)ctx.putImageData(prev,0,0);
+    if(i%2===0){
+      $('#meta').textContent=tf('workingN',{n:i+1,total:rawFrames.length});
+      await new Promise(r=>setTimeout(r,0));
+    }
+  }
+  return out;
+}
+async function load(file){
+  if(!file)return;
+  const name=(file.name||'').toLowerCase();
+  const type=(file.type||'').toLowerCase();
+  if(type!=='image/gif'&&!name.endsWith('.gif')){showBanner('errType');return;}
+  const id=++seq;
+  showBanner('');
+  busy=true;
+  frames=[];
+  $('#queue').innerHTML='';
+  $('#canvas').style.display='none';
+  $('#empty').style.display='none';
+  $('#download').disabled=true;
+  $('#zipBtn').disabled=true;
+  $('#clear').disabled=false;
+  $('#wrap').dataset.loading=t('working');
+  document.body.classList.add('computing');
+  paintMeta();
+  try{
+    baseName=(file.name||'gif').replace(/\.[^.]+$/,'')||'gif';
+    const buf=await file.arrayBuffer();
+    if(id!==seq)return;
+    const lib=await ensureGif();
+    if(id!==seq)return;
+    const gif=lib.parseGIF(buf);
+    const raw=lib.decompressFrames(gif,true);
+    if(!raw||!raw.length)throw new Error('gif');
+    const built=await composite(gif,raw,id);
+    if(id!==seq||!built)return;
+    frames=built;
+    selected=0;
+    busy=false;
+    document.body.classList.remove('computing');
+    frames.forEach((_,i)=>addRow(i));
+    $('#download').disabled=false;
+    $('#zipBtn').disabled=false;
+    $('#clear').disabled=false;
+    showFrame();
+    showBanner('');
+  }catch(e){
+    if(id!==seq)return;
+    const msg=String(e&&e.message||e||'');
+    const key=msg==='big'?'errBig':msg==='lib'||/failed to fetch|import/i.test(msg)?'errLib':'errGif';
+    showEmpty();
+    showBanner(key);
+  }
+}
+function downloadBlob(blob,name){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function canvasBlob(canvas){
+  return new Promise(resolve=>{
+    try{canvas.toBlob(blob=>resolve(blob),'image/png');}
+    catch(e){resolve(null);}
+  });
+}
+function frameFile(i){return 'frame-'+String(i+1).padStart(2,'0')+'.png';}
+async function downloadFrame(i){
+  const frame=frames[i];
+  if(!frame)return;
+  const blob=await canvasBlob(frame.canvas);
+  if(!blob){showBanner('errExport');return;}
+  showBanner('');
+  downloadBlob(blob,baseName+'-'+frameFile(i));
+}
+const CRC_TABLE=(()=>{
+  const table=new Uint32Array(256);
+  for(let n=0;n<256;n++){
+    let c=n;
+    for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);
+    table[n]=c>>>0;
+  }
+  return table;
+})();
+function crc32(data){
+  let c=0xFFFFFFFF;
+  for(let i=0;i<data.length;i++)c=CRC_TABLE[(c^data[i])&0xFF]^(c>>>8);
+  return (c^0xFFFFFFFF)>>>0;
+}
+function buildZip(files){
+  const now=new Date();
+  let year=now.getFullYear();
+  if(year<1980)year=1980;
+  const time=(now.getHours()<<11)|(now.getMinutes()<<5)|Math.floor(now.getSeconds()/2);
+  const date=((year-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
+  const encoder=new TextEncoder();
+  const parts=[];
+  const central=[];
+  let offset=0;
+  files.forEach(file=>{
+    const name=encoder.encode(file.name);
+    const local=new Uint8Array(30+name.length);
+    const view=new DataView(local.buffer);
+    view.setUint32(0,0x04034b50,true);
+    view.setUint16(4,20,true);
+    view.setUint16(6,0x0800,true);
+    view.setUint16(10,time,true);
+    view.setUint16(12,date,true);
+    view.setUint32(14,file.crc,true);
+    view.setUint32(18,file.data.length,true);
+    view.setUint32(22,file.data.length,true);
+    view.setUint16(26,name.length,true);
+    local.set(name,30);
+    parts.push(local,file.data);
+    const cd=new Uint8Array(46+name.length);
+    const cdView=new DataView(cd.buffer);
+    cdView.setUint32(0,0x02014b50,true);
+    cdView.setUint16(4,20,true);
+    cdView.setUint16(6,20,true);
+    cdView.setUint16(8,0x0800,true);
+    cdView.setUint16(12,time,true);
+    cdView.setUint16(14,date,true);
+    cdView.setUint32(16,file.crc,true);
+    cdView.setUint32(20,file.data.length,true);
+    cdView.setUint32(24,file.data.length,true);
+    cdView.setUint16(28,name.length,true);
+    cdView.setUint32(42,offset,true);
+    cd.set(name,46);
+    central.push(cd);
+    offset+=local.length+file.data.length;
+  });
+  const cdSize=central.reduce((sum,part)=>sum+part.length,0);
+  const end=new Uint8Array(22);
+  const endView=new DataView(end.buffer);
+  endView.setUint32(0,0x06054b50,true);
+  endView.setUint16(8,files.length,true);
+  endView.setUint16(10,files.length,true);
+  endView.setUint32(12,cdSize,true);
+  endView.setUint32(16,offset,true);
+  const blobParts=parts.concat(central,[end]);
+  const total=blobParts.reduce((sum,part)=>sum+part.length,0);
+  const out=new Uint8Array(total);
+  let cursor=0;
+  blobParts.forEach(part=>{out.set(part,cursor);cursor+=part.length;});
+  return out;
+}
+async function downloadZip(){
+  if(!frames.length)return;
+  $('#zipBtn').disabled=true;
+  $('#download').disabled=true;
+  try{
+    const files=[];
+    for(let i=0;i<frames.length;i++){
+      const blob=await canvasBlob(frames[i].canvas);
+      if(!blob){showBanner('errExport');return;}
+      const data=new Uint8Array(await blob.arrayBuffer());
+      files.push({name:frameFile(i),data,crc:crc32(data)});
+    }
+    downloadBlob(new Blob([buildZip(files)],{type:'application/zip'}),baseName+'-frames.zip');
+    showBanner('');
+  }finally{
+    $('#zipBtn').disabled=!frames.length;
+    $('#download').disabled=!frames.length;
+  }
+}
+function bindDrop(){
+  const drop=$('#drop');
+  ['dragenter','dragover'].forEach(type=>{
+    drop.addEventListener(type,ev=>{ev.preventDefault();drop.classList.add('over');});
+  });
+  ['dragleave','drop'].forEach(type=>{
+    drop.addEventListener(type,ev=>{ev.preventDefault();drop.classList.remove('over');});
+  });
+  drop.addEventListener('drop',e=>{
+    const file=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+    if(file)load(file);
+  });
+}
+$('#file').addEventListener('change',e=>{
+  if(e.target.files&&e.target.files[0])load(e.target.files[0]);
+});
+bindDrop();
+document.addEventListener('paste',e=>{
+  const items=e.clipboardData&&e.clipboardData.items;
+  if(!items)return;
+  for(const item of items){
+    if(item.kind==='file'){
+      const file=item.getAsFile();
+      if(file&&(/\.(gif)$/i.test(file.name||'')||file.type==='image/gif')){load(file);break;}
+    }
+  }
+});
+$('#download').addEventListener('click',()=>{if(!$('#download').disabled)downloadFrame(selected);});
+$('#zipBtn').addEventListener('click',downloadZip);
+$('#clear').addEventListener('click',()=>{seq++;showBanner('');showEmpty();});
+langSelect.addEventListener('change',()=>setLanguage(langSelect.value));
+setLanguage(language);
+(function watchCards(){
+  const grid=document.querySelector('[data-tool-cards]');
+  if(!grid)return;
+  const fix=()=>{
+    grid.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key=el.getAttribute('data-i18n');
+      const value=t(key);
+      if(value!==key&&el.textContent!==value)el.textContent=value;
+    });
+  };
+  new MutationObserver(fix).observe(grid,{childList:true,subtree:true});
+})();
+document.addEventListener('DOMContentLoaded',applyI18n);
+</script>
+<script>
+(function(){
+  var p = encodeURIComponent(location.pathname + location.search);
+  var u = '/__track__?t=' + Date.now() + '&p=' + p;
+  try {
+    if (navigator.sendBeacon) navigator.sendBeacon(u);
+  } catch(e) {}
+})();
+</script>
+<footer class="siteFooter">
+  <p class="sponsorLine"><span data-i18n="homeSponsorLead">觉得好用？</span> <a class="afdian" href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="homeSponsorCta">请我来包辣条</a></p>
+  <div class="actionRow" role="group" aria-label="站务">
+    <button type="button" class="action feedbackOpen" data-i18n="feedback" aria-haspopup="dialog">反馈 &amp; 建议</button>
+    <a class="action primary" href="https://toolc.xin" target="_blank" rel="noopener noreferrer" data-i18n="homeSister">toolc·精选软件工具</a>
+  </div>
+  <div>
+    <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
+  </div>
+</footer>
+<script src="/tool-cards.js"></script>
+<script src="/chrome.js"></script>
+</body>
+</html>

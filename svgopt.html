@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SVG 压缩优化 - 减小体积并预览｜imagec</title>
+  <meta name="description" content="在浏览器里精简单个 SVG：去掉注释、空白、XML 声明、无用命名空间、空分组和编辑器信息，并按小数位四舍五入。本地处理，不上传。" />
+  <meta name="keywords" content="SVG压缩,SVG优化,减小SVG,去掉注释,svg minify,本地处理" />
+  <meta name="author" content="imagec" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <meta name="googlebot" content="index,follow" />
+  <meta name="bingbot" content="index,follow" />
+  <meta name="msvalidate.01" content="6D09E7478DB0959D20C7BBBF26665B04" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="canonical" href="https://imagec.xin/svgopt" />
+  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/svgopt?lang=zh" />
+  <link rel="alternate" hreflang="en" href="https://imagec.xin/svgopt?lang=en" />
+  <link rel="alternate" hreflang="ja" href="https://imagec.xin/svgopt?lang=ja" />
+  <link rel="alternate" hreflang="ko" href="https://imagec.xin/svgopt?lang=ko" />
+  <link rel="alternate" hreflang="es" href="https://imagec.xin/svgopt?lang=es" />
+  <link rel="alternate" hreflang="fr" href="https://imagec.xin/svgopt?lang=fr" />
+  <link rel="alternate" hreflang="de" href="https://imagec.xin/svgopt?lang=de" />
+  <link rel="alternate" hreflang="ru" href="https://imagec.xin/svgopt?lang=ru" />
+  <link rel="alternate" hreflang="pt" href="https://imagec.xin/svgopt?lang=pt" />
+  <link rel="alternate" hreflang="ar" href="https://imagec.xin/svgopt?lang=ar" />
+  <link rel="alternate" hreflang="vi" href="https://imagec.xin/svgopt?lang=vi" />
+  <link rel="alternate" hreflang="id" href="https://imagec.xin/svgopt?lang=id" />
+  <link rel="alternate" hreflang="th" href="https://imagec.xin/svgopt?lang=th" />
+  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/svgopt" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="imagec" />
+  <meta property="og:title" content="SVG 压缩优化 - 减小体积并预览｜imagec" />
+  <meta property="og:description" content="精简单个 SVG，去掉注释、空白和编辑器信息，预览后下载。本地处理，不上传。" />
+  <meta property="og:url" content="https://imagec.xin/svgopt" />
+  <meta property="og:image" content="https://imagec.xin/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SVG 压缩优化 - 减小体积并预览｜imagec" />
+  <meta name="twitter:description" content="在浏览器里精简 SVG 并下载。本地处理，不上传服务器。" />
+  <meta name="twitter:image" content="https://imagec.xin/og-image.jpg" />
+  <meta name="theme-color" content="#FAFAF9" />
+  <meta name="application-name" content="imagec" />
+  <meta name="apple-mobile-web-app-title" content="imagec" />
+  <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"SVG 压缩优化","alternateName":"imagec","url":"https://imagec.xin/svgopt","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"在浏览器里精简单个 SVG：去掉注释、空白、XML 声明、无用命名空间、空分组和编辑器信息，并按小数位四舍五入。本地处理，不上传。","inLanguage":["zh-CN","en"],"featureList":["上传或粘贴 SVG","去掉注释和空白","去掉 XML 声明","去掉无用 xmlns:xlink","去掉空分组","数值保留小数","去掉编辑器信息","预览并下载","本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"SVG 压缩优化","item":"https://imagec.xin/svgopt"}]}</script>
+  <link rel="stylesheet" href="/site.css" />
+  <style>
+    #source { min-height: 140px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+    #decimalGroup.is-off { opacity: 0.45; }
+    body.tool .canvasWrap > iframe { width: 100%; height: 100%; border: 0; background: #fff; }
+    body.tool .canvasWrap > iframe[hidden] { display: none !important; }
+    #preview { object-fit: contain; }
+  </style>
+</head>
+<body class="tool svgopt">
+<main class="shell">
+  <header class="topbar"><a class="brand" href="/"><span class="mark"><svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="6" fill="#FAFAF9"/><path fill="#1C1917" fill-rule="evenodd" d="M8 2h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6V8a6 6 0 0 1 6-6zm5 5h38a1 1 0 0 1 1 1v38a1 1 0 0 1-1 1H13a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><rect x="36" y="36" width="26" height="26" rx="6" fill="#2563EB"/></svg></span><span class="brand-name">imagec</span></a><div class="topbar-right"><a class="searchBtn" href="/?focus=search" aria-label="搜索工具" data-chrome-aria="searchTools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a><select class="langSelect" id="langSelect"></select></div></header>
+
+  <section class="panel">
+    <div class="hero">
+      <h1 data-i18n="title">SVG 压缩优化</h1>
+      <p data-i18n="subtitle">精简 SVG，减小文件体积。</p>
+      <div class="privacyLine safeBadge">
+        <span data-i18n="privacy">本地处理 · 不上传服务器</span>
+      </div>
+      <p class="heroLinks"><a href="/compress" data-i18n="linkCompress">压缩图片</a> <span aria-hidden="true">·</span> <a href="/convert" data-i18n="linkConvert">转换格式</a></p>
+    </div>
+    <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
+    <div class="workspace">
+      <aside class="controls">
+        <label class="drop" id="drop" for="file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+          <strong data-i18n="upload">点击选择或拖入 SVG</strong>
+          <small data-i18n="formats">支持 .svg<br>也可以把代码贴到下面</small>
+        </label>
+        <input id="file" type="file" accept=".svg,image/svg+xml" />
+
+        <div class="pin" id="opts">
+          <div class="group">
+            <div class="labelrow"><label for="source" data-i18n="sourceLabel">SVG 代码</label></div>
+            <textarea id="source" rows="6" spellcheck="false" autocomplete="off" data-placeholder="placeholder" placeholder="在这里粘贴 SVG 代码"></textarea>
+          </div>
+          <label class="toggle"><span data-i18n="optComments">去掉注释</span><input id="optComments" type="checkbox" checked></label>
+          <label class="toggle"><span data-i18n="optSpace">收起空白</span><input id="optSpace" type="checkbox" checked></label>
+          <label class="toggle"><span data-i18n="optXml">去掉 XML 声明</span><input id="optXml" type="checkbox" checked></label>
+          <label class="toggle"><span data-i18n="optXlink">去掉无用的 xmlns:xlink</span><input id="optXlink" type="checkbox" checked></label>
+          <label class="toggle"><span data-i18n="optGroups">去掉空分组</span><input id="optGroups" type="checkbox" checked></label>
+          <label class="toggle"><span data-i18n="optRound">四舍五入数值</span><input id="optRound" type="checkbox" checked></label>
+          <div class="group" id="decimalGroup">
+            <div class="labelrow">
+              <label for="decimals" data-i18n="decimals">小数位数</label>
+              <span class="value" id="decimalsV">2</span>
+            </div>
+            <input id="decimals" type="range" min="0" max="4" step="1" value="2">
+          </div>
+          <label class="toggle"><span data-i18n="optEditor">去掉编辑器信息</span><input id="optEditor" type="checkbox" checked></label>
+          <p class="notice" data-i18n="note">会去掉 Inkscape、Sodipodi、Adobe 写进文件里的编辑信息。文字、样式和路径命令会保留。</p>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="download" type="button" disabled data-i18n="download">下载 SVG</button>
+          <button class="secondary" id="clear" type="button" disabled data-i18n="clear">清空</button>
+        </div>
+      </aside>
+
+      <section class="stage" aria-label="preview">
+        <div class="stagebar">
+          <div class="meta" id="meta" data-i18n="waiting" aria-live="polite">等待 SVG</div>
+        </div>
+        <div class="canvasWrap" id="wrap">
+          <img id="preview" alt="">
+          <iframe id="previewFrame" hidden title="SVG" sandbox="allow-same-origin"></iframe>
+        </div>
+        <div class="stats" id="stats" style="display:none">
+          <div class="statBox">
+            <div class="statLabel" data-i18n="origSize">原始大小</div>
+            <div class="statVal" id="origSize">—</div>
+          </div>
+          <div class="statBox" id="newBox">
+            <div class="statLabel" data-i18n="newSize">优化后</div>
+            <div class="statVal" id="newSize">—</div>
+          </div>
+        </div>
+        <p class="ratio" id="ratio"></p>
+        <div class="empty" id="empty">
+          <strong data-i18n="emptyTitle">放入 SVG，看能小多少</strong>
+        </div>
+      </section>
+    </div>
+  </section>
+
+<section class="relatedTools">
+    <h2 data-i18n="moreTools">更多图片工具</h2>
+    <div class="toolsGrid" data-tool-cards></div>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const LANGS=[
+  {code:'zh',name:'中文',dir:'ltr'},{code:'en',name:'English',dir:'ltr'},{code:'ja',name:'日本語',dir:'ltr'},
+  {code:'ko',name:'한국어',dir:'ltr'},{code:'es',name:'Español',dir:'ltr'},{code:'fr',name:'Français',dir:'ltr'},
+  {code:'de',name:'Deutsch',dir:'ltr'},{code:'ru',name:'Русский',dir:'ltr'},{code:'pt',name:'Português',dir:'ltr'},
+  {code:'ar',name:'العربية',dir:'rtl'},{code:'vi',name:'Tiếng Việt',dir:'ltr'},{code:'id',name:'Bahasa Indonesia',dir:'ltr'},
+  {code:'th',name:'ไทย',dir:'ltr'}
+];
+const MAX_BYTES=4*1024*1024;
+const ROUND_ATTR=new Set([
+  'x','y','x1','y1','x2','y2','cx','cy','r','rx','ry','fx','fy','width','height',
+  'dx','dy','offset','opacity','fill-opacity','stroke-opacity','stroke-width',
+  'stroke-dashoffset','stroke-miterlimit','font-size','letter-spacing','word-spacing',
+  'stddeviation','amplitude','exponent','intercept','slope','k1','k2','k3','k4',
+  'specularconstant','specularexponent','surfacescale','elevation','azimuth',
+  'pointsatx','pointsaty','pointsatz','limitingconeangle','z','seed','numoctaves',
+  'scale','basefrequency','targetx','targety','startoffset','textlength',
+  'markerwidth','markerheight','refx','refy','horiz-adv-x','horiz-origin-x',
+  'points','viewbox','stroke-dasharray','kernelmatrix','values','keytimes','keysplines',
+  'tablevalues','rotate','d','transform','gradienttransform','patterntransform'
+]);
+const SEO={
+  zh:{title:'SVG 压缩优化 - 减小体积并预览｜imagec',desc:'在浏览器里精简单个 SVG：去掉注释、空白、XML 声明、无用命名空间、空分组和编辑器信息，并按小数位四舍五入。本地处理，不上传。'},
+  en:{title:'SVG optimizer | Smaller SVG, preview, download | imagec',desc:'Trim one SVG in the browser. Strip comments, whitespace, the XML declaration, unused namespaces, empty groups, and editor metadata. Round numbers to a chosen precision. Processed locally — nothing is uploaded.'}
+};
+const messages={
+  zh:{title:'SVG 压缩优化',subtitle:'精简 SVG，减小文件体积。',privacy:'本地处理 · 不上传服务器',upload:'点击选择或拖入 SVG',formats:'支持 .svg<br>也可以把代码贴到下面',sourceLabel:'SVG 代码',placeholder:'在这里粘贴 SVG 代码',optComments:'去掉注释',optSpace:'收起空白',optXml:'去掉 XML 声明',optXlink:'去掉无用的 xmlns:xlink',optGroups:'去掉空分组',optRound:'四舍五入数值',optEditor:'去掉编辑器信息',decimals:'小数位数',note:'会去掉 Inkscape、Sodipodi、Adobe 写进文件里的编辑信息。文字、样式和路径命令会保留。',download:'下载 SVG',clear:'清空',waiting:'等待 SVG',emptyTitle:'放入 SVG，看能小多少',ready:'优化完成',origSize:'原始大小',newSize:'优化后',saved:'节省 {n}%',larger:'增大 {n}%',same:'体积没有变化',errType:'请选择 SVG 文件，或粘贴完整的 SVG 代码。',errParse:'这段 SVG 解析失败。请检查标签是否闭合。',errBig:'这个文件超过 4 MB，浏览器里处理会太重。请换一个小一点的。',previewTitle:'SVG 预览',moreTools:'更多图片工具',linkCompress:'压缩图片',linkConvert:'转换格式'},
+  en:{title:'SVG optimizer',subtitle:'Minify an SVG and shrink the file.',privacy:'Local · no upload',upload:'Choose or drop an SVG',formats:'SVG files<br>Or paste the markup below',sourceLabel:'SVG markup',placeholder:'Paste SVG markup here',optComments:'Strip comments',optSpace:'Collapse whitespace',optXml:'Remove the XML declaration',optXlink:'Remove unused xmlns:xlink',optGroups:'Remove empty groups',optRound:'Round numbers',optEditor:'Remove editor metadata',decimals:'Decimal places',note:'Inkscape, Sodipodi, and Adobe editor data is removed. Text, styles, and path commands stay.',download:'Download SVG',clear:'Clear',waiting:'Waiting for an SVG',emptyTitle:'Add an SVG to see how much smaller it gets',ready:'Optimized',origSize:'Original size',newSize:'Optimized',saved:'Saved {n}%',larger:'Larger by {n}%',same:'Size is unchanged',errType:'Choose an SVG file, or paste a complete SVG.',errParse:'This SVG could not be parsed. Check that the tags are closed.',errBig:'This file is over 4 MB, which is too heavy to process here. Try a smaller one.',previewTitle:'SVG preview',moreTools:'More image tools',linkCompress:'Compress an image',linkConvert:'Convert a format'}
+};
+let language=detectLang();
+let baseName='image';
+let optimized='';
+let hasResult=false;
+let lastBefore=0;
+let lastAfter=0;
+let previewUrl='';
+let runSeq=0;
+const langSelect=$('#langSelect');
+LANGS.forEach(l=>{
+  const opt=document.createElement('option');
+  opt.value=l.code;
+  opt.textContent=l.name;
+  langSelect.appendChild(opt);
+});
+function knownLang(code){return LANGS.some(l=>l.code===code);}
+function detectLang(){
+  const param=new URL(location.href).searchParams.get('lang');
+  if(param&&knownLang(param))return param;
+  let saved='';
+  try{saved=localStorage.getItem('language')||'';}catch(e){}
+  if(saved&&knownLang(saved))return saved;
+  const navLangs=navigator.languages||[navigator.language||'zh'];
+  for(const l of navLangs){
+    const lc=String(l).toLowerCase();
+    if(lc.startsWith('zh'))return 'zh';
+    const code=lc.slice(0,2);
+    if(knownLang(code))return code;
+  }
+  return 'zh';
+}
+function t(key){
+  const pack=messages[language];
+  if(pack&&pack[key]!=null)return pack[key];
+  if(messages.en&&messages.en[key]!=null)return messages.en[key];
+  if(messages.zh&&messages.zh[key]!=null)return messages.zh[key];
+  return key;
+}
+function tf(key,map){
+  let s=t(key);
+  Object.keys(map||{}).forEach(k=>{s=s.replaceAll('{'+k+'}',String(map[k]));});
+  return s;
+}
+function setMeta(attr,name,content){
+  let el=document.querySelector(`meta[${attr}="${name}"]`);
+  if(!el){el=document.createElement('meta');el.setAttribute(attr,name);document.head.appendChild(el);}
+  el.setAttribute('content',content);
+}
+function byteLen(str){return new TextEncoder().encode(String(str||'')).length;}
+function formatBytes(n){
+  n=Number(n)||0;
+  if(n<1024)return n+' B';
+  if(n<1048576)return (n/1024).toFixed(1)+' KB';
+  return (n/1048576).toFixed(2)+' MB';
+}
+function safeName(name){
+  const clean=String(name||'image').replace(/[\\/:*?"<>|]+/g,'').trim();
+  return clean||'image';
+}
+function readOpts(){
+  const digits=parseInt($('#decimals').value,10);
+  return {
+    comments:$('#optComments').checked,
+    space:$('#optSpace').checked,
+    xml:$('#optXml').checked,
+    xlink:$('#optXlink').checked,
+    groups:$('#optGroups').checked,
+    round:$('#optRound').checked,
+    editor:$('#optEditor').checked,
+    digits:Number.isFinite(digits)?Math.min(4,Math.max(0,digits)):2
+  };
+}
+function syncOpts(){
+  const on=$('#optRound').checked;
+  $('#decimals').disabled=!on;
+  $('#decimalGroup').classList.toggle('is-off',!on);
+  $('#decimalsV').textContent=String(readOpts().digits);
+}
+function isEditorNs(ns){
+  if(!ns)return false;
+  return ns.indexOf('inkscape.org')!==-1||ns.indexOf('sodipodi')!==-1||ns.indexOf('ns.adobe.com')!==-1;
+}
+function isMetaPrefix(prefix){
+  return /^(inkscape|sodipodi|adobe|illustrator|graph|dc|cc|rdf)$/i.test(prefix||'');
+}
+function prefixUsed(root,prefix){
+  const all=[root,...root.querySelectorAll('*')];
+  for(const el of all){
+    if(el.prefix===prefix)return true;
+    for(const attr of el.attributes){
+      const name=attr.name||'';
+      if(name==='xmlns:'+prefix)continue;
+      if(attr.prefix===prefix)return true;
+      if(name.startsWith(prefix+':'))return true;
+    }
+  }
+  return false;
+}
+function stripEditor(svg){
+  const all=[svg,...svg.querySelectorAll('*')];
+  for(let i=all.length-1;i>=0;i--){
+    const el=all[i];
+    if(el===svg)continue;
+    const tag=(el.localName||'').toLowerCase();
+    const prefix=el.prefix||'';
+    const adobeI=prefix==='i'&&isEditorNs(el.namespaceURI);
+    if(isEditorNs(el.namespaceURI)||isMetaPrefix(prefix)||adobeI||tag==='metadata'||tag==='namedview')el.remove();
+  }
+  const left=[svg,...svg.querySelectorAll('*')];
+  left.forEach(el=>{
+    [...el.attributes].forEach(attr=>{
+      const name=attr.name||'';
+      const prefix=attr.prefix||(name.includes(':')?name.split(':')[0]:'');
+      if(prefix==='xmlns')return;
+      const adobeI=prefix==='i'&&isEditorNs(attr.namespaceURI);
+      if(isMetaPrefix(prefix)||isEditorNs(attr.namespaceURI)||adobeI)el.removeAttributeNode(attr);
+    });
+  });
+  [svg,...svg.querySelectorAll('*')].forEach(el=>{
+    [...el.attributes].forEach(attr=>{
+      const match=/^xmlns:([A-Za-z0-9_.-]+)$/.exec(attr.name||'');
+      if(!match)return;
+      const prefix=match[1];
+      const value=attr.value||'';
+      const editorDecl=isMetaPrefix(prefix)||isEditorNs(value)||(prefix==='i'&&isEditorNs(value));
+      if(!editorDecl)return;
+      if(prefixUsed(svg,prefix))return;
+      el.removeAttribute(attr.name);
+    });
+  });
+}
+function referencedIds(root){
+  const ids=new Set();
+  const re=/#([A-Za-z_][\w:.-]*)/g;
+  const all=[root,...root.querySelectorAll('*')];
+  all.forEach(el=>{
+    [...el.attributes].forEach(attr=>{
+      if(!attr.value||attr.value.indexOf('#')===-1)return;
+      re.lastIndex=0;
+      let m;
+      while((m=re.exec(attr.value))){
+        try{ids.add(decodeURIComponent(m[1]));}catch(e){ids.add(m[1]);}
+      }
+    });
+    if((el.localName==='style'||el.localName==='script')&&el.textContent&&el.textContent.indexOf('#')!==-1){
+      re.lastIndex=0;
+      let m;
+      while((m=re.exec(el.textContent)))ids.add(m[1]);
+    }
+  });
+  return ids;
+}
+function hasMeaningfulChild(el){
+  for(const n of el.childNodes){
+    if(n.nodeType===1||n.nodeType===8)return true;
+    if(n.nodeType===3&&n.textContent.trim())return true;
+  }
+  return false;
+}
+function removeEmptyGroups(svg){
+  const refs=referencedIds(svg);
+  for(let guard=0;guard<40;guard++){
+    const groups=svg.querySelectorAll('g');
+    let removed=false;
+    for(let i=groups.length-1;i>=0;i--){
+      const g=groups[i];
+      if(!g.parentNode)continue;
+      const gid=g.getAttribute('id');
+      if(gid&&refs.has(gid))continue;
+      if(hasMeaningfulChild(g))continue;
+      g.remove();
+      removed=true;
+    }
+    if(!removed)break;
+  }
+}
+function roundNums(value,digits){
+  const re=/-?(?:\d+\.\d+|\d+|\.\d+)(?:[eE][-+]?\d+)?/g;
+  return String(value).replace(re,raw=>{
+    const n=Number(raw);
+    if(!Number.isFinite(n))return raw;
+    const f=Math.pow(10,digits);
+    let r=Math.round(n*f)/f;
+    if(Object.is(r,-0))r=0;
+    if(digits<=0)return String(Math.round(n)===0?0:Math.round(n));
+    let s=r.toFixed(digits);
+    s=s.replace(/(\.\d*?)0+$/,'$1').replace(/\.$/,'');
+    if(s==='-0')s='0';
+    return s;
+  });
+}
+function roundTree(svg,digits){
+  const all=[svg,...svg.querySelectorAll('*')];
+  all.forEach(el=>{
+    if(el.localName==='style'||el.localName==='script')return;
+    if(el.closest&&el.closest('style, script'))return;
+    [...el.attributes].forEach(attr=>{
+      const name=(attr.localName||attr.name||'').toLowerCase();
+      if(!ROUND_ATTR.has(name)||!attr.value)return;
+      if(/url\(|#|rgb|hsl/i.test(attr.value))return;
+      const next=roundNums(attr.value,digits);
+      if(next!==attr.value)attr.value=next;
+    });
+  });
+}
+function removeUnusedXlink(svg){
+  const XLINK='http://www.w3.org/1999/xlink';
+  const all=[svg,...svg.querySelectorAll('*')];
+  let used=false;
+  for(const el of all){
+    for(const attr of el.attributes){
+      const name=attr.name||'';
+      if(name==='xmlns:xlink')continue;
+      if(attr.namespaceURI===XLINK||name.startsWith('xlink:')){used=true;break;}
+    }
+    if(used)break;
+  }
+  if(used)return;
+  all.forEach(el=>{if(el.hasAttribute('xmlns:xlink'))el.removeAttribute('xmlns:xlink');});
+}
+function stripWhitespace(root){
+  const skip=new Set(['text','tspan','textPath','style','script','title','desc','pre']);
+  const owner=root.ownerDocument||document;
+  const walker=owner.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  const drop=[];
+  let node=walker.nextNode();
+  while(node){
+    const parent=node.parentElement;
+    const name=parent&&parent.localName;
+    if(parent&&!skip.has(name)&&!String(node.textContent||'').trim())drop.push(node);
+    node=walker.nextNode();
+  }
+  drop.forEach(n=>n.remove());
+}
+function compactEmpty(xml){
+  return xml.replace(/<([A-Za-z][\w:.-]*)((?:\s[^<>]*?)?)\s*>\s*<\/\1>/g,'<$1$2/>');
+}
+function leadingComments(doc){
+  let out='';
+  doc.childNodes.forEach(n=>{
+    if(n.nodeType===8)out+='<!--'+n.nodeValue+'-->\n';
+  });
+  return out;
+}
+function optimizeSvg(input,opts){
+  const source=String(input||'').replace(/^\uFEFF/,'');
+  const declMatch=source.match(/^\s*<\?xml[\s\S]*?\?>/i);
+  const decl=declMatch?declMatch[0].trim():'';
+  let text=opts.comments?source.replace(/<!--[\s\S]*?-->/g,''):source;
+  const doc=new DOMParser().parseFromString(text,'image/svg+xml');
+  const svg=doc.documentElement;
+  const rootName=(svg&&svg.localName||'').toLowerCase();
+  const parseError=doc.querySelector('parsererror');
+  if(!svg||rootName==='parsererror'||rootName!=='svg')throw new Error('parse');
+  if(parseError&&parseError.namespaceURI==='http://www.w3.org/1999/xhtml')throw new Error('parse');
+  if(opts.editor)stripEditor(svg);
+  if(opts.groups)removeEmptyGroups(svg);
+  if(opts.round)roundTree(svg,opts.digits);
+  if(opts.xlink)removeUnusedXlink(svg);
+  if(opts.space)stripWhitespace(svg);
+  let out=new XMLSerializer().serializeToString(svg);
+  if(opts.space)out=compactEmpty(out);
+  if(!opts.comments){
+    const pre=leadingComments(doc);
+    if(pre)out=pre+out;
+  }
+  // checked = strip declaration; only re-add when unchecked
+  if(!opts.xml&&decl)out=decl+'\n'+out;
+  return out;
+}
+function previewMarkup(svgText){
+  try{
+    const doc=new DOMParser().parseFromString(svgText,'image/svg+xml');
+    const svg=doc.documentElement;
+    if(!svg||svg.localName!=='svg')return svgText;
+    if(!svg.getAttribute('width')&&svg.getAttribute('viewBox')){
+      const p=svg.getAttribute('viewBox').trim().split(/[\s,]+/).map(Number);
+      if(p.length===4&&p[2]>0&&p[3]>0){
+        svg.setAttribute('width',String(p[2]));
+        svg.setAttribute('height',String(p[3]));
+      }
+    }
+    return new XMLSerializer().serializeToString(svg);
+  }catch(e){return svgText;}
+}
+function clearPreview(){
+  const img=$('#preview');
+  const frame=$('#previewFrame');
+  img.onload=null;
+  img.onerror=null;
+  img.removeAttribute('src');
+  img.style.display='none';
+  frame.hidden=true;
+  frame.removeAttribute('src');
+  if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl='';}
+}
+function setPreview(markup){
+  const old=previewUrl;
+  const blob=new Blob([previewMarkup(markup)],{type:'image/svg+xml;charset=utf-8'});
+  previewUrl=URL.createObjectURL(blob);
+  const img=$('#preview');
+  const frame=$('#previewFrame');
+  frame.hidden=true;
+  frame.removeAttribute('src');
+  img.style.display='none';
+  img.onload=()=>{img.style.display='block';};
+  img.onerror=()=>{
+    img.style.display='none';
+    frame.hidden=false;
+    frame.src=previewUrl;
+  };
+  img.src=previewUrl;
+  if(old)URL.revokeObjectURL(old);
+}
+function paintSavings(){
+  if(!hasResult)return;
+  const before=lastBefore;
+  const after=lastAfter;
+  $('#origSize').textContent=formatBytes(before);
+  $('#newSize').textContent=formatBytes(after);
+  $('#newBox').classList.toggle('saved',after<before);
+  $('#newBox').classList.toggle('warn',after>before);
+  const pct=before?(before-after)/before*100:0;
+  const n=Math.abs(pct).toFixed(1);
+  let label=t('same');
+  let cls='pos';
+  if(pct>=0.05)label=tf('saved',{n:n});
+  else if(pct<=-0.05){label=tf('larger',{n:n});cls='neg';}
+  const ratio=$('#ratio');
+  ratio.textContent='';
+  const span=document.createElement('span');
+  span.className=cls;
+  span.textContent=label;
+  ratio.appendChild(span);
+}
+function showEmpty(){
+  hasResult=false;
+  optimized='';
+  lastBefore=0;
+  lastAfter=0;
+  clearPreview();
+  $('#empty').style.display='';
+  $('#stats').style.display='none';
+  $('#ratio').textContent='';
+  $('#download').disabled=true;
+  $('#clear').disabled=!$('#source').value;
+  $('#meta').textContent=t('waiting');
+}
+function showResult(before,after,svg){
+  optimized=svg;
+  hasResult=true;
+  lastBefore=before;
+  lastAfter=after;
+  $('#stats').style.display='';
+  $('#empty').style.display='none';
+  $('#download').disabled=false;
+  $('#clear').disabled=false;
+  $('#meta').textContent=t('ready');
+  paintSavings();
+  setPreview(svg);
+  showBanner('');
+}
+function showBanner(key){
+  const el=$('#libStatus');
+  if(!el)return;
+  if(!key){el.hidden=true;el.textContent='';delete el.dataset.key;return;}
+  el.dataset.key=key;
+  el.hidden=false;
+  el.textContent=t(key);
+}
+function run(){
+  const id=++runSeq;
+  const raw=$('#source').value.replace(/^\uFEFF/,'');
+  if(!raw.trim()){showBanner('');showEmpty();return;}
+  if(byteLen(raw)>MAX_BYTES){showEmpty();showBanner('errBig');return;}
+  if(!/<svg[\s>]/i.test(raw)){showEmpty();showBanner('errType');return;}
+  try{
+    const out=optimizeSvg(raw,readOpts());
+    if(id!==runSeq)return;
+    showResult(byteLen(raw),byteLen(out),out);
+  }catch(e){
+    if(id!==runSeq)return;
+    showEmpty();
+    showBanner('errParse');
+  }
+}
+function schedule(){
+  clearTimeout(schedule.timer);
+  schedule.timer=setTimeout(run,160);
+}
+function applyI18n(){
+  const def=LANGS.find(l=>l.code===language)||LANGS[0];
+  document.documentElement.lang=language==='zh'?'zh-CN':language;
+  document.documentElement.dir=def.dir;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    const value=t(key);
+    if(value!==key)el.innerHTML=value;
+  });
+  document.querySelectorAll('[data-placeholder]').forEach(el=>{
+    el.setAttribute('placeholder',t(el.getAttribute('data-placeholder')));
+  });
+  const frame=$('#previewFrame');
+  if(frame)frame.title=t('previewTitle');
+  syncOpts();
+  const seo=SEO[language]||SEO.en||SEO.zh;
+  document.title=seo.title;
+  setMeta('name','description',seo.desc);
+  setMeta('property','og:title',seo.title);
+  setMeta('property','og:description',seo.desc);
+  setMeta('name','twitter:title',seo.title);
+  setMeta('name','twitter:description',seo.desc);
+  const ld=document.querySelector('#ldjson');
+  if(ld){
+    try{
+      const obj=JSON.parse(ld.textContent);
+      obj.name=t('title');
+      obj.description=seo.desc;
+      ld.textContent=JSON.stringify(obj);
+    }catch(e){}
+  }
+  const banner=$('#libStatus');
+  if(banner&&!banner.hidden&&banner.dataset.key)banner.textContent=t(banner.dataset.key);
+  if(hasResult){
+    $('#meta').textContent=t('ready');
+    paintSavings();
+  }else if(!banner||banner.hidden){
+    $('#meta').textContent=t('waiting');
+  }
+}
+function setLanguage(lang){
+  if(!knownLang(lang))lang='en';
+  language=lang;
+  try{localStorage.setItem('language',lang);}catch(e){}
+  langSelect.value=language;
+  applyI18n();
+}
+async function loadFile(file){
+  if(!file)return;
+  if(file.size>MAX_BYTES){showBanner('errBig');return;}
+  let text='';
+  try{text=await file.text();}catch(e){showBanner('errParse');return;}
+  if(!/<svg[\s>]/i.test(text)){showBanner('errType');return;}
+  baseName=safeName((file.name||'image').replace(/\.[^.]+$/,''));
+  $('#source').value=text;
+  $('#clear').disabled=false;
+  run();
+}
+function downloadText(text,name){
+  const blob=new Blob([text],{type:'image/svg+xml;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function bindDrop(){
+  const drop=$('#drop');
+  ['dragenter','dragover'].forEach(type=>{
+    drop.addEventListener(type,ev=>{ev.preventDefault();drop.classList.add('over');});
+  });
+  ['dragleave','drop'].forEach(type=>{
+    drop.addEventListener(type,ev=>{ev.preventDefault();drop.classList.remove('over');});
+  });
+  drop.addEventListener('drop',e=>{
+    const file=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+    if(file){loadFile(file);return;}
+    const text=e.dataTransfer&&e.dataTransfer.getData('text/plain');
+    if(text){$('#source').value=text;baseName='image';$('#clear').disabled=false;run();}
+  });
+}
+$('#file').addEventListener('change',e=>{
+  if(e.target.files&&e.target.files[0])loadFile(e.target.files[0]);
+});
+bindDrop();
+$('#opts').addEventListener('input',e=>{
+  const id=e.target&&e.target.id;
+  if(id==='source'){baseName='image';$('#clear').disabled=!e.target.value;schedule();}
+  if(id==='decimals'){syncOpts();schedule();}
+});
+$('#opts').addEventListener('change',e=>{
+  const id=e.target&&e.target.id;
+  if(!id||id==='source')return;
+  syncOpts();
+  schedule();
+});
+document.addEventListener('paste',e=>{
+  const target=e.target;
+  if(target&&target.id==='source')return;
+  const text=e.clipboardData&&e.clipboardData.getData('text/plain');
+  if(text&&/<svg[\s>]/i.test(text)){
+    $('#source').value=text;
+    baseName='image';
+    $('#clear').disabled=false;
+    run();
+    e.preventDefault();
+  }
+});
+$('#download').addEventListener('click',()=>{
+  if($('#download').disabled||!optimized)return;
+  downloadText(optimized,safeName(baseName)+'-opt.svg');
+});
+$('#clear').addEventListener('click',()=>{
+  runSeq++;
+  $('#source').value='';
+  $('#file').value='';
+  baseName='image';
+  showBanner('');
+  showEmpty();
+});
+langSelect.addEventListener('change',()=>setLanguage(langSelect.value));
+syncOpts();
+setLanguage(language);
+(function watchCards(){
+  const grid=document.querySelector('[data-tool-cards]');
+  if(!grid)return;
+  const fix=()=>{
+    grid.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key=el.getAttribute('data-i18n');
+      const value=t(key);
+      if(value!==key&&el.textContent!==value)el.textContent=value;
+    });
+  };
+  new MutationObserver(fix).observe(grid,{childList:true,subtree:true});
+})();
+document.addEventListener('DOMContentLoaded',applyI18n);
+</script>
+<script>
+(function(){
+  var p = encodeURIComponent(location.pathname + location.search);
+  var u = '/__track__?t=' + Date.now() + '&p=' + p;
+  try {
+    if (navigator.sendBeacon) navigator.sendBeacon(u);
+  } catch(e) {}
+})();
+</script>
+<footer class="siteFooter">
+  <p class="sponsorLine"><span data-i18n="homeSponsorLead">觉得好用？</span> <a class="afdian" href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="homeSponsorCta">请我来包辣条</a></p>
+  <div class="actionRow" role="group" aria-label="站务">
+    <button type="button" class="action feedbackOpen" data-i18n="feedback" aria-haspopup="dialog">反馈 &amp; 建议</button>
+    <a class="action primary" href="https://toolc.xin" target="_blank" rel="noopener noreferrer" data-i18n="homeSister">toolc·精选软件工具</a>
+  </div>
+  <div>
+    <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
+  </div>
+</footer>
+<script src="/tool-cards.js"></script>
+<script src="/chrome.js"></script>
+</body>
+</html>

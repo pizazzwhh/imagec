@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>清除图片元数据 - 去掉 EXIF/GPS｜imagec</title>
+  <meta name="description" content="重新编码 PNG、JPG、WebP，去掉 EXIF、GPS 等隐私信息，并对比处理前后的体积。浏览器本地处理，图片不上传。" />
+  <meta name="keywords" content="清除EXIF,删除GPS,图片元数据,隐私,strip exif,remove metadata,本地处理" />
+  <meta name="author" content="imagec" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <meta name="googlebot" content="index,follow" />
+  <meta name="bingbot" content="index,follow" />
+  <meta name="msvalidate.01" content="6D09E7478DB0959D20C7BBBF26665B04" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="canonical" href="https://imagec.xin/exif" />
+  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/exif?lang=zh" />
+  <link rel="alternate" hreflang="en" href="https://imagec.xin/exif?lang=en" />
+  <link rel="alternate" hreflang="ja" href="https://imagec.xin/exif?lang=ja" />
+  <link rel="alternate" hreflang="ko" href="https://imagec.xin/exif?lang=ko" />
+  <link rel="alternate" hreflang="es" href="https://imagec.xin/exif?lang=es" />
+  <link rel="alternate" hreflang="fr" href="https://imagec.xin/exif?lang=fr" />
+  <link rel="alternate" hreflang="de" href="https://imagec.xin/exif?lang=de" />
+  <link rel="alternate" hreflang="ru" href="https://imagec.xin/exif?lang=ru" />
+  <link rel="alternate" hreflang="pt" href="https://imagec.xin/exif?lang=pt" />
+  <link rel="alternate" hreflang="ar" href="https://imagec.xin/exif?lang=ar" />
+  <link rel="alternate" hreflang="vi" href="https://imagec.xin/exif?lang=vi" />
+  <link rel="alternate" hreflang="id" href="https://imagec.xin/exif?lang=id" />
+  <link rel="alternate" hreflang="th" href="https://imagec.xin/exif?lang=th" />
+  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/exif" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="imagec" />
+  <meta property="og:title" content="清除图片元数据 - 去掉 EXIF/GPS｜imagec" />
+  <meta property="og:description" content="重新编码图片，去掉 EXIF、GPS 等隐私信息，并对比体积。本地处理，不上传。" />
+  <meta property="og:url" content="https://imagec.xin/exif" />
+  <meta property="og:image" content="https://imagec.xin/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="清除图片元数据 - 去掉 EXIF/GPS｜imagec" />
+  <meta name="twitter:description" content="去掉 EXIF、GPS 等隐私信息。本地处理，不上传服务器。" />
+  <meta name="twitter:image" content="https://imagec.xin/og-image.jpg" />
+  <meta name="theme-color" content="#FAFAF9" />
+  <meta name="application-name" content="imagec" />
+  <meta name="apple-mobile-web-app-title" content="imagec" />
+  <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"清除图片元数据","alternateName":"imagec","url":"https://imagec.xin/exif","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"重新编码 PNG、JPG、WebP，去掉 EXIF、GPS 等隐私信息，并对比处理前后的体积。浏览器本地处理，图片不上传。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["去掉 EXIF","去掉 GPS","重新编码 PNG","重新编码 JPG","重新编码 WebP","体积对比","本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"清除元数据","item":"https://imagec.xin/exif"}]}</script>
+<link rel="stylesheet" href="/site.css" />
+</head>
+<body class="tool">
+<main class="shell">
+  <header class="topbar"><a class="brand" href="/"><span class="mark"><svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="6" fill="#FAFAF9"/><path fill="#1C1917" fill-rule="evenodd" d="M8 2h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6V8a6 6 0 0 1 6-6zm5 5h38a1 1 0 0 1 1 1v38a1 1 0 0 1-1 1H13a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><rect x="36" y="36" width="26" height="26" rx="6" fill="#2563EB"/></svg></span><span class="brand-name">imagec</span></a><div class="topbar-right"><a class="searchBtn" href="/?focus=search" aria-label="搜索工具" data-chrome-aria="searchTools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a><select class="langSelect" id="langSelect"></select></div></header>
+
+  <section class="panel">
+    <div class="hero">
+      <h1 data-i18n="title">清除元数据</h1>
+      <p data-i18n="subtitle">去掉 EXIF、GPS 等隐私信息。</p>
+      <div class="privacyLine safeBadge">
+        <span data-i18n="privacy">本地处理 · 不上传服务器</span>
+      </div>
+      <p class="notice" data-i18n="note">重新编码会去掉 EXIF、GPS 和拍摄信息。JPG、WebP 会按所选质量重新压缩，体积可能变大或变小。</p>
+      <p class="heroLinks"><a href="/compress" data-i18n="linkCompress">图片压缩</a> <span aria-hidden="true">·</span> <a href="/convert" data-i18n="linkConvert">格式转换</a></p>
+    </div>
+    <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
+    <div class="workspace">
+      <aside class="controls">
+        <label class="drop" id="drop" for="file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+          <strong data-i18n="upload">点击选择或拖入图片</strong>
+          <small data-i18n="formats">支持 PNG、JPG、WebP<br>也可直接粘贴图片</small>
+        </label>
+        <input id="file" type="file" accept="image/png,image/jpeg,image/webp" />
+
+        <div class="pin">
+          <div class="group">
+            <div class="labelrow"><label data-i18n="targetFmt">导出格式</label></div>
+            <div class="seg" id="fmtSeg" role="group">
+              <button type="button" class="active" data-fmt="jpeg">JPG</button>
+              <button type="button" data-fmt="png">PNG</button>
+              <button type="button" data-fmt="webp">WebP</button>
+            </div>
+          </div>
+          <div class="group" id="qualityGroup">
+            <div class="labelrow">
+              <label for="quality"><span data-i18n="quality">质量</span> <span class="hint" data-i18n="qualityHint">JPG / WebP</span></label>
+              <span class="value" id="qualityV">92</span>
+            </div>
+            <input id="quality" type="range" min="1" max="100" value="92">
+          </div>
+          <p class="notice" id="jpgNote" data-i18n="jpgNote">导出 JPG 时透明区域会用白色填充。</p>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="download" type="button" disabled data-i18n="download">下载</button>
+          <button class="secondary" id="clear" type="button" disabled data-i18n="clear">清空</button>
+        </div>
+      </aside>
+
+      <section class="stage" aria-label="preview">
+        <div class="stagebar">
+          <div class="meta" id="meta" data-i18n="waiting" aria-live="polite">等待图片</div>
+        </div>
+        <div class="canvasWrap" id="wrap">
+          <canvas id="canvas"></canvas>
+        </div>
+        <div class="stats" id="stats" style="display:none">
+          <div class="statBox">
+            <div class="statLabel" data-i18n="origSize">原始大小</div>
+            <div class="statVal" id="origSize">—</div>
+          </div>
+          <div class="statBox" id="newBox">
+            <div class="statLabel" data-i18n="newSize">清除后大小</div>
+            <div class="statVal" id="newSize">—</div>
+          </div>
+        </div>
+        <div class="empty" id="empty">
+          <strong data-i18n="emptyTitle">把图片放进来，去掉 EXIF 和 GPS</strong>
+        </div>
+      </section>
+    </div>
+  </section>
+
+<section class="relatedTools">
+    <h2 data-i18n="moreTools">更多图片工具</h2>
+    <div class="toolsGrid" data-tool-cards></div>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const LANGS=[
+  {code:'zh',name:'中文',dir:'ltr'},{code:'en',name:'English',dir:'ltr'},{code:'ja',name:'日本語',dir:'ltr'},
+  {code:'ko',name:'한국어',dir:'ltr'},{code:'es',name:'Español',dir:'ltr'},{code:'fr',name:'Français',dir:'ltr'},
+  {code:'de',name:'Deutsch',dir:'ltr'},{code:'ru',name:'Русский',dir:'ltr'},{code:'pt',name:'Português',dir:'ltr'},
+  {code:'ar',name:'العربية',dir:'rtl'},{code:'vi',name:'Tiếng Việt',dir:'ltr'},{code:'id',name:'Bahasa Indonesia',dir:'ltr'},
+  {code:'th',name:'ไทย',dir:'ltr'}
+];
+const SEO={
+  zh:{title:'清除图片元数据 - 去掉 EXIF/GPS｜imagec',desc:'重新编码 PNG、JPG、WebP，去掉 EXIF、GPS 等隐私信息，并对比处理前后的体积。浏览器本地处理，图片不上传。'},
+  en:{title:'Strip image EXIF and GPS | imagec',desc:'Re-encode a PNG, JPG, or WebP to drop EXIF, GPS, and other metadata, and compare the file size. Processed locally — nothing is uploaded.'},
+  ja:{title:'画像のメタデータを削除 | imagec',desc:'PNG、JPG、WebP を再エンコードして EXIF や GPS などの情報を除き、前後のサイズを比べます。端末内で処理し、アップロードしません。'},
+  ko:{title:'이미지 메타데이터 지우기 | imagec',desc:'PNG, JPG, WebP를 다시 인코딩해 EXIF, GPS 등 정보를 없애고 용량을 비교합니다. 기기에서 처리하며 올리지 않습니다.'},
+  es:{title:'Quitar EXIF y GPS de una imagen | imagec',desc:'Vuelve a codificar un PNG, JPG o WebP para quitar EXIF, GPS y otros metadatos, y compara el tamaño. Se procesa en local y no se sube.'},
+  fr:{title:'Effacer EXIF et GPS d’une image | imagec',desc:'Réencodez un PNG, JPG ou WebP pour retirer EXIF, GPS et autres métadonnées, puis comparez la taille. Traitement local, rien n’est envoyé.'},
+  de:{title:'EXIF und GPS aus einem Bild entfernen | imagec',desc:'PNG, JPG oder WebP neu kodieren, um EXIF, GPS und andere Metadaten zu entfernen, und die Größe vergleichen. Lokal verarbeitet, nichts wird hochgeladen.'},
+  ru:{title:'Удалить EXIF и GPS из изображения | imagec',desc:'Перекодируйте PNG, JPG или WebP, чтобы убрать EXIF, GPS и другие метаданные, и сравните размер. Обработка локально, ничего не загружается.'},
+  pt:{title:'Remover EXIF e GPS de uma imagem | imagec',desc:'Recodifique um PNG, JPG ou WebP para tirar EXIF, GPS e outros metadados, e compare o tamanho. Processado localmente, sem envio.'},
+  ar:{title:'إزالة EXIF وGPS من صورة | imagec',desc:'أعد ترميز PNG أو JPG أو WebP لإزالة EXIF وGPS وغيرها، وقارن الحجم. معالجة محلية، بلا رفع.'},
+  vi:{title:'Xóa EXIF và GPS khỏi ảnh | imagec',desc:'Mã hóa lại PNG, JPG hoặc WebP để bỏ EXIF, GPS và siêu dữ liệu khác, rồi so sánh dung lượng. Xử lý tại máy, không tải lên.'},
+  id:{title:'Hapus EXIF dan GPS dari gambar | imagec',desc:'Kodekan ulang PNG, JPG, atau WebP untuk membuang EXIF, GPS, dan metadata lain, lalu bandingkan ukurannya. Diproses secara lokal, tidak diunggah.'},
+  th:{title:'ลบ EXIF และ GPS จากรูป | imagec',desc:'เข้ารหัส PNG, JPG หรือ WebP ใหม่เพื่อเอา EXIF, GPS และข้อมูลเมตาออก แล้วเทียบขนาดไฟล์ ประมวลผลในเครื่อง ไม่อัปโหลด'}
+};
+const messages={
+  zh:{title:'清除元数据',subtitle:'去掉 EXIF、GPS 等隐私信息。',privacy:'本地处理 · 不上传服务器',note:'重新编码会去掉 EXIF、GPS 和拍摄信息。JPG、WebP 会按所选质量重新压缩，体积可能变大或变小。',upload:'点击选择或拖入图片',formats:'支持 PNG、JPG、WebP<br>也可直接粘贴图片',targetFmt:'导出格式',quality:'质量',qualityHint:'JPG / WebP',jpgNote:'导出 JPG 时透明区域会用白色填充。',download:'下载',clear:'清空',waiting:'等待图片',emptyTitle:'把图片放进来，去掉 EXIF 和 GPS',ready:'{w} × {h} px',working:'正在处理…',scaled:'已缩小到可导出的尺寸',errType:'请选择 PNG、JPG 或 WebP。',errHeic:'暂不支持 HEIC，请先用「转换 HEIC」转成 JPG 或 PNG。',errLoad:'图片加载失败，可能是格式不支持或文件已损坏。',errExport:'这个浏览器导不出该格式，请改用 PNG 或 JPG。',origSize:'原始大小',newSize:'清除后大小',moreTools:'更多图片工具',linkCompress:'图片压缩',linkConvert:'格式转换',cardHeicTitle:'转换 HEIC',cardHeicDesc:'苹果 HEIC 转 JPG/PNG',cardRotateTitle:'旋转翻转',cardRotateDesc:'旋转或镜像图片',cardExifTitle:'清除元数据',cardExifDesc:'去掉 EXIF/GPS 等隐私信息'},
+  en:{title:'Strip metadata',subtitle:'Strip EXIF, GPS, and other privacy metadata.',privacy:'Local · no upload',note:'Re-encoding drops EXIF, GPS, and camera info. JPG and WebP are compressed again at the chosen quality, so the file size can go up or down.',upload:'Choose or drop an image',formats:'PNG, JPG, and WebP<br>You can also paste an image',targetFmt:'Export as',quality:'Quality',qualityHint:'JPG / WebP',jpgNote:'JPG has no transparency; empty areas are filled with white.',download:'Download',clear:'Clear',waiting:'Waiting for an image',emptyTitle:'Drop an image to remove EXIF and GPS',ready:'{w} × {h} px',working:'Working…',scaled:'Scaled to fit the export limit',errType:'Choose a PNG, JPG, or WebP.',errHeic:'HEIC is not supported here. Convert it to JPG or PNG first.',errLoad:'Could not load the image. The format may be unsupported or the file is damaged.',errExport:'This browser could not export that format. Try PNG or JPG.',origSize:'Original size',newSize:'Stripped size',moreTools:'More image tools',linkCompress:'Compress',linkConvert:'Convert format',cardHeicTitle:'Convert HEIC',cardHeicDesc:'Convert Apple HEIC to JPG or PNG',cardRotateTitle:'Rotate and flip',cardRotateDesc:'Rotate or mirror an image',cardExifTitle:'Strip metadata',cardExifDesc:'Remove EXIF, GPS, and other private info'},
+  ja:{title:'メタデータを削除',subtitle:'キャンバスで再エンコードし、EXIF や GPS などの情報を除いて、前後のサイズを比べます。端末内で処理し、送信しません。',privacy:'端末内処理 · 送信しません',note:'再エンコードで EXIF、GPS、撮影情報が消えます。JPG と WebP は選んだ品質で圧縮し直すため、サイズは増減します。',upload:'クリックして選択、または画像をドロップ',formats:'PNG、JPG、WebP 対応<br>画像の貼り付けも可能',targetFmt:'書き出し',quality:'品質',qualityHint:'JPG / WebP',jpgNote:'JPG は透過に対応していないため、透過部分は白で塗りつぶされます。',download:'ダウンロード',clear:'クリア',waiting:'画像待ち',emptyTitle:'画像をドロップして EXIF と GPS を消す',ready:'{w} × {h} px',working:'処理しています…',scaled:'書き出せるサイズに縮小しました',errType:'PNG、JPG、WebP を選んでください。',errHeic:'HEIC には未対応です。先に JPG または PNG に変換してください。',errLoad:'画像を読み込めませんでした。形式が未対応か、ファイルが破損しています。',errExport:'このブラウザではその形式で書き出せません。PNG か JPG を選んでください。',origSize:'元のサイズ',newSize:'削除後のサイズ',moreTools:'ほかの画像ツール',linkCompress:'画像を圧縮',linkConvert:'形式変換',cardHeicTitle:'HEIC を変換',cardHeicDesc:'Apple HEIC を JPG/PNG に',cardRotateTitle:'回転と反転',cardRotateDesc:'画像を回転または反転',cardExifTitle:'メタデータを削除',cardExifDesc:'EXIF や GPS などの情報を消す'},
+  ko:{title:'메타데이터 지우기',subtitle:'캔버스로 다시 인코딩해 EXIF, GPS 등 정보를 없애고 용량을 비교합니다. 기기에서 처리하며 올리지 않습니다.',privacy:'기기에서 처리 · 업로드 없음',note:'다시 인코딩하면 EXIF, GPS, 촬영 정보가 사라집니다. JPG와 WebP는 선택한 품질로 다시 압축되어 용량이 늘거나 줄 수 있습니다.',upload:'클릭하거나 이미지를 놓으세요',formats:'PNG, JPG, WebP<br>붙여넣기도 가능',targetFmt:'내보내기',quality:'품질',qualityHint:'JPG / WebP',jpgNote:'JPG는 투명을 지원하지 않아 투명 영역은 흰색으로 채워집니다.',download:'다운로드',clear:'지우기',waiting:'이미지 대기',emptyTitle:'이미지를 놓아 EXIF와 GPS를 지우세요',ready:'{w} × {h} px',working:'처리 중…',scaled:'내보낼 수 있는 크기로 줄였습니다',errType:'PNG, JPG 또는 WebP를 선택하세요.',errHeic:'여기서는 HEIC를 지원하지 않습니다. 먼저 JPG 또는 PNG로 변환하세요.',errLoad:'이미지를 열 수 없습니다. 형식이 맞지 않거나 파일이 손상되었습니다.',errExport:'이 브라우저는 해당 형식으로 내보낼 수 없습니다. PNG 또는 JPG를 선택하세요.',origSize:'원본 크기',newSize:'지운 뒤 크기',moreTools:'다른 이미지 도구',linkCompress:'이미지 압축',linkConvert:'형식 변환',cardHeicTitle:'HEIC 변환',cardHeicDesc:'Apple HEIC를 JPG/PNG로',cardRotateTitle:'회전과 뒤집기',cardRotateDesc:'이미지를 회전하거나 뒤집기',cardExifTitle:'메타데이터 지우기',cardExifDesc:'EXIF, GPS 등 개인정보 제거'},
+  es:{title:'Quitar metadatos',subtitle:'Vuelve a codificar la imagen en un lienzo para quitar EXIF, GPS y otros datos privados, y compara el tamaño. Se procesa en local.',privacy:'Local · sin subir',note:'Al recodificar se eliminan EXIF, GPS y datos de la cámara. JPG y WebP se comprimen de nuevo con la calidad elegida, así que el tamaño puede subir o bajar.',upload:'Elige o suelta una imagen',formats:'PNG, JPG y WebP<br>También puedes pegar una imagen',targetFmt:'Exportar',quality:'Calidad',qualityHint:'JPG / WebP',jpgNote:'El JPG no admite transparencia; las zonas vacías se rellenan de blanco.',download:'Descargar',clear:'Vaciar',waiting:'Esperando imagen',emptyTitle:'Suelta una imagen para quitar EXIF y GPS',ready:'{w} × {h} px',working:'Procesando…',scaled:'Reducida al límite de exportación',errType:'Elige un PNG, JPG o WebP.',errHeic:'HEIC no es compatible aquí. Conviértelo antes a JPG o PNG.',errLoad:'No se pudo abrir la imagen. El formato no es compatible o el archivo está dañado.',errExport:'Este navegador no pudo exportar ese formato. Prueba PNG o JPG.',origSize:'Tamaño original',newSize:'Tamaño sin metadatos',moreTools:'Más herramientas',linkCompress:'Comprimir',linkConvert:'Convertir formato',cardHeicTitle:'Convertir HEIC',cardHeicDesc:'Pasa un HEIC de Apple a JPG o PNG',cardRotateTitle:'Girar y voltear',cardRotateDesc:'Gira o refleja una imagen',cardExifTitle:'Quitar metadatos',cardExifDesc:'Elimina EXIF, GPS y otros datos privados'},
+  fr:{title:'Effacer les métadonnées',subtitle:'Réencodez l’image sur un canevas pour retirer EXIF, GPS et autres infos privées, puis comparez la taille. Traitement local, rien n’est envoyé.',privacy:'Local · rien n’est envoyé',note:'Le réencodage retire EXIF, GPS et les infos de prise de vue. JPG et WebP sont recompressés à la qualité choisie : la taille peut augmenter ou diminuer.',upload:'Choisissez ou déposez une image',formats:'PNG, JPG et WebP<br>Vous pouvez aussi coller une image',targetFmt:'Exporter',quality:'Qualité',qualityHint:'JPG / WebP',jpgNote:'Le JPG ne gère pas la transparence ; les zones vides sont remplies en blanc.',download:'Télécharger',clear:'Effacer',waiting:'En attente d’image',emptyTitle:'Déposez une image pour retirer EXIF et GPS',ready:'{w} × {h} px',working:'Traitement…',scaled:'Réduite à la taille exportable',errType:'Choisissez un PNG, JPG ou WebP.',errHeic:'HEIC n’est pas pris en charge ici. Convertissez-le d’abord en JPG ou PNG.',errLoad:'Impossible d’ouvrir l’image. Format non pris en charge ou fichier endommagé.',errExport:'Ce navigateur n’a pas pu exporter ce format. Essayez PNG ou JPG.',origSize:'Taille d’origine',newSize:'Taille nettoyée',moreTools:'Autres outils',linkCompress:'Compresser',linkConvert:'Convertir un format',cardHeicTitle:'Convertir HEIC',cardHeicDesc:'Convertir un HEIC Apple en JPG ou PNG',cardRotateTitle:'Pivoter et retourner',cardRotateDesc:'Pivoter ou refléter une image',cardExifTitle:'Effacer les métadonnées',cardExifDesc:'Retirer EXIF, GPS et autres infos privées'},
+  de:{title:'Metadaten entfernen',subtitle:'Bild auf einer Canvas neu kodieren, um EXIF, GPS und andere private Daten zu entfernen, und die Größe vergleichen. Lokal verarbeitet.',privacy:'Lokal · kein Upload',note:'Beim Neukodieren entfallen EXIF, GPS und Aufnahmeinfos. JPG und WebP werden mit der gewählten Qualität neu komprimiert, die Größe kann steigen oder sinken.',upload:'Bild wählen oder ablegen',formats:'PNG, JPG und WebP<br>Bilder können auch eingefügt werden',targetFmt:'Export',quality:'Qualität',qualityHint:'JPG / WebP',jpgNote:'JPG kennt keine Transparenz; leere Bereiche werden weiß gefüllt.',download:'Herunterladen',clear:'Leeren',waiting:'Warte auf ein Bild',emptyTitle:'Bild ablegen, um EXIF und GPS zu entfernen',ready:'{w} × {h} px',working:'Wird verarbeitet…',scaled:'Auf die exportierbare Größe verkleinert',errType:'Bitte PNG, JPG oder WebP wählen.',errHeic:'HEIC wird hier nicht unterstützt. Bitte zuerst in JPG oder PNG umwandeln.',errLoad:'Bild konnte nicht geladen werden. Format nicht unterstützt oder Datei beschädigt.',errExport:'Dieser Browser konnte das Format nicht schreiben. Bitte PNG oder JPG wählen.',origSize:'Originalgröße',newSize:'Größe danach',moreTools:'Weitere Werkzeuge',linkCompress:'Komprimieren',linkConvert:'Format umwandeln',cardHeicTitle:'HEIC umwandeln',cardHeicDesc:'Apple-HEIC in JPG oder PNG',cardRotateTitle:'Drehen und spiegeln',cardRotateDesc:'Bild drehen oder spiegeln',cardExifTitle:'Metadaten entfernen',cardExifDesc:'EXIF, GPS und andere private Daten entfernen'},
+  ru:{title:'Удалить метаданные',subtitle:'Перекодируйте изображение на холсте, чтобы убрать EXIF, GPS и другие личные данные, и сравните размер. Обработка локально, ничего не отправляется.',privacy:'Локально · без загрузки',note:'Перекодирование убирает EXIF, GPS и данные съёмки. JPG и WebP сжимаются заново с выбранным качеством, размер может вырасти или уменьшиться.',upload:'Выберите или перетащите изображение',formats:'PNG, JPG и WebP<br>Можно вставить изображение',targetFmt:'Экспорт',quality:'Качество',qualityHint:'JPG / WebP',jpgNote:'JPG не поддерживает прозрачность; пустые области заливаются белым.',download:'Скачать',clear:'Очистить',waiting:'Ожидание изображения',emptyTitle:'Перетащите изображение, чтобы убрать EXIF и GPS',ready:'{w} × {h} px',working:'Обработка…',scaled:'Уменьшено до допустимого размера',errType:'Выберите PNG, JPG или WebP.',errHeic:'HEIC здесь не поддерживается. Сначала конвертируйте в JPG или PNG.',errLoad:'Не удалось открыть изображение. Формат не поддерживается или файл повреждён.',errExport:'Этот браузер не смог сохранить формат. Выберите PNG или JPG.',origSize:'Исходный размер',newSize:'Размер после очистки',moreTools:'Другие инструменты',linkCompress:'Сжать',linkConvert:'Конвертировать формат',cardHeicTitle:'Конвертировать HEIC',cardHeicDesc:'Apple HEIC в JPG или PNG',cardRotateTitle:'Поворот и отражение',cardRotateDesc:'Повернуть или отразить изображение',cardExifTitle:'Удалить метаданные',cardExifDesc:'Убрать EXIF, GPS и другие личные данные'},
+  pt:{title:'Remover metadados',subtitle:'Recodifique a imagem numa tela para tirar EXIF, GPS e outros dados privados, e compare o tamanho. Processado localmente, sem envio.',privacy:'Local · sem envio',note:'A recodificação remove EXIF, GPS e dados da câmara. JPG e WebP são comprimidos de novo na qualidade escolhida, por isso o tamanho pode subir ou descer.',upload:'Escolha ou solte uma imagem',formats:'PNG, JPG e WebP<br>Também pode colar uma imagem',targetFmt:'Exportar',quality:'Qualidade',qualityHint:'JPG / WebP',jpgNote:'JPG não tem transparência; as áreas vazias ficam brancas.',download:'Baixar',clear:'Limpar',waiting:'À espera de uma imagem',emptyTitle:'Solte uma imagem para remover EXIF e GPS',ready:'{w} × {h} px',working:'A processar…',scaled:'Reduzida ao limite de exportação',errType:'Escolha um PNG, JPG ou WebP.',errHeic:'HEIC não é suportado aqui. Converta primeiro para JPG ou PNG.',errLoad:'Não foi possível abrir a imagem. Formato não suportado ou ficheiro danificado.',errExport:'Este navegador não conseguiu exportar esse formato. Tente PNG ou JPG.',origSize:'Tamanho original',newSize:'Tamanho limpo',moreTools:'Mais ferramentas',linkCompress:'Comprimir',linkConvert:'Converter formato',cardHeicTitle:'Converter HEIC',cardHeicDesc:'Converter HEIC da Apple para JPG ou PNG',cardRotateTitle:'Girar e espelhar',cardRotateDesc:'Girar ou espelhar uma imagem',cardExifTitle:'Remover metadados',cardExifDesc:'Tirar EXIF, GPS e outros dados privados'},
+  ar:{title:'حذف البيانات الوصفية',subtitle:'أعد ترميز الصورة على لوحة لإزالة EXIF وGPS وغيرها من معلومات الخصوصية، وقارن الحجم. المعالجة محلية ولا يتم الرفع.',privacy:'محلي · بلا رفع',note:'إعادة الترميز تزيل EXIF وGPS ومعلومات التصوير. يُضغط JPG وWebP من جديد بالجودة المختارة، وقد يكبر الحجم أو يصغر.',upload:'اختر صورة أو أفلتها',formats:'PNG وJPG وWebP<br>يمكن أيضاً اللصق',targetFmt:'التصدير',quality:'الجودة',qualityHint:'JPG / WebP',jpgNote:'JPG لا يدعم الشفافية؛ تُملأ المناطق الفارغة بالأبيض.',download:'تنزيل',clear:'مسح',waiting:'بانتظار صورة',emptyTitle:'أفلت صورة لإزالة EXIF وGPS',ready:'{w} × {h} px',working:'جارٍ المعالجة…',scaled:'صُغّرت إلى الحد القابل للتصدير',errType:'اختر PNG أو JPG أو WebP.',errHeic:'HEIC غير مدعوم هنا. حوّله أولاً إلى JPG أو PNG.',errLoad:'تعذر فتح الصورة. قد تكون الصيغة غير مدعومة أو الملف تالفاً.',errExport:'تعذر على هذا المتصفح تصدير الصيغة. جرّب PNG أو JPG.',origSize:'الحجم الأصلي',newSize:'الحجم بعد الإزالة',moreTools:'المزيد من الأدوات',linkCompress:'ضغط',linkConvert:'تحويل الصيغة',cardHeicTitle:'تحويل HEIC',cardHeicDesc:'تحويل HEIC من آبل إلى JPG أو PNG',cardRotateTitle:'تدوير وعكس',cardRotateDesc:'تدوير الصورة أو عكسها',cardExifTitle:'حذف البيانات الوصفية',cardExifDesc:'إزالة EXIF وGPS وغيرها من معلومات الخصوصية'},
+  vi:{title:'Xóa siêu dữ liệu',subtitle:'Mã hóa lại ảnh trên canvas để bỏ EXIF, GPS và thông tin riêng tư, rồi so sánh dung lượng. Xử lý tại máy, không tải lên.',privacy:'Tại máy · không tải lên',note:'Mã hóa lại sẽ bỏ EXIF, GPS và thông tin máy ảnh. JPG và WebP được nén lại theo chất lượng đã chọn, dung lượng có thể tăng hoặc giảm.',upload:'Chọn hoặc thả một ảnh',formats:'PNG, JPG, WebP<br>Cũng có thể dán ảnh',targetFmt:'Xuất',quality:'Chất lượng',qualityHint:'JPG / WebP',jpgNote:'JPG không có trong suốt; vùng trống sẽ được phủ trắng.',download:'Tải xuống',clear:'Xóa',waiting:'Đang chờ ảnh',emptyTitle:'Thả ảnh vào để bỏ EXIF và GPS',ready:'{w} × {h} px',working:'Đang xử lý…',scaled:'Đã thu nhỏ cho vừa giới hạn xuất',errType:'Hãy chọn PNG, JPG hoặc WebP.',errHeic:'Chưa hỗ trợ HEIC tại đây. Hãy chuyển sang JPG hoặc PNG trước.',errLoad:'Không mở được ảnh. Định dạng không hỗ trợ hoặc tệp đã hỏng.',errExport:'Trình duyệt này không xuất được định dạng đó. Hãy thử PNG hoặc JPG.',origSize:'Kích thước gốc',newSize:'Kích thước sau khi xóa',moreTools:'Công cụ khác',linkCompress:'Nén ảnh',linkConvert:'Chuyển định dạng',cardHeicTitle:'Chuyển HEIC',cardHeicDesc:'Đổi HEIC của Apple sang JPG hoặc PNG',cardRotateTitle:'Xoay và lật',cardRotateDesc:'Xoay hoặc lật ảnh',cardExifTitle:'Xóa siêu dữ liệu',cardExifDesc:'Bỏ EXIF, GPS và thông tin riêng tư'},
+  id:{title:'Hapus metadata',subtitle:'Kodekan ulang gambar di kanvas untuk membuang EXIF, GPS, dan info pribadi, lalu bandingkan ukurannya. Diproses secara lokal, tidak diunggah.',privacy:'Lokal · tidak diunggah',note:'Pengodean ulang menghapus EXIF, GPS, dan info kamera. JPG dan WebP dikompres lagi sesuai kualitas yang dipilih, jadi ukuran bisa naik atau turun.',upload:'Pilih atau jatuhkan gambar',formats:'PNG, JPG, dan WebP<br>Gambar juga bisa ditempel',targetFmt:'Ekspor',quality:'Kualitas',qualityHint:'JPG / WebP',jpgNote:'JPG tidak mendukung transparansi; area kosong diisi putih.',download:'Unduh',clear:'Kosongkan',waiting:'Menunggu gambar',emptyTitle:'Jatuhkan gambar untuk menghapus EXIF dan GPS',ready:'{w} × {h} px',working:'Memproses…',scaled:'Diperkecil agar bisa diekspor',errType:'Pilih PNG, JPG, atau WebP.',errHeic:'HEIC tidak didukung di sini. Ubah dulu ke JPG atau PNG.',errLoad:'Gambar tidak bisa dibuka. Format tidak didukung atau berkas rusak.',errExport:'Browser ini tidak bisa mengekspor format itu. Coba PNG atau JPG.',origSize:'Ukuran asli',newSize:'Ukuran setelah dibersihkan',moreTools:'Alat lain',linkCompress:'Kompres',linkConvert:'Konversi format',cardHeicTitle:'Konversi HEIC',cardHeicDesc:'Ubah HEIC Apple menjadi JPG atau PNG',cardRotateTitle:'Putar dan balik',cardRotateDesc:'Putar atau cerminkan gambar',cardExifTitle:'Hapus metadata',cardExifDesc:'Buang EXIF, GPS, dan info pribadi'},
+  th:{title:'ลบข้อมูลเมตา',subtitle:'เข้ารหัสรูปใหม่บนแคนวาสเพื่อเอา EXIF, GPS และข้อมูลส่วนตัวออก แล้วเทียบขนาดไฟล์ ประมวลผลในเครื่อง ไม่อัปโหลด',privacy:'ในเครื่อง · ไม่อัปโหลด',note:'การเข้ารหัสใหม่จะเอา EXIF, GPS และข้อมูลการถ่ายออก JPG และ WebP จะถูกบีบอัดใหม่ตามคุณภาพที่เลือก ขนาดอาจเพิ่มขึ้นหรือลดลง',upload:'คลิกเลือกหรือลากรูปมาวาง',formats:'รองรับ PNG, JPG, WebP<br>วางรูปจากคลิปบอร์ดได้',targetFmt:'ส่งออก',quality:'คุณภาพ',qualityHint:'JPG / WebP',jpgNote:'JPG ไม่รองรับโปร่งใส พื้นที่ว่างจะถูกเติมสีขาว',download:'ดาวน์โหลด',clear:'ล้าง',waiting:'รอรูป',emptyTitle:'วางรูปเพื่อเอา EXIF และ GPS ออก',ready:'{w} × {h} px',working:'กำลังประมวลผล…',scaled:'ย่อให้พอดีกับขนาดที่ส่งออกได้',errType:'โปรดเลือก PNG, JPG หรือ WebP',errHeic:'ที่นี่ยังไม่รองรับ HEIC โปรดแปลงเป็น JPG หรือ PNG ก่อน',errLoad:'เปิดรูปไม่ได้ อาจเป็นรูปแบบที่ไม่รองรับหรือไฟล์เสีย',errExport:'เบราว์เซอร์นี้ส่งออกรูปแบบนั้นไม่ได้ ลอง PNG หรือ JPG',origSize:'ขนาดเดิม',newSize:'ขนาดหลังลบข้อมูล',moreTools:'เครื่องมืออื่น',linkCompress:'บีบอัดรูป',linkConvert:'แปลงรูปแบบ',cardHeicTitle:'แปลง HEIC',cardHeicDesc:'แปลง HEIC ของ Apple เป็น JPG หรือ PNG',cardRotateTitle:'หมุนและกลับด้าน',cardRotateDesc:'หมุนหรือกลับด้านรูป',cardExifTitle:'ลบข้อมูลเมตา',cardExifDesc:'เอา EXIF, GPS และข้อมูลส่วนตัวออก'}
+};
+let language=detectLang();
+let source=null;
+let baseName='image';
+let originalSize=0;
+let outputBlob=null;
+let fmt='jpeg';
+let status='empty';
+let scaled=false;
+let seq=0;
+let measureSeq=0;
+const MAX_EDGE=16384;
+const canvas=$('#canvas');
+const ctx=canvas.getContext('2d');
+const langSelect=$('#langSelect');
+LANGS.forEach(l=>{
+  const opt=document.createElement('option');
+  opt.value=l.code;
+  opt.textContent=l.name;
+  langSelect.appendChild(opt);
+});
+function detectLang(){
+  const param=new URL(location.href).searchParams.get('lang');
+  if(param&&messages[param])return param;
+  let saved='';
+  try{saved=localStorage.getItem('language')||'';}catch(e){}
+  if(saved&&messages[saved])return saved;
+  const navLangs=navigator.languages||[navigator.language||'zh'];
+  for(const l of navLangs){
+    const lc=String(l).toLowerCase();
+    if(lc.startsWith('zh'))return 'zh';
+    const code=lc.slice(0,2);
+    if(messages[code])return code;
+  }
+  return 'zh';
+}
+function t(key){
+  const pack=messages[language]||messages.en||messages.zh;
+  if(pack&&pack[key]!=null)return pack[key];
+  if(messages.en&&messages.en[key]!=null)return messages.en[key];
+  if(messages.zh&&messages.zh[key]!=null)return messages.zh[key];
+  return key;
+}
+function setMeta(attr,name,content){
+  let el=document.querySelector(`meta[${attr}="${name}"]`);
+  if(!el){el=document.createElement('meta');el.setAttribute(attr,name);document.head.appendChild(el);}
+  el.setAttribute('content',content);
+}
+function applyI18n(){
+  const def=LANGS.find(l=>l.code===language)||LANGS[0];
+  document.documentElement.lang=language==='zh'?'zh-CN':language;
+  document.documentElement.dir=def.dir;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    const value=t(key);
+    if(value!==key)el.innerHTML=value;
+  });
+  $('#qualityV').textContent=$('#quality').value;
+  const seo=SEO[language]||SEO.en||SEO.zh;
+  document.title=seo.title;
+  setMeta('name','description',seo.desc);
+  setMeta('property','og:title',seo.title);
+  setMeta('property','og:description',seo.desc);
+  setMeta('name','twitter:title',seo.title);
+  setMeta('name','twitter:description',seo.desc);
+  const ld=document.querySelector('#ldjson');
+  if(ld){
+    try{
+      const obj=JSON.parse(ld.textContent);
+      obj.name=t('title');
+      obj.description=seo.desc;
+      ld.textContent=JSON.stringify(obj);
+    }catch(e){}
+  }
+  paintMeta();
+  const banner=$('#libStatus');
+  if(banner&&!banner.hidden&&banner.dataset.key)banner.textContent=t(banner.dataset.key);
+}
+function setLanguage(lang){
+  if(!messages[lang])lang='en';
+  language=lang;
+  try{localStorage.setItem('language',lang);}catch(e){}
+  langSelect.value=language;
+  applyI18n();
+}
+function showBanner(key){
+  const el=$('#libStatus');
+  if(!el)return;
+  if(!key){el.hidden=true;el.textContent='';delete el.dataset.key;return;}
+  el.dataset.key=key;
+  el.hidden=false;
+  el.textContent=t(key);
+}
+function formatBytes(n){
+  n=Number(n)||0;
+  if(n<1024)return n+' B';
+  if(n<1048576)return (n/1024).toFixed(1)+' KB';
+  return (n/1048576).toFixed(2)+' MB';
+}
+function kindOf(file){
+  const name=(file.name||'').toLowerCase();
+  const type=(file.type||'').toLowerCase();
+  if(type.indexOf('heic')!==-1||type.indexOf('heif')!==-1||name.endsWith('.heic')||name.endsWith('.heif'))return 'heic';
+  if(type==='image/png'||name.endsWith('.png'))return 'png';
+  if(type==='image/jpeg'||type==='image/jpg'||name.endsWith('.jpg')||name.endsWith('.jpeg'))return 'jpeg';
+  if(type==='image/webp'||name.endsWith('.webp'))return 'webp';
+  return '';
+}
+function loadImage(blob){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    const url=URL.createObjectURL(blob);
+    img.onload=()=>{URL.revokeObjectURL(url);resolve(img);};
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('load'));};
+    img.src=url;
+  });
+}
+function paintMeta(){
+  const meta=$('#meta');
+  if(!meta)return;
+  if(status==='working'){meta.textContent=t('working');return;}
+  if(status==='ready'&&source){
+    let text=t('ready').replace('{w}',String(canvas.width)).replace('{h}',String(canvas.height));
+    if(scaled)text+=' · '+t('scaled');
+    meta.textContent=text;
+    return;
+  }
+  meta.textContent=t('waiting');
+}
+function syncFmt(){
+  $('#fmtSeg').querySelectorAll('button').forEach(btn=>{
+    btn.classList.toggle('active',btn.getAttribute('data-fmt')===fmt);
+  });
+  const lossy=fmt==='jpeg'||fmt==='webp';
+  $('#qualityGroup').style.display=lossy?'':'none';
+  $('#jpgNote').style.display=fmt==='jpeg'?'':'none';
+}
+function showEmpty(){
+  source=null;
+  outputBlob=null;
+  scaled=false;
+  status='empty';
+  canvas.width=0;
+  canvas.height=0;
+  canvas.style.display='none';
+  $('#empty').style.display='';
+  $('#download').disabled=true;
+  $('#clear').disabled=true;
+  $('#stats').style.display='none';
+  $('#file').value='';
+  paintMeta();
+}
+function renderPreview(){
+  const edge=Math.max(source.naturalWidth,source.naturalHeight)||1;
+  const scale=edge>MAX_EDGE?MAX_EDGE/edge:1;
+  scaled=scale<1;
+  const w=Math.max(1,Math.round(source.naturalWidth*scale));
+  const h=Math.max(1,Math.round(source.naturalHeight*scale));
+  canvas.width=w;
+  canvas.height=h;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,w,h);
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality='high';
+  ctx.drawImage(source,0,0,w,h);
+  status='ready';
+  canvas.style.display='block';
+  $('#empty').style.display='none';
+  $('#clear').disabled=false;
+  paintMeta();
+}
+function makeBlob(){
+  return new Promise(resolve=>{
+    if(!canvas.width||!canvas.height){resolve(null);return;}
+    const mime=fmt==='png'?'image/png':fmt==='webp'?'image/webp':'image/jpeg';
+    const q=(parseInt($('#quality').value,10)||92)/100;
+    let target=canvas;
+    if(mime==='image/jpeg'){
+      const off=document.createElement('canvas');
+      off.width=canvas.width;
+      off.height=canvas.height;
+      const o=off.getContext('2d');
+      o.fillStyle='#ffffff';
+      o.fillRect(0,0,off.width,off.height);
+      o.drawImage(canvas,0,0);
+      target=off;
+    }
+    try{
+      target.toBlob(blob=>resolve(blob),mime,mime==='image/png'?undefined:q);
+    }catch(e){resolve(null);}
+  });
+}
+function scheduleMeasure(){
+  clearTimeout(scheduleMeasure.timer);
+  scheduleMeasure.timer=setTimeout(runMeasure,80);
+}
+async function runMeasure(){
+  const id=++measureSeq;
+  $('#download').disabled=true;
+  const blob=await makeBlob();
+  if(id!==measureSeq||status!=='ready')return;
+  if(!blob){showBanner('errExport');return;}
+  showBanner('');
+  outputBlob=blob;
+  $('#origSize').textContent=formatBytes(originalSize);
+  $('#newSize').textContent=formatBytes(blob.size);
+  $('#newBox').classList.toggle('saved',blob.size<=originalSize);
+  $('#stats').style.display='';
+  $('#download').disabled=false;
+  $('#clear').disabled=false;
+}
+function downloadBlob(blob,name){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function load(file){
+  if(!file)return;
+  const kind=kindOf(file);
+  if(kind==='heic'){showBanner('errHeic');return;}
+  if(kind!=='png'&&kind!=='jpeg'&&kind!=='webp'){showBanner('errType');return;}
+  const id=++seq;
+  showBanner('');
+  fmt=kind;
+  syncFmt();
+  status='working';
+  $('#empty').style.display='none';
+  canvas.style.display='none';
+  $('#download').disabled=true;
+  $('#clear').disabled=false;
+  $('#stats').style.display='none';
+  paintMeta();
+  try{
+    const img=await loadImage(file);
+    if(id!==seq)return;
+    source=img;
+    originalSize=file.size||0;
+    baseName=(file.name||'image').replace(/\.[^.]+$/,'')||'image';
+    renderPreview();
+    scheduleMeasure();
+  }catch(e){
+    if(id!==seq)return;
+    showEmpty();
+    showBanner('errLoad');
+  }
+}
+$('#file').addEventListener('change',e=>{
+  if(e.target.files&&e.target.files[0])load(e.target.files[0]);
+});
+['dragenter','dragover'].forEach(type=>{
+  $('#drop').addEventListener(type,ev=>{ev.preventDefault();$('#drop').classList.add('over');});
+});
+['dragleave','drop'].forEach(type=>{
+  $('#drop').addEventListener(type,ev=>{ev.preventDefault();$('#drop').classList.remove('over');});
+});
+$('#drop').addEventListener('drop',e=>{
+  const file=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+  if(file)load(file);
+});
+document.addEventListener('paste',e=>{
+  const items=e.clipboardData&&e.clipboardData.items;
+  if(!items)return;
+  for(const item of items){
+    if(item.type&&item.type.indexOf('image/')===0){
+      const file=item.getAsFile();
+      if(file){load(file);break;}
+    }
+  }
+});
+$('#fmtSeg').addEventListener('click',e=>{
+  const btn=e.target.closest('button[data-fmt]');
+  if(!btn)return;
+  fmt=btn.getAttribute('data-fmt');
+  syncFmt();
+  if(source)scheduleMeasure();
+});
+$('#quality').addEventListener('input',()=>{
+  $('#qualityV').textContent=$('#quality').value;
+  if(source)scheduleMeasure();
+});
+$('#clear').addEventListener('click',()=>{seq++;measureSeq++;showBanner('');showEmpty();});
+$('#download').addEventListener('click',()=>{
+  if($('#download').disabled||!outputBlob)return;
+  const ext=fmt==='png'?'png':fmt==='webp'?'webp':'jpg';
+  downloadBlob(outputBlob,baseName+'-clean.'+ext);
+});
+langSelect.addEventListener('change',()=>setLanguage(langSelect.value));
+syncFmt();
+setLanguage(language);
+(function watchCards(){
+  const grid=document.querySelector('[data-tool-cards]');
+  if(!grid)return;
+  const fix=()=>{
+    grid.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key=el.getAttribute('data-i18n');
+      const value=t(key);
+      if(value!==key&&el.textContent!==value)el.textContent=value;
+    });
+  };
+  new MutationObserver(fix).observe(grid,{childList:true,subtree:true});
+})();
+document.addEventListener('DOMContentLoaded',applyI18n);
+</script>
+<script>
+(function(){
+  var p = encodeURIComponent(location.pathname + location.search);
+  var u = '/__track__?t=' + Date.now() + '&p=' + p;
+  try {
+    if (navigator.sendBeacon) navigator.sendBeacon(u);
+  } catch(e) {}
+})();
+</script>
+<footer class="siteFooter">
+  <p class="sponsorLine"><span data-i18n="homeSponsorLead">觉得好用？</span> <a class="afdian" href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="homeSponsorCta">请我来包辣条</a></p>
+  <div class="actionRow" role="group" aria-label="站务">
+    <button type="button" class="action feedbackOpen" data-i18n="feedback" aria-haspopup="dialog">反馈 &amp; 建议</button>
+    <a class="action primary" href="https://toolc.xin" target="_blank" rel="noopener noreferrer" data-i18n="homeSister">toolc·精选软件工具</a>
+  </div>
+  <div>
+    <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
+  </div>
+</footer>
+<script src="/tool-cards.js"></script>
+<script src="/chrome.js"></script>
+</body>
+</html>

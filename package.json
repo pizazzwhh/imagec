@@ -2,8 +2,10 @@
   "name": "imagec",
   "private": true,
   "scripts": {
+    "preview": "node scripts/preview.mjs",
     "smoke:live": "node scripts/smoke-live.mjs",
-    "smoke:mobile": "node scripts/smoke-mobile.mjs"
+    "smoke:mobile": "node scripts/smoke-mobile.mjs",
+    "smoke:p3": "node scripts/smoke-p3.mjs"
   },
   "devDependencies": {
     "playwright": "^1.56.1"

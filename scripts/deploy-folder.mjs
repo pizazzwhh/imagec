@@ -66,8 +66,8 @@ async function main() {
   console.log(`Deploying "${folderPath}" as routine "${routineName}"\n`);
 
   // Collect static files
-  const excludeFiles = ["package.json", "package-lock.json", "setup-esa-dns.log"];
-  const excludeDirs = ["node_modules", "scripts", ".git"];
+  const excludeFiles = ["package.json", "package-lock.json", "setup-esa-dns.log", ".gitignore"];
+  const excludeDirs = ["node_modules", "scripts", ".git", "data", "docs", "artifacts", ".cursor"];
   const excludeExts = [".log", ".tmp", ".bak"];
   const staticFiles = [];
 

@@ -58,8 +58,7 @@
   <meta name="apple-mobile-web-app-title" content="imagec" />
   <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"在线图片压缩","alternateName":"imagec","url":"https://imagec.xin/compress","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"在线图片压缩，支持 PNG、JPG、WebP 格式，多级压缩等级选择，PNG智能压缩，实时预览。所有处理在浏览器本地完成，图片不上传服务器。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["多级压缩等级选择","PNG/JPG/WebP 压缩","PNG智能压缩","智能格式推荐","实时压缩预览","浏览器本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"图片压缩","item":"https://imagec.xin/compress"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"在线图片压缩会上传我的图吗？","acceptedAnswer":{"@type":"Answer","text":"不会。压缩在浏览器本地完成。"}},{"@type":"Question","name":"压缩后画质会差很多吗？","acceptedAnswer":{"@type":"Answer","text":"多数用「标准」变化不大；要更小再用「强力/极致」，以预览为准。"}},{"@type":"Question","name":"可以只缩小宽度、少动质量吗？","acceptedAnswer":{"@type":"Answer","text":"可以。用宽度缩放；预览里看体积变化。"}}]}</script>
-  <link rel="stylesheet" href="/site.css" />
+<link rel="stylesheet" href="/site.css" />
 </head>
 <body class="tool">
 <main class="shell">
@@ -68,11 +67,11 @@
   <section class="panel">
     <div class="hero">
       <h1 data-i18n="title">在线图片压缩</h1>
-      <p data-i18n="subtitle">免费在线图片压缩：PNG / JPG / WebP 多档压缩，可预览效果。浏览器本地处理，图片不上传。</p>
+      <p data-i18n="subtitle">压缩 PNG / JPG / WebP，尽量保住画质。</p>
       <div class="privacyLine safeBadge">
-        <span data-i18n="privacy">仅在浏览器本地处理 · 图片不会上传到服务器</span>
+        <span data-i18n="privacy">本地处理 · 不上传服务器</span>
       </div>
-      <p class="heroLinks"><a href="/qr.html" data-i18n="linkQrUrl">链接转二维码</a></p>
+      <p class="heroLinks"><a href="/qr" data-i18n="linkQrUrl">链接转二维码</a></p>
     </div>
     <div class="workspace">
       <aside class="controls">
@@ -80,42 +79,67 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
           <strong data-i18n="upload">点击选择或拖入图片</strong>
           <small data-i18n="formats">支持 PNG、JPG、WebP<br>也可直接粘贴图片</small>
-          <small data-i18n="heicTip">暂不支持 HEIC，请先转成 JPG 或 PNG</small>
+          <small><a href="/heic" data-i18n="heicTip">苹果 HEIC？先用转换 HEIC</a></small>
         </label>
         <input id="file" type="file" accept="image/png,image/jpeg,image/webp" />
 
         <div class="group">
-          <div class="labelrow">
-            <label data-i18n="level">压缩等级</label>
-            <span class="tooltip" data-i18n="levelTipQ">?</span>
-          </div>
-          <div class="levelGroup" id="levelGroup">
-            <div class="levelCard" data-level="light">
-              <span class="levelName" data-i18n="lvLight">轻度</span>
-              <span class="levelDesc" data-i18n="lvLightDesc">画质几乎不变</span>
-            </div>
-            <div class="levelCard active" data-level="standard">
-              <span class="levelName" data-i18n="lvStd">标准</span>
-              <span class="levelDesc" data-i18n="lvStdDesc">推荐 · 平衡</span>
-            </div>
-            <div class="levelCard" data-level="strong">
-              <span class="levelName" data-i18n="lvStrong">强力</span>
-              <span class="levelDesc" data-i18n="lvStrongDesc">体积大幅减小</span>
-            </div>
-            <div class="levelCard" data-level="extreme">
-              <span class="levelName" data-i18n="lvExtreme">极致</span>
-              <span class="levelDesc" data-i18n="lvExtremeDesc">最小体积</span>
-            </div>
+          <div class="labelrow"><label data-i18n="compressMode">压缩方式</label></div>
+          <div class="seg" id="compressMode">
+            <button type="button" class="active" data-mode="quality" data-i18n="modeQuality">质量档</button>
+            <button type="button" data-mode="target" data-i18n="modeTarget">目标体积</button>
           </div>
         </div>
 
-        <div class="group">
-          <div class="labelrow">
-            <label for="quality" data-i18n="quality">压缩质量</label>
-            <span class="tooltip" data-i18n="qualityTipQ">?</span>
-            <span class="value" id="qualityV">75</span>
+        <div id="qualityControls">
+          <div class="group">
+            <div class="labelrow">
+              <label data-i18n="level">压缩等级</label>
+              <span class="tooltip" data-i18n="levelTipQ">?</span>
+            </div>
+            <div class="levelGroup" id="levelGroup">
+              <div class="levelCard" data-level="light">
+                <span class="levelName" data-i18n="lvLight">轻度</span>
+                <span class="levelDesc" data-i18n="lvLightDesc">画质几乎不变</span>
+              </div>
+              <div class="levelCard active" data-level="standard">
+                <span class="levelName" data-i18n="lvStd">标准</span>
+                <span class="levelDesc" data-i18n="lvStdDesc">推荐 · 平衡</span>
+              </div>
+              <div class="levelCard" data-level="strong">
+                <span class="levelName" data-i18n="lvStrong">强力</span>
+                <span class="levelDesc" data-i18n="lvStrongDesc">体积大幅减小</span>
+              </div>
+              <div class="levelCard" data-level="extreme">
+                <span class="levelName" data-i18n="lvExtreme">极致</span>
+                <span class="levelDesc" data-i18n="lvExtremeDesc">最小体积</span>
+              </div>
+            </div>
           </div>
-          <input id="quality" type="range" min="1" max="100" value="75">
+
+          <div class="group">
+            <div class="labelrow">
+              <label for="quality" id="qualityLabel" data-i18n="quality">压缩质量</label>
+              <span class="tooltip" data-i18n="qualityTipQ">?</span>
+              <span class="value" id="qualityV">75</span>
+            </div>
+            <input id="quality" type="range" min="1" max="100" value="75">
+          </div>
+        </div>
+
+        <div class="group" id="targetControls" style="display:none">
+          <div class="labelrow">
+            <label for="targetKb" data-i18n="targetKb">目标大小</label>
+            <span class="tooltip" data-i18n="targetTipQ">?</span>
+            <span class="value" id="targetKbV">200 KB</span>
+          </div>
+          <input id="targetKb" type="range" min="20" max="2000" step="10" value="200">
+          <div class="presetGrid" id="targetPresets" style="margin-top:10px">
+            <button type="button" class="presetBtn" data-kb="50">50 KB</button>
+            <button type="button" class="presetBtn" data-kb="100">100 KB</button>
+            <button type="button" class="presetBtn" data-kb="200">200 KB</button>
+            <button type="button" class="presetBtn" data-kb="500">500 KB</button>
+          </div>
         </div>
 
         <div class="group">
@@ -144,7 +168,16 @@
           <div class="meta" id="meta" data-i18n="waiting">等待图片</div>
         </div>
         <div class="canvasWrap" id="wrap">
-          <img id="preview" alt="压缩预览">
+          <div class="compare" id="compare" hidden>
+            <figure class="comparePane">
+              <figcaption class="compareCap compareCapOrig" data-i18n="compareOrig">原图</figcaption>
+              <img id="previewOrig" alt="">
+            </figure>
+            <figure class="comparePane">
+              <figcaption class="compareCap compareCapNew" data-i18n="compareNew">压缩后</figcaption>
+              <img id="preview" alt="压缩预览">
+            </figure>
+          </div>
           <div class="empty" id="empty">
             <div class="bubble"></div>
             <strong data-i18n="emptyTitle">把图片放进来试试</strong>
@@ -158,51 +191,15 @@
           <div class="statBox saved" id="compBox">
             <div class="statLabel" data-i18n="compSize">压缩后大小</div>
             <div class="statVal" id="compSize">—</div>
+            <div class="ratio" id="ratio" style="display:none"></div>
           </div>
         </div>
-        <div class="ratio" id="ratio" style="display:none"></div>
         <div class="strategy" id="strategy" style="display:none"></div>
       </section>
     </div>
   </section>
 
-  <section class="seoContent" id="guide" aria-labelledby="guide-title">
-    <h2 id="guide-title" data-i18n="g_fitTitle">适合这些情况</h2>
-    <ol>
-      <li data-i18n="g_fit1">网页、博客配图太大，先压再上传。</li>
-      <li data-i18n="g_fit2">微信、邮件发图受限，在本机压缩后再发。</li>
-      <li data-i18n="g_fit3">想尽量保画质、减小体积，再上传网页或发送。</li>
-    </ol>
-    <h2 data-i18n="g_howTitle">怎么用</h2>
-    <ol>
-      <li data-i18n="g_how1">选择、拖入或粘贴图片。</li>
-      <li data-i18n="g_how2">选压缩等级（轻度到极致），按需再调质量与宽度。</li>
-      <li data-i18n="g_how3">对照预览后下载。</li>
-    </ol>
-    <h2 data-i18n="g_whyTitle">为什么用 imagec</h2>
-    <ul>
-      <li data-i18n="g_why1">对照预览看体积与画质再下载。</li>
-      <li data-i18n="g_why2">多级预设，可调质量，并可预览。</li>
-      <li data-i18n="g_why3">免费；多级预设，也可细调质量与宽度。</li>
-    </ul>
-    <h2 data-i18n="g_faqTitle">常见问题</h2>
-    <dl class="seoFaq">
-      <div>
-        <dt data-i18n="g_q1">在线图片压缩会上传我的图吗？</dt>
-        <dd data-i18n="g_a1">不会。压缩在浏览器本地完成。</dd>
-      </div>
-      <div>
-        <dt data-i18n="g_q2">压缩后画质会差很多吗？</dt>
-        <dd data-i18n="g_a2">多数用「标准」变化不大；要更小再用「强力/极致」，以预览为准。</dd>
-      </div>
-      <div>
-        <dt data-i18n="g_q3">可以只缩小宽度、少动质量吗？</dt>
-        <dd data-i18n="g_a3">可以。用宽度缩放；预览里看体积变化。</dd>
-      </div>
-    </dl>
-  </section>
-
-  <section class="relatedTools">
+<section class="relatedTools">
     <h2 data-i18n="moreTools">更多图片工具</h2>
     <div class="toolsGrid" data-tool-cards></div>
   </section>
@@ -215,13 +212,15 @@ const $=s=>document.querySelector(s);
 const TIPS = {
   zh:{
     levelTip:'轻度几乎不损画质，标准最均衡，强力和极致会明显减小体积。',
-    qualityTip:'JPG / WebP 直接按这个质量编码。PNG 会映射成更少的颜色。',
+    qualityTip:'JPG / WebP 直接按这个质量编码。PNG 会映射成更少的颜色。',qualityPng:'色阶 / 细节',qualityJpg:'压缩质量',
     scaleTip:'按宽度缩小，高度自动跟着变。50% 大约是原来体积的 1/4。',
+    targetTip:'会自动试质量，尽量压到你设的 KB。极小目标可能达不到，以预览为准。',
   },
   en:{
     levelTip:'Light keeps quality, Standard is balanced, Strong and Extreme shrink the file further.',
-    qualityTip:'JPG and WebP use this quality directly. PNG maps it to fewer colors.',
+    qualityTip:'JPG and WebP use this quality directly. PNG maps it to fewer colors.',qualityPng:'Palette / detail',qualityJpg:'Quality',
     scaleTip:'Width sets the size; height follows. 50% is about 1/4 of the file size.',
+    targetTip:'We search for a quality that lands near your KB target. Tiny targets may be unreachable — check the preview.',
   },
   ja:{
     levelTip:'軽度は画質優先、標準はバランス、強力と極限はより小さくなります。',
@@ -298,34 +297,34 @@ const LANGS=[
 
 const SEO={
   zh:{title:'在线图片压缩 - 免费压缩 PNG/JPG/WebP｜imagec',desc:'在线图片压缩，免费压缩 PNG、JPG、WebP。多级压缩等级选择，PNG智能压缩，实时预览。所有处理在浏览器本地完成，图片不上传服务器。',ogTitle:'在线图片压缩 - 免费压缩 PNG/JPG/WebP｜imagec',ogDesc:'在线图片压缩，免费压缩 PNG、JPG、WebP。多级压缩等级，智能格式推荐。浏览器本地处理，不上传服务器。',siteName:'imagec',jsonLdDesc:'在线图片压缩，支持 PNG、JPG、WebP 格式，多级压缩等级选择，PNG智能压缩，实时预览。所有处理在浏览器本地完成，图片不上传服务器。',locale:'zh_CN'},
-  en:{title:'Image Compressor - Free Online PNG/JPG/WebP | Frame',desc:'Free online image compressor for PNG, JPG, and WebP. Multi-level compression, smart PNG handling, real-time preview. All processing happens locally in your browser.',ogTitle:'Image Compressor - Free Online PNG/JPG/WebP',ogDesc:'Free online image compression. Multi-level compression, smart format recommendation. Processed locally, no uploads.',siteName:'imagec',jsonLdDesc:'Free online image compressor supporting PNG, JPG, and WebP with multi-level compression and smart PNG handling. All processing happens locally.',locale:'en_US'},
-  ja:{title:'画像圧縮ツール - 無料オンライン PNG/JPG/WebP | フレーム',desc:'無料オンライン画像圧縮ツール。PNG、JPG、WebP対応、複数レベルの圧縮、PNGスマート圧縮、リアルタイムプレビュー。すべてブラウザ内でローカル処理。',ogTitle:'画像圧縮ツール - 無料オンライン PNG/JPG/WebP',ogDesc:'無料オンライン画像圧縮。複数レベル、スマート形式推奨。ブラウザ内ローカル処理、アップロードなし。',siteName:'imagec',jsonLdDesc:'無料オンライン画像圧縮ツール。PNG、JPG、WebP対応、複数レベルの圧縮、PNGスマート圧縮可能。すべてブラウザ内でローカル処理。',locale:'ja_JP'},
-  ko:{title:'이미지 압축 도구 - 무료 온라인 PNG/JPG/WebP | 프레임',desc:'무료 온라인 이미지 압축 도구. PNG, JPG, WebP 지원, 다중 레벨 압축, PNG 스마트 압축, 실시간 미리보기. 모든 처리는 브라우저에서 로컬로 진행.',ogTitle:'이미지 압축 도구 - 무료 온라인 PNG/JPG/WebP',ogDesc:'무료 온라인 이미지 압축. 다중 레벨, 스마트 형식 추천. 브라우저 로컬 처리, 업로드 없음.',siteName:'imagec',jsonLdDesc:'무료 온라인 이미지 압축 도구. PNG, JPG, WebP 지원, 다중 레벨 압축, PNG 스마트 압축 가능. 모든 처리는 브라우저에서 로컬로 진행.',locale:'ko_KR'},
-  es:{title:'Compresor de Imágenes - Gratis Online PNG/JPG/WebP | Frame',desc:'Compresor de imágenes online gratuito para PNG, JPG y WebP. Compresión multinivel, compresión inteligente PNG, vista previa en tiempo real. Procesado local en el navegador.',ogTitle:'Compresor de Imágenes - Gratis Online PNG/JPG/WebP',ogDesc:'Compresión online gratis. Multinivel, recomendación inteligente de formato. Procesado local, sin subidas.',siteName:'imagec',jsonLdDesc:'Compresor de imágenes online gratuito para PNG, JPG y WebP con compresión multinivel y manejo inteligente de PNG. Procesado local en el navegador.',locale:'es_ES'},
-  fr:{title:'Compresseur d\'Images - Gratuit en Ligne PNG/JPG/WebP | Frame',desc:'Compresseur d\'images en ligne gratuit pour PNG, JPG et WebP. Compression à plusieurs niveaux, compression intelligente PNG, aperçu en temps réel. Traitement local dans le navigateur.',ogTitle:'Compresseur d\'Images - Gratuit en Ligne PNG/JPG/WebP',ogDesc:'Compression en ligne gratuite. Plusieurs niveaux, recommandation intelligente. Traitement local, aucun téléchargement.',siteName:'imagec',jsonLdDesc:'Compresseur d\'images en ligne gratuit pour PNG, JPG et WebP avec compression à plusieurs niveaux et gestion intelligente des PNG. Tout est traité localement.',locale:'fr_FR'},
-  de:{title:'Bildkompressor - Kostenlos Online PNG/JPG/WebP | Frame',desc:'Kostenloser Online-Bildkompressor für PNG, JPG und WebP. Mehrstufige Kompression, intelligente PNG-Kompression, Echtzeitvorschau. Lokal im Browser verarbeitet.',ogTitle:'Bildkompressor - Kostenlos Online PNG/JPG/WebP',ogDesc:'Kostenlose Online-Bildkompression. Mehrstufig, intelligente Formatempfehlung. Lokal verarbeitet, keine Uploads.',siteName:'imagec',jsonLdDesc:'Kostenloser Online-Bildkompressor für PNG, JPG und WebP mit mehrstufiger Kompression und intelligenter PNG-Behandlung. Alles lokal im Browser.',locale:'de_DE'},
-  ru:{title:'Сжатие Изображений - Бесплатный Онлайн PNG/JPG/WebP | Frame',desc:'Бесплатный онлайн-инструмент для сжатия PNG, JPG и WebP. Многоуровневое сжатие, интеллектуальное сжатие PNG, предпросмотр в реальном времени. Локальная обработка в браузере.',ogTitle:'Сжатие Изображений - Бесплатный Онлайн PNG/JPG/WebP',ogDesc:'Бесплатное онлайн-сжатие. Многоуровневое, интеллектуальная рекомендация формата. Локальная обработка, без загрузок.',siteName:'imagec',jsonLdDesc:'Бесплатный онлайн-инструмент для сжатия PNG, JPG и WebP с многоуровневым сжатием и интеллектуальной обработкой PNG. Всё обрабатывается локально.',locale:'ru_RU'},
-  pt:{title:'Compressor de Imagens - Grátis Online PNG/JPG/WebP | Frame',desc:'Compressor de imagens online gratuito para PNG, JPG e WebP. Compressão multinível, compressão inteligente PNG, pré-visualização em tempo real. Processamento local no navegador.',ogTitle:'Compressor de Imagens - Grátis Online PNG/JPG/WebP',ogDesc:'Compressão online grátis. Multinível, recomendação inteligente de formato. Processado localmente, sem uploads.',siteName:'imagec',jsonLdDesc:'Compressor de imagens online gratuito para PNG, JPG e WebP com compressão multinível e manejo inteligente de PNG. Tudo processado localmente.',locale:'pt_BR'},
+  en:{title:'Image Compressor - Free Online PNG/JPG/WebP | imagec',desc:'Free online image compressor for PNG, JPG, and WebP. Multi-level compression, smart PNG handling, real-time preview. All processing happens locally in your browser.',ogTitle:'Image Compressor - Free Online PNG/JPG/WebP',ogDesc:'Free online image compression. Multi-level compression, smart format recommendation. Processed locally, no uploads.',siteName:'imagec',jsonLdDesc:'Free online image compressor supporting PNG, JPG, and WebP with multi-level compression and smart PNG handling. All processing happens locally.',locale:'en_US'},
+  ja:{title:'画像圧縮ツール - 無料オンライン PNG/JPG/WebP | imagec',desc:'無料オンライン画像圧縮ツール。PNG、JPG、WebP対応、複数レベルの圧縮、PNGスマート圧縮、リアルタイムプレビュー。すべてブラウザ内でローカル処理。',ogTitle:'画像圧縮ツール - 無料オンライン PNG/JPG/WebP',ogDesc:'無料オンライン画像圧縮。複数レベル、スマート形式推奨。ブラウザ内ローカル処理、アップロードなし。',siteName:'imagec',jsonLdDesc:'無料オンライン画像圧縮ツール。PNG、JPG、WebP対応、複数レベルの圧縮、PNGスマート圧縮可能。すべてブラウザ内でローカル処理。',locale:'ja_JP'},
+  ko:{title:'이미지 압축 도구 - 무료 온라인 PNG/JPG/WebP | imagec',desc:'무료 온라인 이미지 압축 도구. PNG, JPG, WebP 지원, 다중 레벨 압축, PNG 스마트 압축, 실시간 미리보기. 모든 처리는 브라우저에서 로컬로 진행.',ogTitle:'이미지 압축 도구 - 무료 온라인 PNG/JPG/WebP',ogDesc:'무료 온라인 이미지 압축. 다중 레벨, 스마트 형식 추천. 브라우저 로컬 처리, 업로드 없음.',siteName:'imagec',jsonLdDesc:'무료 온라인 이미지 압축 도구. PNG, JPG, WebP 지원, 다중 레벨 압축, PNG 스마트 압축 가능. 모든 처리는 브라우저에서 로컬로 진행.',locale:'ko_KR'},
+  es:{title:'Compresor de Imágenes - Gratis Online PNG/JPG/WebP | imagec',desc:'Compresor de imágenes online gratuito para PNG, JPG y WebP. Compresión multinivel, compresión inteligente PNG, vista previa en tiempo real. Procesado local en el navegador.',ogTitle:'Compresor de Imágenes - Gratis Online PNG/JPG/WebP',ogDesc:'Compresión online gratis. Multinivel, recomendación inteligente de formato. Procesado local, sin subidas.',siteName:'imagec',jsonLdDesc:'Compresor de imágenes online gratuito para PNG, JPG y WebP con compresión multinivel y manejo inteligente de PNG. Procesado local en el navegador.',locale:'es_ES'},
+  fr:{title:'Compresseur d\'Images - Gratuit en Ligne PNG/JPG/WebP | imagec',desc:'Compresseur d\'images en ligne gratuit pour PNG, JPG et WebP. Compression à plusieurs niveaux, compression intelligente PNG, aperçu en temps réel. Traitement local dans le navigateur.',ogTitle:'Compresseur d\'Images - Gratuit en Ligne PNG/JPG/WebP',ogDesc:'Compression en ligne gratuite. Plusieurs niveaux, recommandation intelligente. Traitement local, aucun téléchargement.',siteName:'imagec',jsonLdDesc:'Compresseur d\'images en ligne gratuit pour PNG, JPG et WebP avec compression à plusieurs niveaux et gestion intelligente des PNG. Tout est traité localement.',locale:'fr_FR'},
+  de:{title:'Bildkompressor - Kostenlos Online PNG/JPG/WebP | imagec',desc:'Kostenloser Online-Bildkompressor für PNG, JPG und WebP. Mehrstufige Kompression, intelligente PNG-Kompression, Echtzeitvorschau. Lokal im Browser verarbeitet.',ogTitle:'Bildkompressor - Kostenlos Online PNG/JPG/WebP',ogDesc:'Kostenlose Online-Bildkompression. Mehrstufig, intelligente Formatempfehlung. Lokal verarbeitet, keine Uploads.',siteName:'imagec',jsonLdDesc:'Kostenloser Online-Bildkompressor für PNG, JPG und WebP mit mehrstufiger Kompression und intelligenter PNG-Behandlung. Alles lokal im Browser.',locale:'de_DE'},
+  ru:{title:'Сжатие Изображений - Бесплатный Онлайн PNG/JPG/WebP | imagec',desc:'Бесплатный онлайн-инструмент для сжатия PNG, JPG и WebP. Многоуровневое сжатие, интеллектуальное сжатие PNG, предпросмотр в реальном времени. Локальная обработка в браузере.',ogTitle:'Сжатие Изображений - Бесплатный Онлайн PNG/JPG/WebP',ogDesc:'Бесплатное онлайн-сжатие. Многоуровневое, интеллектуальная рекомендация формата. Локальная обработка, без загрузок.',siteName:'imagec',jsonLdDesc:'Бесплатный онлайн-инструмент для сжатия PNG, JPG и WebP с многоуровневым сжатием и интеллектуальной обработкой PNG. Всё обрабатывается локально.',locale:'ru_RU'},
+  pt:{title:'Compressor de Imagens - Grátis Online PNG/JPG/WebP | imagec',desc:'Compressor de imagens online gratuito para PNG, JPG e WebP. Compressão multinível, compressão inteligente PNG, pré-visualização em tempo real. Processamento local no navegador.',ogTitle:'Compressor de Imagens - Grátis Online PNG/JPG/WebP',ogDesc:'Compressão online grátis. Multinível, recomendação inteligente de formato. Processado localmente, sem uploads.',siteName:'imagec',jsonLdDesc:'Compressor de imagens online gratuito para PNG, JPG e WebP com compressão multinível e manejo inteligente de PNG. Tudo processado localmente.',locale:'pt_BR'},
   ar:{title:'ضاغط الصور - مجاني عبر الإنترنت PNG/JPG/WebP | فريم',desc:'أداة مجانية عبر الإنترنت لضغط الصور PNG و JPG و WebP. ضغط متعدد المستويات، ضغط PNG ذكي، معاينة فورية. تتم المعالجة محلياً في المتصفح.',ogTitle:'ضاغط الصور - مجاني عبر الإنترنت PNG/JPG/WebP',ogDesc:'ضغط صور مجاني عبر الإنترنت. متعدد المستويات، توصية تنسيق ذكية. معالجة محلية، بدون رفع.',siteName:'imagec',jsonLdDesc:'أداة مجانية عبر الإنترنت لضغط الصور PNG و JPG و WebP بضغط متعدد المستويات ومعالجة ذكية لـ PNG. تتم المعالجة محلياً.',locale:'ar_AR'},
-  vi:{title:'Công Cụ Nén Ảnh - Miễn Phí Trực Tuyến PNG/JPG/WebP | Frame',desc:'Công cụ nén ảnh trực tuyến miễn phí cho PNG, JPG và WebP. Nén đa cấp, nén PNG thông minh, xem trước thời gian thực. Xử lý cục bộ trong trình duyệt.',ogTitle:'Công Cụ Nén Ảnh - Miễn Phí Trực Tuyến PNG/JPG/WebP',ogDesc:'Nén ảnh trực tuyến miễn phí. Đa cấp, khuyến nghị định dạng thông minh. Xử lý cục bộ, không tải lên.',siteName:'imagec',jsonLdDesc:'Công cụ nén ảnh trực tuyến miễn phí cho PNG, JPG và WebP với nén đa cấp và xử lý PNG thông minh. Tất cả xử lý cục bộ.',locale:'vi_VN'},
-  id:{title:'Kompresor Gambar - Gratis Online PNG/JPG/WebP | Frame',desc:'Kompresor gambar online gratis untuk PNG, JPG dan WebP. Kompresi multi-level, kompresi PNG cerdas, pratinjau real-time. Diproses secara lokal di browser.',ogTitle:'Kompresor Gambar - Gratis Online PNG/JPG/WebP',ogDesc:'Kompresi gambar online gratis. Multi-level, rekomendasi format cerdas. Diproses secara lokal, tanpa unggahan.',siteName:'imagec',jsonLdDesc:'Kompresor gambar online gratis untuk PNG, JPG dan WebP dengan kompresi multi-level dan kompresi PNG cerdas. Semua diproses secara lokal.',locale:'id_ID'},
+  vi:{title:'Công Cụ Nén Ảnh - Miễn Phí Trực Tuyến PNG/JPG/WebP | imagec',desc:'Công cụ nén ảnh trực tuyến miễn phí cho PNG, JPG và WebP. Nén đa cấp, nén PNG thông minh, xem trước thời gian thực. Xử lý cục bộ trong trình duyệt.',ogTitle:'Công Cụ Nén Ảnh - Miễn Phí Trực Tuyến PNG/JPG/WebP',ogDesc:'Nén ảnh trực tuyến miễn phí. Đa cấp, khuyến nghị định dạng thông minh. Xử lý cục bộ, không tải lên.',siteName:'imagec',jsonLdDesc:'Công cụ nén ảnh trực tuyến miễn phí cho PNG, JPG và WebP với nén đa cấp và xử lý PNG thông minh. Tất cả xử lý cục bộ.',locale:'vi_VN'},
+  id:{title:'Kompresor Gambar - Gratis Online PNG/JPG/WebP | imagec',desc:'Kompresor gambar online gratis untuk PNG, JPG dan WebP. Kompresi multi-level, kompresi PNG cerdas, pratinjau real-time. Diproses secara lokal di browser.',ogTitle:'Kompresor Gambar - Gratis Online PNG/JPG/WebP',ogDesc:'Kompresi gambar online gratis. Multi-level, rekomendasi format cerdas. Diproses secara lokal, tanpa unggahan.',siteName:'imagec',jsonLdDesc:'Kompresor gambar online gratis untuk PNG, JPG dan WebP dengan kompresi multi-level dan kompresi PNG cerdas. Semua diproses secara lokal.',locale:'id_ID'},
   th:{title:'เครื่องมือบีบอัดรูปภาพ - ฟรีออนไลน์ PNG/JPG/WebP | imagec',desc:'เครื่องมือบีบอัดรูปภาพออนไลน์ฟรีสำหรับ PNG, JPG และ WebP การบีบอัดหลายระดับ การบีบอัด PNG อัจฉริยะ พรีวิวแบบเรียลไทม์ ประมวลผลในเบราว์เซอร์เครื่อง',ogTitle:'เครื่องมือบีบอัดรูปภาพ - ฟรีออนไลน์ PNG/JPG/WebP',ogDesc:'บีบอัดรูปภาพออนไลน์ฟรี หลายระดับ แนะนำรูปแบบอัจฉริยะ ประมวลผลในเบราว์เซอร์เครื่อง ไม่อัปโหลด',siteName:'imagec',jsonLdDesc:'เครื่องมือบีบอัดรูปภาพออนไลน์ฟรีสำหรับ PNG, JPG และ WebP ด้วยการบีบอัดหลายระดับและการบีบอัด PNG อัจฉริยะ ทุกอย่างประมวลผลในเบราว์เซอร์เครื่อง',locale:'th_TH'},
 };
 
 const messages={
-zh:{brand:'imagec',toolWhitebg:'去白底',toolCompress:'压缩',toolConvert:'转换',toolCrop:'裁剪',toolIdphoto:'证件照',toolWatermark:'水印',toolBgcolor:'换底色',toolSplice:'拼接',toolImg2pdf:'转PDF',toolFilter:'滤镜',title:'在线图片压缩',subtitle:'免费在线图片压缩：PNG / JPG / WebP 多档压缩，可预览效果。浏览器本地处理，图片不上传。',privacy:'仅在浏览器本地处理 · 图片不会上传到服务器',upload:'点击选择或拖入图片',formats:'支持 PNG、JPG、WebP<br>也可直接粘贴图片',level:'压缩等级',lvLight:'轻度',lvLightDesc:'画质几乎不变',lvStd:'标准',lvStdDesc:'推荐 · 平衡',lvStrong:'强力',lvStrongDesc:'体积大幅减小',lvExtreme:'极致',lvExtremeDesc:'最小体积',quality:'压缩质量',scale:'宽度缩放',byPercent:'按百分比',byPixel:'按像素',download:'下载压缩后图片',reset:'恢复默认',waiting:'等待图片',emptyTitle:'把图片放进来试试',origSize:'原始大小',compSize:'压缩后大小',saved:'压缩率',savedPrefix:'节省',increased:'体积增加',noChange:'体积无变化',methodPalette:'调色板压缩',methodWebp:'WebP 压缩',methodLossy:'有损压缩',methodLossless:'无损压缩',methodJpeg:'JPG 压缩',smartChoice:'智能选择',moreTools:'更多图片工具',rcCompress:'图片压缩',rcConvert:'格式转换',rcCrop:'裁剪缩放',rcIdphoto:'证件照换底色',rcWatermark:'加水印',rcBgcolor:'换背景色',rcSplice:'图片拼接',rcImg2pdf:'转PDF',rcFilter:'滤镜调色'},
-en:{brand:'imagec',toolWhitebg:'Remove White',toolCompress:'Compress',toolConvert:'Convert',toolCrop:'Crop',toolIdphoto:'ID Photo',toolWatermark:'Watermark',toolBgcolor:'BG Color',toolSplice:'Splice',toolImg2pdf:'to PDF',toolFilter:'Filters',title:'Image Compressor',subtitle:'Free online image compression for PNG/JPG/WebP with multi-level compression, smart PNG handling, and real-time preview. Processed locally in your browser.',privacy:'Processed locally in your browser · Images are never uploaded',upload:'Choose or drop an image',formats:'PNG, JPG, and WebP supported<br>You can also paste an image',level:'Compression level',lvLight:'Light',lvLightDesc:'Nearly identical quality',lvStd:'Standard',lvStdDesc:'Recommended · Balanced',lvStrong:'Strong',lvStrongDesc:'Much smaller size',lvExtreme:'Extreme',lvExtremeDesc:'Minimum size',quality:'Compression quality',scale:'Width scaling',byPercent:'By percent',byPixel:'By pixels',download:'Download compressed image',reset:'Reset defaults',waiting:'Waiting for image',emptyTitle:'Drop an image here',origSize:'Original size',compSize:'Compressed size',saved:'Saved',savedPrefix:'saved',increased:'Size increased by',noChange:'No change in size',methodPalette:'Palette compression',methodWebp:'WebP compression',methodLossy:'Lossy compression',methodLossless:'Lossless compression',methodJpeg:'JPEG compression',smartChoice:'Smart choice',moreTools:'More image tools',rcCompress:'Compress',rcConvert:'Convert Format',rcCrop:'Crop & Resize',rcIdphoto:'ID Photo BG',rcWatermark:'Watermark',rcBgcolor:'BG Color',rcSplice:'Splice',rcImg2pdf:'To PDF',rcFilter:'Filters'},
-ja:{brand:'imagec',toolWhitebg:'白抜き',toolCompress:'圧縮',toolConvert:'変換',toolCrop:'切り抜き',toolIdphoto:'証明写真',toolWatermark:'透かし',toolBgcolor:'背景色',toolSplice:'結合',toolImg2pdf:'PDF変換',toolFilter:'フィルタ',title:'画像圧縮ツール',subtitle:'PNG・JPG・WebP画像をオンラインで無料圧縮。複数レベルの圧縮、PNGスマート圧縮、リアルタイムプレビュー。ブラウザ内でローカル処理。',privacy:'ブラウザ内でローカル処理 · 画像はサーバーにアップロードされません',upload:'クリックして選択または画像をドロップ',formats:'PNG、JPG、WebP対応<br>画像の貼り付けも可能',level:'圧縮レベル',lvLight:'軽度',lvLightDesc:'画質ほぼそのまま',lvStd:'標準',lvStdDesc:'推奨 · バランス',lvStrong:'強力',lvStrongDesc:'大幅に軽量化',lvExtreme:'极致',lvExtremeDesc:'最小サイズ',quality:'圧縮品質',scale:'幅スケーリング',byPercent:'パーセントで',byPixel:'ピクセルで',download:'圧縮後の画像をダウンロード',reset:'デフォルトに戻す',waiting:'画像待ち',emptyTitle:'画像をドロップしてください',origSize:'元のサイズ',compSize:'圧縮後サイズ',saved:'圧縮率',savedPrefix:'削減',increased:'サイズ増加',noChange:'サイズ変化なし',methodPalette:'パレット圧縮',methodWebp:'WebP圧縮',methodLossy:'非可逆圧縮',methodLossless:'可逆圧縮',methodJpeg:'JPEG圧縮',smartChoice:'スマート選択',moreTools:'その他の画像ツール',rcCompress:'画像圧縮',rcConvert:'形式変換',rcCrop:'切り抜き・サイズ変更',rcIdphoto:'証明写真背景',rcWatermark:'透かし',rcBgcolor:'背景色',rcSplice:'画像結合',rcImg2pdf:'PDF変換',rcFilter:'フィルタ調整'},
-ko:{brand:'imagec',toolWhitebg:'흰배경제거',toolCompress:'압축',toolConvert:'변환',toolCrop:'자르기',toolIdphoto:'증명사진',toolWatermark:'워터마크',toolBgcolor:'배경색',toolSplice:'이어붙이기',toolImg2pdf:'PDF변환',toolFilter:'필터',title:'이미지 압축 도구',subtitle:'PNG/JPG/WebP 이미지를 온라인에서 무료 압축. 다중 레벨 압축, PNG 스마트 압축, 실시간 미리보기. 브라우저에서 로컬 처리.',privacy:'브라우저에서 로컬 처리 · 이미지가 서버에 업로드되지 않습니다',upload:'클릭하여 선택하거나 이미지를 드롭',formats:'PNG, JPG, WebP 지원<br>이미지 붙여넣기도 가능',level:'압축 레벨',lvLight:'가벼움',lvLightDesc:'품질 거의 동일',lvStd:'표준',lvStdDesc:'추천 · 균형',lvStrong:'강력',lvStrongDesc:'훨씬 작은 크기',lvExtreme:'극한',lvExtremeDesc:'최소 크기',quality:'압축 품질',scale:'너비 크기 조절',byPercent:'비율로',byPixel:'픽셀로',download:'압축된 이미지 다운로드',reset:'기본값으로 재설정',waiting:'이미지 대기 중',emptyTitle:'이미지를 드롭하세요',origSize:'원본 크기',compSize:'압축 후 크기',saved:'압축률',savedPrefix:'절약',increased:'크기 증가',noChange:'크기 변화 없음',methodPalette:'팔레트 압축',methodWebp:'WebP 압축',methodLossy:'손실 압축',methodLossless:'무손실',methodJpeg:'JPEG 압축',smartChoice:'스마트 선택',moreTools:'더 많은 이미지 도구',rcCompress:'이미지 압축',rcConvert:'형식 변환',rcCrop:'자르기 및 크기 조절',rcIdphoto:'증명사진 배경',rcWatermark:'워터마크',rcBgcolor:'배경색',rcSplice:'이미지 이어붙이기',rcImg2pdf:'PDF 변환',rcFilter:'필터 보정'},
-es:{brand:'imagec',toolWhitebg:'Quitar Blanco',toolCompress:'Comprimir',toolConvert:'Convertir',toolCrop:'Recortar',toolIdphoto:'Foto ID',toolWatermark:'Marca',toolBgcolor:'Color Fondo',toolSplice:'Unir',toolImg2pdf:'a PDF',toolFilter:'Filtros',title:'Compresor de Imágenes',subtitle:'Compresión de imágenes online gratuita para PNG/JPG/WebP con compresión multinivel, compresión inteligente PNG y vista previa en tiempo real. Procesado local en el navegador.',privacy:'Procesado localmente en tu navegador · Las imágenes nunca se suben',upload:'Elige o suelta una imagen',formats:'PNG, JPG y WebP soportados<br>También puedes pegar una imagen',level:'Nivel de compresión',lvLight:'Ligero',lvLightDesc:'Calidad casi idéntica',lvStd:'Estándar',lvStdDesc:'Recomendado · Equilibrado',lvStrong:'Fuerte',lvStrongDesc:'Mucho más pequeño',lvExtreme:'Extremo',lvExtremeDesc:'Tamaño mínimo',quality:'Calidad de compresión',scale:'Escalado de ancho',byPercent:'Por porcentaje',byPixel:'Por píxeles',download:'Descargar imagen comprimida',reset:'Restablecer valores',waiting:'Esperando imagen',emptyTitle:'Suelta una imagen aquí',origSize:'Tamaño original',compSize:'Tamaño comprimido',saved:'Ahorro',savedPrefix:'ahorrado',increased:'Tamaño aumentado en',noChange:'Sin cambio de tamaño',methodPalette:'Paleta',methodWebp:'Compresión WebP',methodLossy:'Compresión con pérdida',methodLossless:'Compresión sin pérdida',methodJpeg:'Compresión JPEG',smartChoice:'Elección inteligente',moreTools:'Más herramientas de imagen',rcCompress:'Comprimir',rcConvert:'Convertir Formato',rcCrop:'Recortar y Redimensionar',rcIdphoto:'Fondo Foto ID',rcWatermark:'Marca de agua',rcBgcolor:'Color Fondo',rcSplice:'Unir Imágenes',rcImg2pdf:'A PDF',rcFilter:'Filtros'},
-fr:{brand:'imagec',toolWhitebg:'Supprimer Blanc',toolCompress:'Compresser',toolConvert:'Convertir',toolCrop:'Recadrer',toolIdphoto:'Photo ID',toolWatermark:'Filigrane',toolBgcolor:'Couleur Fond',toolSplice:'Assembler',toolImg2pdf:'vers PDF',toolFilter:'Filtres',title:'Compresseur d\'Images',subtitle:'Compression d\'images en ligne gratuite pour PNG/JPG/WebP avec compression à plusieurs niveaux, compression intelligente PNG et aperçu en temps réel. Traitement local dans le navigateur.',privacy:'Traitement local dans votre navigateur · Les images ne sont jamais téléchargées',upload:'Choisir ou déposer une image',formats:'PNG, JPG et WebP pris en charge<br>Vous pouvez aussi coller une image',level:'Niveau de compression',lvLight:'Léger',lvLightDesc:'Qualité presque identique',lvStd:'Standard',lvStdDesc:'Recommandé · Équilibré',lvStrong:'Fort',lvStrongDesc:'Beaucoup plus petit',lvExtreme:'Extrême',lvExtremeDesc:'Taille minimale',quality:'Qualité de compression',scale:'Mise à l\'échelle',byPercent:'Par pourcentage',byPixel:'Par pixels',download:'Télécharger l\'image compressée',reset:'Réinitialiser',waiting:'En attente d\'image',emptyTitle:'Déposez une image ici',origSize:'Taille originale',compSize:'Taille compressée',saved:'Compression',savedPrefix:'économisé',increased:'Taille augmentée de',noChange:'Aucun changement de taille',methodPalette:'Palette',methodWebp:'Compression WebP',methodLossy:'Compression avec perte',methodLossless:'Compression sans perte',methodJpeg:'Compression JPEG',smartChoice:'Choix intelligent',moreTools:'Plus d\'outils d\'image',rcCompress:'Compresser',rcConvert:'Convertir Format',rcCrop:'Recadrer et Redimensionner',rcIdphoto:'Fond Photo ID',rcWatermark:'Filigrane',rcBgcolor:'Couleur Fond',rcSplice:'Assembler Images',rcImg2pdf:'Vers PDF',rcFilter:'Filtres'},
-de:{brand:'imagec',toolWhitebg:'Weiß entfernen',toolCompress:'Komprimieren',toolConvert:'Konvertieren',toolCrop:'Zuschneiden',toolIdphoto:'Ausweisfoto',toolWatermark:'Wasserzeichen',toolBgcolor:'Hintergrundfarbe',toolSplice:'Zusammenfügen',toolImg2pdf:'zu PDF',toolFilter:'Filter',title:'Bildkompressor',subtitle:'Kostenlose Online-Bildkompression für PNG/JPG/WebP mit mehrstufiger Kompression, intelligenter PNG-Kompression und Echtzeitvorschau. Lokal im Browser verarbeitet.',privacy:'Lokal in Ihrem Browser verarbeitet · Bilder werden nie hochgeladen',upload:'Bild auswählen oder ablegen',formats:'PNG, JPG und WebP unterstützt<br>Sie können auch ein Bild einfügen',level:'Kompressionsstufe',lvLight:'Leicht',lvLightDesc:'Fast gleiche Qualität',lvStd:'Standard',lvStdDesc:'Empfohlen · Ausgewogen',lvStrong:'Stark',lvStrongDesc:'Viel kleiner',lvExtreme:'Extrem',lvExtremeDesc:'Minimale Größe',quality:'Kompressionsqualität',scale:'Breitenskalierung',byPercent:'Nach Prozent',byPixel:'Nach Pixeln',download:'Komprimiertes Bild herunterladen',reset:'Zurücksetzen',waiting:'Warte auf Bild',emptyTitle:'Bild hier ablegen',origSize:'Originalgröße',compSize:'Komprimierte Größe',saved:'Kompression',savedPrefix:'gespart',increased:'Größe erhöht um',noChange:'Keine Größenänderung',methodPalette:'Palette',methodWebp:'WebP-Kompression',methodLossy:'Verlustbehaftete Kompression',methodLossless:'Verlustfreie Kompression',methodJpeg:'JPEG-Kompression',smartChoice:'Smart-Choice',moreTools:'Weitere Bildwerkzeuge',rcCompress:'Komprimieren',rcConvert:'Format konvertieren',rcCrop:'Zuschneiden & Skalieren',rcIdphoto:'Ausweisfoto-Hintergrund',rcWatermark:'Wasserzeichen',rcBgcolor:'Hintergrundfarbe',rcSplice:'Bilder zusammenfügen',rcImg2pdf:'Zu PDF',rcFilter:'Filter'},
-ru:{brand:'imagec',toolWhitebg:'Удалить белый',toolCompress:'Сжать',toolConvert:'Конвертировать',toolCrop:'Обрезать',toolIdphoto:'Фото для документов',toolWatermark:'Водяной знак',toolBgcolor:'Цвет фона',toolSplice:'Склеить',toolImg2pdf:'В PDF',toolFilter:'Фильтры',title:'Сжатие Изображений',subtitle:'Бесплатное онлайн-сжатие PNG/JPG/WebP с многоуровневым сжатием, интеллектуальным сжатием PNG и предпросмотром в реальном времени. Локальная обработка в браузере.',privacy:'Обработка локально в браузере · Изображения не загружаются',upload:'Выберите или перетащите изображение',formats:'Поддерживаются PNG, JPG, WebP<br>Также можно вставить изображение',level:'Уровень сжатия',lvLight:'Лёгкий',lvLightDesc:'Качество почти идентичное',lvStd:'Стандарт',lvStdDesc:'Рекомендуется · Сбалансировано',lvStrong:'Сильный',lvStrongDesc:'Намного меньше',lvExtreme:'Экстрим',lvExtremeDesc:'Минимальный размер',quality:'Качество сжатия',scale:'Масштабирование ширины',byPercent:'По процентам',byPixel:'По пикселям',download:'Скачать сжатое изображение',reset:'Сбросить настройки',waiting:'Ожидание изображения',emptyTitle:'Перетащите изображение сюда',origSize:'Исходный размер',compSize:'Сжатый размер',saved:'Сжатие',savedPrefix:'сэкономлено',increased:'Размер увеличен на',noChange:'Без изменений размера',methodPalette:'Палитра',methodWebp:'WebP-сжатие',methodLossy:'Сжатие с потерями',methodLossless:'Без потерь',methodJpeg:'JPEG-сжатие',smartChoice:'Умный выбор',moreTools:'Больше инструментов',rcCompress:'Сжать',rcConvert:'Конвертировать',rcCrop:'Обрезать и изменить',rcIdphoto:'Фон документов',rcWatermark:'Водяной знак',rcBgcolor:'Цвет фона',rcSplice:'Склеить изображения',rcImg2pdf:'В PDF',rcFilter:'Фильтры'},
-pt:{brand:'imagec',toolWhitebg:'Remover Branco',toolCompress:'Comprimir',toolConvert:'Converter',toolCrop:'Cortar',toolIdphoto:'Foto ID',toolWatermark:'Marca',toolBgcolor:'Cor Fundo',toolSplice:'Unir',toolImg2pdf:'para PDF',toolFilter:'Filtros',title:'Compressor de Imagens',subtitle:'Compressão de imagens online gratuita para PNG/JPG/WebP com compressão multinível, compressão inteligente PNG e pré-visualização em tempo real. Processamento local no navegador.',privacy:'Processado localmente no seu navegador · As imagens nunca são enviadas',upload:'Escolha ou solte uma imagem',formats:'PNG, JPG e WebP suportados<br>Você também pode colar uma imagem',level:'Nível de compressão',lvLight:'Leve',lvLightDesc:'Qualidade quase idêntica',lvStd:'Padrão',lvStdDesc:'Recomendado · Equilibrado',lvStrong:'Forte',lvStrongDesc:'Muito menor',lvExtreme:'Extremo',lvExtremeDesc:'Tamanho mínimo',quality:'Qualidade da compressão',scale:'Dimensionamento da largura',byPercent:'Por percentagem',byPixel:'Por pixels',download:'Baixar imagem comprimida',reset:'Restaurar predefinições',waiting:'Aguardando imagem',emptyTitle:'Solte uma imagem aqui',origSize:'Tamanho original',compSize:'Tamanho comprimido',saved:'Compressão',savedPrefix:'economizado',increased:'Tamanho aumentado em',noChange:'Sem alteração de tamanho',methodPalette:'Paleta',methodWebp:'Compressão WebP',methodLossy:'Compressão com perdas',methodLossless:'Sem perdas',methodJpeg:'Compressão JPEG',smartChoice:'Escolha inteligente',moreTools:'Mais ferramentas de imagem',rcCompress:'Comprimir',rcConvert:'Converter Formato',rcCrop:'Cortar e Redimensionar',rcIdphoto:'Fundo Foto ID',rcWatermark:'Marca d\'água',rcBgcolor:'Cor Fundo',rcSplice:'Unir Imagens',rcImg2pdf:'Para PDF',rcFilter:'Filtros'},
-ar:{brand:'imagec',toolWhitebg:'إزالة الأبيض',toolCompress:'ضغط',toolConvert:'تحويل',toolCrop:'اقتصاص',toolIdphoto:'صورة هوية',toolWatermark:'علامة مائية',toolBgcolor:'لون الخلفية',toolSplice:'دمج',toolImg2pdf:'إلى PDF',toolFilter:'مرشحات',title:'ضاغط الصور',subtitle:'ضغط صور مجاني عبر الإنترنت لـ PNG/JPG/WebP مع ضغط متعدد المستويات وضغط PNG ذكي ومعاينة فورية. تتم المعالجة محلياً في المتصفح.',privacy:'تتم المعالجة محلياً في متصفحك · لا يتم رفع الصور أبداً',upload:'اختر أو أسقط صورة',formats:'يدعم PNG و JPG و WebP<br>يمكنك أيضاً لصق صورة',level:'مستوى الضغط',lvLight:'خفيف',lvLightDesc:'جودة شبه متطابقة',lvStd:'قياسي',lvStdDesc:'موصى به · متوازن',lvStrong:'قوي',lvStrongDesc:'أصغر بكثير',lvExtreme:'متطرف',lvExtremeDesc:'أصغر حجم',quality:'جودة الضغط',scale:'تغيير حجم العرض',byPercent:'بنسبة مئوية',byPixel:'بالبكسل',download:'تنزيل الصورة المضغوطة',reset:'إعادة التعيين',waiting:'في انتظار صورة',emptyTitle:'أسقط صورة هنا',origSize:'الحجم الأصلي',compSize:'الحجم المضغوط',saved:'نسبة الضغط',savedPrefix:'تم توفير',increased:'زيادة الحجم بمقدار',noChange:'لا تغيير في الحجم',methodPalette:'لوحة ألوان',methodWebp:'ضغط WebP',methodLossy:'ضغط مع فقدان',methodLossless:'بدون فقدان',methodJpeg:'ضغط JPEG',smartChoice:'اختيار ذكي',moreTools:'المزيد من أدوات الصور',rcCompress:'ضغط',rcConvert:'تحويل التنسيق',rcCrop:'اقتصاص وتغيير الحجم',rcIdphoto:'خلفية صورة هوية',rcWatermark:'علامة مائية',rcBgcolor:'لون الخلفية',rcSplice:'دمج الصور',rcImg2pdf:'إلى PDF',rcFilter:'مرشحات'},
-vi:{brand:'imagec',toolWhitebg:'Xóa trắng',toolCompress:'Nén',toolConvert:'Chuyển đổi',toolCrop:'Cắt',toolIdphoto:'Ảnh ID',toolWatermark:'Watermark',toolBgcolor:'Màu nền',toolSplice:'Ghép',toolImg2pdf:'sang PDF',toolFilter:'Bộ lọc',title:'Công Cụ Nén Ảnh',subtitle:'Nén ảnh trực tuyến miễn phí cho PNG/JPG/WebP với nén đa cấp, nén PNG thông minh và xem trước thời gian thực. Xử lý cục bộ trong trình duyệt.',privacy:'Xử lý cục bộ trong trình duyệt · Không bao giờ tải ảnh lên',upload:'Chọn hoặc thả hình ảnh',formats:'Hỗ trợ PNG, JPG, WebP<br>Bạn cũng có thể dán hình ảnh',level:'Mức nén',lvLight:'Nhẹ',lvLightDesc:'Chất lượng gần như không đổi',lvStd:'Tiêu chuẩn',lvStdDesc:'Khuyến nghị · Cân bằng',lvStrong:'Mạnh',lvStrongDesc:'Nhỏ hơn nhiều',lvExtreme:'Cực hạn',lvExtremeDesc:'Kích thước tối thiểu',quality:'Chất lượng nén',scale:'Thay đổi chiều rộng',byPercent:'Theo tỷ lệ %',byPixel:'Theo pixel',download:'Tải xuống ảnh đã nén',reset:'Đặt lại mặc định',waiting:'Đang chờ hình ảnh',emptyTitle:'Thả hình ảnh vào đây',origSize:'Kích thước gốc',compSize:'Kích thước đã nén',saved:'Tỷ lệ nén',savedPrefix:'tiết kiệm',increased:'Kích thước tăng thêm',noChange:'Không thay đổi kích thước',methodPalette:'Bảng màu',methodWebp:'Nén WebP',methodLossy:'Nén mất dữ liệu',methodLossless:'Không mất dữ liệu',methodJpeg:'Nén JPEG',smartChoice:'Lựa chọn thông minh',moreTools:'Thêm công cụ hình ảnh',rcCompress:'Nén ảnh',rcConvert:'Chuyển định dạng',rcCrop:'Cắt và thay đổi',rcIdphoto:'Nền ảnh ID',rcWatermark:'Watermark',rcBgcolor:'Màu nền',rcSplice:'Ghép ảnh',rcImg2pdf:'Sang PDF',rcFilter:'Bộ lọc'},
-id:{brand:'imagec',toolWhitebg:'Hapus Putih',toolCompress:'Kompres',toolConvert:'Konversi',toolCrop:'Potong',toolIdphoto:'Foto ID',toolWatermark:'Watermark',toolBgcolor:'Warna BG',toolSplice:'Gabung',toolImg2pdf:'ke PDF',toolFilter:'Filter',title:'Kompresor Gambar',subtitle:'Kompresi gambar online gratis untuk PNG/JPG/WebP dengan kompresi multi-level, kompresi PNG cerdas, pratinjau real-time. Diproses secara lokal di browser.',privacy:'Diproses secara lokal di browser · Gambar tidak pernah diunggah',upload:'Pilih atau jatuhkan gambar',formats:'Mendukung PNG, JPG, WebP<br>Anda juga bisa menempel gambar',level:'Level kompresi',lvLight:'Ringan',lvLightDesc:'Kualitas hampir sama',lvStd:'Standar',lvStdDesc:'Direkomendasikan · Seimbang',lvStrong:'Kuat',lvStrongDesc:'Jauh lebih kecil',lvExtreme:'Ekstrem',lvExtremeDesc:'Ukuran minimum',quality:'Kualitas kompresi',scale:'Penskalaan lebar',byPercent:'Berdasarkan %',byPixel:'Berdasarkan piksel',download:'Unduh gambar terkompresi',reset:'Setel ulang',waiting:'Menunggu gambar',emptyTitle:'Jatuhkan gambar di sini',origSize:'Ukuran asli',compSize:'Ukuran terkompresi',saved:'Kompresi',savedPrefix:'dihemat',increased:'Ukuran meningkat sebesar',noChange:'Tidak ada perubahan ukuran',methodPalette:'Palet',methodWebp:'Kompresi WebP',methodLossy:'Kompresi lossy',methodLossless:'Tanpa kerugian',methodJpeg:'Kompresi JPEG',smartChoice:'Pilihan cerdas',moreTools:'Alat gambar lainnya',rcCompress:'Kompres',rcConvert:'Konversi Format',rcCrop:'Potong & Skala',rcIdphoto:'Foto ID',rcWatermark:'Watermark',rcBgcolor:'Warna BG',rcSplice:'Gabung Gambar',rcImg2pdf:'Ke PDF',rcFilter:'Filter'},
-th:{brand:'imagec',toolWhitebg:'ลบพื้นขาว',toolCompress:'บีบอัด',toolConvert:'แปลง',toolCrop:'ครอป',toolIdphoto:'รูปบัตร',toolWatermark:'ลายน้ำ',toolBgcolor:'สีพื้นหลัง',toolSplice:'ต่อรูป',toolImg2pdf:'เป็น PDF',toolFilter:'ฟิลเตอร์',title:'เครื่องมือบีบอัดรูปภาพ',subtitle:'บีบอัดรูปภาพออนไลน์ฟรีสำหรับ PNG/JPG/WebP ด้วยการบีบอัดหลายระดับ การบีบอัด PNG อัจฉริยะ และพรีวิวแบบเรียลไทม์ ประมวลผลในเบราว์เซอร์เครื่อง',privacy:'ประมวลผลในเบราว์เซอร์เครื่อง · ไม่อัปโหลดรูปภาพ',upload:'คลิกเลือกหรือลากรูปมาวาง',formats:'รองรับ PNG, JPG, WebP<br>วางรูปจากคลิปบอร์ดได้',level:'ระดับการบีบอัด',lvLight:'เบา',lvLightDesc:'คุณภาพเกือบเหมือนเดิม',lvStd:'มาตรฐาน',lvStdDesc:'แนะนำ · สมดุล',lvStrong:'แรง',lvStrongDesc:'เล็กกว่ามาก',lvExtreme:'สุดขีด',lvExtremeDesc:'ขนาดเล็กสุด',quality:'คุณภาพการบีบอัด',scale:'ปรับขนาดความกว้าง',byPercent:'ตามเปอร์เซ็นต์',byPixel:'ตามพิกเซล',download:'ดาวน์โหลดรูปที่บีบอัดแล้ว',reset:'รีเซ็ตค่าเริ่มต้น',waiting:'รอรูปภาพ',emptyTitle:'ลากรูปมาวางที่นี่',origSize:'ขนาดเดิม',compSize:'ขนาดบีบอัดแล้ว',saved:'อัตราการบีบอัด',savedPrefix:'ประหยัด',increased:'ขนาดเพิ่มขึ้น',noChange:'ไม่มีการเปลี่ยนแปลงขนาด',methodPalette:'จานสี',methodWebp:'บีบอัด WebP',methodLossy:'บีบอัดแบบสูญเสีย',methodLossless:'ไม่สูญเสีย',methodJpeg:'บีบอัด JPEG',smartChoice:'ตัวเลือกอัจฉริยะ',moreTools:'เครื่องมือรูปภาพเพิ่มเติม',rcCompress:'บีบอัด',rcConvert:'แปลงรูปแบบ',rcCrop:'ครอปและปรับขนาด',rcIdphoto:'พื้นหลังรูปบัตร',rcWatermark:'ลายน้ำ',rcBgcolor:'สีพื้นหลัง',rcSplice:'ต่อรูปภาพ',rcImg2pdf:'เป็น PDF',rcFilter:'ฟิลเตอร์'},
+zh:{brand:'imagec',toolWhitebg:'去白底',toolCompress:'压缩',toolConvert:'转换',toolCrop:'裁剪',toolIdphoto:'证件照',toolWatermark:'水印',toolBgcolor:'换底色',toolSplice:'拼接',toolImg2pdf:'转PDF',toolFilter:'滤镜',title:'在线图片压缩',subtitle:'压缩 PNG / JPG / WebP，尽量保住画质。',privacy:'本地处理 · 不上传服务器',upload:'点击选择或拖入图片',formats:'支持 PNG、JPG、WebP<br>也可直接粘贴图片',compressMode:'压缩方式',modeQuality:'质量档',modeTarget:'目标体积',targetKb:'目标大小',compareOrig:'原图',compareNew:'压缩后',level:'压缩等级',lvLight:'轻度',lvLightDesc:'画质几乎不变',lvStd:'标准',lvStdDesc:'推荐 · 平衡',lvStrong:'强力',lvStrongDesc:'体积大幅减小',lvExtreme:'极致',lvExtremeDesc:'最小体积',quality:'压缩质量',scale:'宽度缩放',byPercent:'按百分比',byPixel:'按像素',download:'下载压缩后图片',reset:'恢复默认',waiting:'等待图片',emptyTitle:'把图片放进来试试',origSize:'原始大小',compSize:'压缩后大小',saved:'压缩率',savedPrefix:'节省',increased:'体积增加',noChange:'体积无变化',methodPalette:'调色板压缩',methodWebp:'WebP 压缩',methodLossy:'有损压缩',methodLossless:'无损压缩',methodJpeg:'JPG 压缩',smartChoice:'智能选择',moreTools:'更多图片工具',rcCompress:'图片压缩',rcConvert:'格式转换',rcCrop:'裁剪缩放',rcIdphoto:'证件照换底色',rcWatermark:'加水印',rcBgcolor:'换背景色',rcSplice:'图片拼接',rcImg2pdf:'转PDF',rcFilter:'滤镜调色'},
+en:{brand:'imagec',toolWhitebg:'Remove White',toolCompress:'Compress',toolConvert:'Convert',toolCrop:'Crop',toolIdphoto:'ID Photo',toolWatermark:'Watermark',toolBgcolor:'BG Color',toolSplice:'Splice',toolImg2pdf:'to PDF',toolFilter:'Filters',title:'Image Compressor',subtitle:'Compress PNG, JPG, and WebP while keeping detail.',privacy:'Local · no upload',upload:'Choose or drop an image',formats:'PNG, JPG, and WebP supported<br>You can also paste an image',compressMode:'Mode',modeQuality:'Quality',modeTarget:'Target size',targetKb:'Target size',compareOrig:'Original',compareNew:'Compressed',level:'Compression level',lvLight:'Light',lvLightDesc:'Nearly identical quality',lvStd:'Standard',lvStdDesc:'Recommended · Balanced',lvStrong:'Strong',lvStrongDesc:'Much smaller size',lvExtreme:'Extreme',lvExtremeDesc:'Minimum size',quality:'Compression quality',scale:'Width scaling',byPercent:'By percent',byPixel:'By pixels',download:'Download compressed image',reset:'Reset defaults',waiting:'Waiting for image',emptyTitle:'Drop an image here',origSize:'Original size',compSize:'Compressed size',saved:'Saved',savedPrefix:'saved',increased:'Size increased by',noChange:'No change in size',methodPalette:'Palette compression',methodWebp:'WebP compression',methodLossy:'Lossy compression',methodLossless:'Lossless compression',methodJpeg:'JPEG compression',smartChoice:'Smart choice',moreTools:'More image tools',rcCompress:'Compress',rcConvert:'Convert Format',rcCrop:'Crop & Resize',rcIdphoto:'ID Photo BG',rcWatermark:'Watermark',rcBgcolor:'BG Color',rcSplice:'Splice',rcImg2pdf:'To PDF',rcFilter:'Filters'},
+ja:{brand:'imagec',toolWhitebg:'白抜き',toolCompress:'圧縮',toolConvert:'変換',toolCrop:'切り抜き',toolIdphoto:'証明写真',toolWatermark:'透かし',toolBgcolor:'背景色',toolSplice:'結合',toolImg2pdf:'PDF変換',toolFilter:'フィルタ',title:'画像圧縮ツール',subtitle:'PNG・JPG・WebP画像をオンラインで無料圧縮。複数レベルの圧縮、PNGスマート圧縮、リアルタイムプレビュー。ブラウザ内でローカル処理。',privacy:'端末内処理 · 送信しません',upload:'クリックして選択または画像をドロップ',formats:'PNG、JPG、WebP対応<br>画像の貼り付けも可能',level:'圧縮レベル',lvLight:'軽度',lvLightDesc:'画質ほぼそのまま',lvStd:'標準',lvStdDesc:'推奨 · バランス',lvStrong:'強力',lvStrongDesc:'大幅に軽量化',lvExtreme:'极致',lvExtremeDesc:'最小サイズ',quality:'圧縮品質',scale:'幅スケーリング',byPercent:'パーセントで',byPixel:'ピクセルで',download:'圧縮後の画像をダウンロード',reset:'デフォルトに戻す',waiting:'画像待ち',emptyTitle:'画像をドロップしてください',origSize:'元のサイズ',compSize:'圧縮後サイズ',saved:'圧縮率',savedPrefix:'削減',increased:'サイズ増加',noChange:'サイズ変化なし',methodPalette:'パレット圧縮',methodWebp:'WebP圧縮',methodLossy:'非可逆圧縮',methodLossless:'可逆圧縮',methodJpeg:'JPEG圧縮',smartChoice:'スマート選択',moreTools:'その他の画像ツール',rcCompress:'画像圧縮',rcConvert:'形式変換',rcCrop:'切り抜き・サイズ変更',rcIdphoto:'証明写真背景',rcWatermark:'透かし',rcBgcolor:'背景色',rcSplice:'画像結合',rcImg2pdf:'PDF変換',rcFilter:'フィルタ調整'},
+ko:{brand:'imagec',toolWhitebg:'흰배경제거',toolCompress:'압축',toolConvert:'변환',toolCrop:'자르기',toolIdphoto:'증명사진',toolWatermark:'워터마크',toolBgcolor:'배경색',toolSplice:'이어붙이기',toolImg2pdf:'PDF변환',toolFilter:'필터',title:'이미지 압축 도구',subtitle:'PNG/JPG/WebP 이미지를 온라인에서 무료 압축. 다중 레벨 압축, PNG 스마트 압축, 실시간 미리보기. 브라우저에서 로컬 처리.',privacy:'기기에서 처리 · 업로드 없음',upload:'클릭하여 선택하거나 이미지를 드롭',formats:'PNG, JPG, WebP 지원<br>이미지 붙여넣기도 가능',level:'압축 레벨',lvLight:'가벼움',lvLightDesc:'품질 거의 동일',lvStd:'표준',lvStdDesc:'추천 · 균형',lvStrong:'강력',lvStrongDesc:'훨씬 작은 크기',lvExtreme:'극한',lvExtremeDesc:'최소 크기',quality:'압축 품질',scale:'너비 크기 조절',byPercent:'비율로',byPixel:'픽셀로',download:'압축된 이미지 다운로드',reset:'기본값으로 재설정',waiting:'이미지 대기 중',emptyTitle:'이미지를 드롭하세요',origSize:'원본 크기',compSize:'압축 후 크기',saved:'압축률',savedPrefix:'절약',increased:'크기 증가',noChange:'크기 변화 없음',methodPalette:'팔레트 압축',methodWebp:'WebP 압축',methodLossy:'손실 압축',methodLossless:'무손실',methodJpeg:'JPEG 압축',smartChoice:'스마트 선택',moreTools:'더 많은 이미지 도구',rcCompress:'이미지 압축',rcConvert:'형식 변환',rcCrop:'자르기 및 크기 조절',rcIdphoto:'증명사진 배경',rcWatermark:'워터마크',rcBgcolor:'배경색',rcSplice:'이미지 이어붙이기',rcImg2pdf:'PDF 변환',rcFilter:'필터 보정'},
+es:{brand:'imagec',toolWhitebg:'Quitar Blanco',toolCompress:'Comprimir',toolConvert:'Convertir',toolCrop:'Recortar',toolIdphoto:'Foto ID',toolWatermark:'Marca',toolBgcolor:'Color Fondo',toolSplice:'Unir',toolImg2pdf:'a PDF',toolFilter:'Filtros',title:'Compresor de Imágenes',subtitle:'Compresión de imágenes online gratuita para PNG/JPG/WebP con compresión multinivel, compresión inteligente PNG y vista previa en tiempo real. Procesado local en el navegador.',privacy:'Local · sin subir',upload:'Elige o suelta una imagen',formats:'PNG, JPG y WebP soportados<br>También puedes pegar una imagen',level:'Nivel de compresión',lvLight:'Ligero',lvLightDesc:'Calidad casi idéntica',lvStd:'Estándar',lvStdDesc:'Recomendado · Equilibrado',lvStrong:'Fuerte',lvStrongDesc:'Mucho más pequeño',lvExtreme:'Extremo',lvExtremeDesc:'Tamaño mínimo',quality:'Calidad de compresión',scale:'Escalado de ancho',byPercent:'Por porcentaje',byPixel:'Por píxeles',download:'Descargar imagen comprimida',reset:'Restablecer valores',waiting:'Esperando imagen',emptyTitle:'Suelta una imagen aquí',origSize:'Tamaño original',compSize:'Tamaño comprimido',saved:'Ahorro',savedPrefix:'ahorrado',increased:'Tamaño aumentado en',noChange:'Sin cambio de tamaño',methodPalette:'Paleta',methodWebp:'Compresión WebP',methodLossy:'Compresión con pérdida',methodLossless:'Compresión sin pérdida',methodJpeg:'Compresión JPEG',smartChoice:'Elección inteligente',moreTools:'Más herramientas de imagen',rcCompress:'Comprimir',rcConvert:'Convertir Formato',rcCrop:'Recortar y Redimensionar',rcIdphoto:'Fondo Foto ID',rcWatermark:'Marca de agua',rcBgcolor:'Color Fondo',rcSplice:'Unir Imágenes',rcImg2pdf:'A PDF',rcFilter:'Filtros'},
+fr:{brand:'imagec',toolWhitebg:'Supprimer Blanc',toolCompress:'Compresser',toolConvert:'Convertir',toolCrop:'Recadrer',toolIdphoto:'Photo ID',toolWatermark:'Filigrane',toolBgcolor:'Couleur Fond',toolSplice:'Assembler',toolImg2pdf:'vers PDF',toolFilter:'Filtres',title:'Compresseur d\'Images',subtitle:'Compression d\'images en ligne gratuite pour PNG/JPG/WebP avec compression à plusieurs niveaux, compression intelligente PNG et aperçu en temps réel. Traitement local dans le navigateur.',privacy:'Local · rien n’est envoyé',upload:'Choisir ou déposer une image',formats:'PNG, JPG et WebP pris en charge<br>Vous pouvez aussi coller une image',level:'Niveau de compression',lvLight:'Léger',lvLightDesc:'Qualité presque identique',lvStd:'Standard',lvStdDesc:'Recommandé · Équilibré',lvStrong:'Fort',lvStrongDesc:'Beaucoup plus petit',lvExtreme:'Extrême',lvExtremeDesc:'Taille minimale',quality:'Qualité de compression',scale:'Mise à l\'échelle',byPercent:'Par pourcentage',byPixel:'Par pixels',download:'Télécharger l\'image compressée',reset:'Réinitialiser',waiting:'En attente d\'image',emptyTitle:'Déposez une image ici',origSize:'Taille originale',compSize:'Taille compressée',saved:'Compression',savedPrefix:'économisé',increased:'Taille augmentée de',noChange:'Aucun changement de taille',methodPalette:'Palette',methodWebp:'Compression WebP',methodLossy:'Compression avec perte',methodLossless:'Compression sans perte',methodJpeg:'Compression JPEG',smartChoice:'Choix intelligent',moreTools:'Plus d\'outils d\'image',rcCompress:'Compresser',rcConvert:'Convertir Format',rcCrop:'Recadrer et Redimensionner',rcIdphoto:'Fond Photo ID',rcWatermark:'Filigrane',rcBgcolor:'Couleur Fond',rcSplice:'Assembler Images',rcImg2pdf:'Vers PDF',rcFilter:'Filtres'},
+de:{brand:'imagec',toolWhitebg:'Weiß entfernen',toolCompress:'Komprimieren',toolConvert:'Konvertieren',toolCrop:'Zuschneiden',toolIdphoto:'Ausweisfoto',toolWatermark:'Wasserzeichen',toolBgcolor:'Hintergrundfarbe',toolSplice:'Zusammenfügen',toolImg2pdf:'zu PDF',toolFilter:'Filter',title:'Bildkompressor',subtitle:'Kostenlose Online-Bildkompression für PNG/JPG/WebP mit mehrstufiger Kompression, intelligenter PNG-Kompression und Echtzeitvorschau. Lokal im Browser verarbeitet.',privacy:'Lokal · kein Upload',upload:'Bild auswählen oder ablegen',formats:'PNG, JPG und WebP unterstützt<br>Sie können auch ein Bild einfügen',level:'Kompressionsstufe',lvLight:'Leicht',lvLightDesc:'Fast gleiche Qualität',lvStd:'Standard',lvStdDesc:'Empfohlen · Ausgewogen',lvStrong:'Stark',lvStrongDesc:'Viel kleiner',lvExtreme:'Extrem',lvExtremeDesc:'Minimale Größe',quality:'Kompressionsqualität',scale:'Breitenskalierung',byPercent:'Nach Prozent',byPixel:'Nach Pixeln',download:'Komprimiertes Bild herunterladen',reset:'Zurücksetzen',waiting:'Warte auf Bild',emptyTitle:'Bild hier ablegen',origSize:'Originalgröße',compSize:'Komprimierte Größe',saved:'Kompression',savedPrefix:'gespart',increased:'Größe erhöht um',noChange:'Keine Größenänderung',methodPalette:'Palette',methodWebp:'WebP-Kompression',methodLossy:'Verlustbehaftete Kompression',methodLossless:'Verlustfreie Kompression',methodJpeg:'JPEG-Kompression',smartChoice:'Smart-Choice',moreTools:'Weitere Bildwerkzeuge',rcCompress:'Komprimieren',rcConvert:'Format konvertieren',rcCrop:'Zuschneiden & Skalieren',rcIdphoto:'Ausweisfoto-Hintergrund',rcWatermark:'Wasserzeichen',rcBgcolor:'Hintergrundfarbe',rcSplice:'Bilder zusammenfügen',rcImg2pdf:'Zu PDF',rcFilter:'Filter'},
+ru:{brand:'imagec',toolWhitebg:'Удалить белый',toolCompress:'Сжать',toolConvert:'Конвертировать',toolCrop:'Обрезать',toolIdphoto:'Фото для документов',toolWatermark:'Водяной знак',toolBgcolor:'Цвет фона',toolSplice:'Склеить',toolImg2pdf:'В PDF',toolFilter:'Фильтры',title:'Сжатие Изображений',subtitle:'Бесплатное онлайн-сжатие PNG/JPG/WebP с многоуровневым сжатием, интеллектуальным сжатием PNG и предпросмотром в реальном времени. Локальная обработка в браузере.',privacy:'Локально · без загрузки',upload:'Выберите или перетащите изображение',formats:'Поддерживаются PNG, JPG, WebP<br>Также можно вставить изображение',level:'Уровень сжатия',lvLight:'Лёгкий',lvLightDesc:'Качество почти идентичное',lvStd:'Стандарт',lvStdDesc:'Рекомендуется · Сбалансировано',lvStrong:'Сильный',lvStrongDesc:'Намного меньше',lvExtreme:'Экстрим',lvExtremeDesc:'Минимальный размер',quality:'Качество сжатия',scale:'Масштабирование ширины',byPercent:'По процентам',byPixel:'По пикселям',download:'Скачать сжатое изображение',reset:'Сбросить настройки',waiting:'Ожидание изображения',emptyTitle:'Перетащите изображение сюда',origSize:'Исходный размер',compSize:'Сжатый размер',saved:'Сжатие',savedPrefix:'сэкономлено',increased:'Размер увеличен на',noChange:'Без изменений размера',methodPalette:'Палитра',methodWebp:'WebP-сжатие',methodLossy:'Сжатие с потерями',methodLossless:'Без потерь',methodJpeg:'JPEG-сжатие',smartChoice:'Умный выбор',moreTools:'Больше инструментов',rcCompress:'Сжать',rcConvert:'Конвертировать',rcCrop:'Обрезать и изменить',rcIdphoto:'Фон документов',rcWatermark:'Водяной знак',rcBgcolor:'Цвет фона',rcSplice:'Склеить изображения',rcImg2pdf:'В PDF',rcFilter:'Фильтры'},
+pt:{brand:'imagec',toolWhitebg:'Remover Branco',toolCompress:'Comprimir',toolConvert:'Converter',toolCrop:'Cortar',toolIdphoto:'Foto ID',toolWatermark:'Marca',toolBgcolor:'Cor Fundo',toolSplice:'Unir',toolImg2pdf:'para PDF',toolFilter:'Filtros',title:'Compressor de Imagens',subtitle:'Compressão de imagens online gratuita para PNG/JPG/WebP com compressão multinível, compressão inteligente PNG e pré-visualização em tempo real. Processamento local no navegador.',privacy:'Local · sem envio',upload:'Escolha ou solte uma imagem',formats:'PNG, JPG e WebP suportados<br>Você também pode colar uma imagem',level:'Nível de compressão',lvLight:'Leve',lvLightDesc:'Qualidade quase idêntica',lvStd:'Padrão',lvStdDesc:'Recomendado · Equilibrado',lvStrong:'Forte',lvStrongDesc:'Muito menor',lvExtreme:'Extremo',lvExtremeDesc:'Tamanho mínimo',quality:'Qualidade da compressão',scale:'Dimensionamento da largura',byPercent:'Por percentagem',byPixel:'Por pixels',download:'Baixar imagem comprimida',reset:'Restaurar predefinições',waiting:'Aguardando imagem',emptyTitle:'Solte uma imagem aqui',origSize:'Tamanho original',compSize:'Tamanho comprimido',saved:'Compressão',savedPrefix:'economizado',increased:'Tamanho aumentado em',noChange:'Sem alteração de tamanho',methodPalette:'Paleta',methodWebp:'Compressão WebP',methodLossy:'Compressão com perdas',methodLossless:'Sem perdas',methodJpeg:'Compressão JPEG',smartChoice:'Escolha inteligente',moreTools:'Mais ferramentas de imagem',rcCompress:'Comprimir',rcConvert:'Converter Formato',rcCrop:'Cortar e Redimensionar',rcIdphoto:'Fundo Foto ID',rcWatermark:'Marca d\'água',rcBgcolor:'Cor Fundo',rcSplice:'Unir Imagens',rcImg2pdf:'Para PDF',rcFilter:'Filtros'},
+ar:{brand:'imagec',toolWhitebg:'إزالة الأبيض',toolCompress:'ضغط',toolConvert:'تحويل',toolCrop:'اقتصاص',toolIdphoto:'صورة هوية',toolWatermark:'علامة مائية',toolBgcolor:'لون الخلفية',toolSplice:'دمج',toolImg2pdf:'إلى PDF',toolFilter:'مرشحات',title:'ضاغط الصور',subtitle:'ضغط صور مجاني عبر الإنترنت لـ PNG/JPG/WebP مع ضغط متعدد المستويات وضغط PNG ذكي ومعاينة فورية. تتم المعالجة محلياً في المتصفح.',privacy:'محلي · بلا رفع',upload:'اختر أو أسقط صورة',formats:'يدعم PNG و JPG و WebP<br>يمكنك أيضاً لصق صورة',level:'مستوى الضغط',lvLight:'خفيف',lvLightDesc:'جودة شبه متطابقة',lvStd:'قياسي',lvStdDesc:'موصى به · متوازن',lvStrong:'قوي',lvStrongDesc:'أصغر بكثير',lvExtreme:'متطرف',lvExtremeDesc:'أصغر حجم',quality:'جودة الضغط',scale:'تغيير حجم العرض',byPercent:'بنسبة مئوية',byPixel:'بالبكسل',download:'تنزيل الصورة المضغوطة',reset:'إعادة التعيين',waiting:'في انتظار صورة',emptyTitle:'أسقط صورة هنا',origSize:'الحجم الأصلي',compSize:'الحجم المضغوط',saved:'نسبة الضغط',savedPrefix:'تم توفير',increased:'زيادة الحجم بمقدار',noChange:'لا تغيير في الحجم',methodPalette:'لوحة ألوان',methodWebp:'ضغط WebP',methodLossy:'ضغط مع فقدان',methodLossless:'بدون فقدان',methodJpeg:'ضغط JPEG',smartChoice:'اختيار ذكي',moreTools:'المزيد من أدوات الصور',rcCompress:'ضغط',rcConvert:'تحويل التنسيق',rcCrop:'اقتصاص وتغيير الحجم',rcIdphoto:'خلفية صورة هوية',rcWatermark:'علامة مائية',rcBgcolor:'لون الخلفية',rcSplice:'دمج الصور',rcImg2pdf:'إلى PDF',rcFilter:'مرشحات'},
+vi:{brand:'imagec',toolWhitebg:'Xóa trắng',toolCompress:'Nén',toolConvert:'Chuyển đổi',toolCrop:'Cắt',toolIdphoto:'Ảnh ID',toolWatermark:'Watermark',toolBgcolor:'Màu nền',toolSplice:'Ghép',toolImg2pdf:'sang PDF',toolFilter:'Bộ lọc',title:'Công Cụ Nén Ảnh',subtitle:'Nén ảnh trực tuyến miễn phí cho PNG/JPG/WebP với nén đa cấp, nén PNG thông minh và xem trước thời gian thực. Xử lý cục bộ trong trình duyệt.',privacy:'Tại máy · không tải lên',upload:'Chọn hoặc thả hình ảnh',formats:'Hỗ trợ PNG, JPG, WebP<br>Bạn cũng có thể dán hình ảnh',level:'Mức nén',lvLight:'Nhẹ',lvLightDesc:'Chất lượng gần như không đổi',lvStd:'Tiêu chuẩn',lvStdDesc:'Khuyến nghị · Cân bằng',lvStrong:'Mạnh',lvStrongDesc:'Nhỏ hơn nhiều',lvExtreme:'Cực hạn',lvExtremeDesc:'Kích thước tối thiểu',quality:'Chất lượng nén',scale:'Thay đổi chiều rộng',byPercent:'Theo tỷ lệ %',byPixel:'Theo pixel',download:'Tải xuống ảnh đã nén',reset:'Đặt lại mặc định',waiting:'Đang chờ hình ảnh',emptyTitle:'Thả hình ảnh vào đây',origSize:'Kích thước gốc',compSize:'Kích thước đã nén',saved:'Tỷ lệ nén',savedPrefix:'tiết kiệm',increased:'Kích thước tăng thêm',noChange:'Không thay đổi kích thước',methodPalette:'Bảng màu',methodWebp:'Nén WebP',methodLossy:'Nén mất dữ liệu',methodLossless:'Không mất dữ liệu',methodJpeg:'Nén JPEG',smartChoice:'Lựa chọn thông minh',moreTools:'Thêm công cụ hình ảnh',rcCompress:'Nén ảnh',rcConvert:'Chuyển định dạng',rcCrop:'Cắt và thay đổi',rcIdphoto:'Nền ảnh ID',rcWatermark:'Watermark',rcBgcolor:'Màu nền',rcSplice:'Ghép ảnh',rcImg2pdf:'Sang PDF',rcFilter:'Bộ lọc'},
+id:{brand:'imagec',toolWhitebg:'Hapus Putih',toolCompress:'Kompres',toolConvert:'Konversi',toolCrop:'Potong',toolIdphoto:'Foto ID',toolWatermark:'Watermark',toolBgcolor:'Warna BG',toolSplice:'Gabung',toolImg2pdf:'ke PDF',toolFilter:'Filter',title:'Kompresor Gambar',subtitle:'Kompresi gambar online gratis untuk PNG/JPG/WebP dengan kompresi multi-level, kompresi PNG cerdas, pratinjau real-time. Diproses secara lokal di browser.',privacy:'Lokal · tidak diunggah',upload:'Pilih atau jatuhkan gambar',formats:'Mendukung PNG, JPG, WebP<br>Anda juga bisa menempel gambar',level:'Level kompresi',lvLight:'Ringan',lvLightDesc:'Kualitas hampir sama',lvStd:'Standar',lvStdDesc:'Direkomendasikan · Seimbang',lvStrong:'Kuat',lvStrongDesc:'Jauh lebih kecil',lvExtreme:'Ekstrem',lvExtremeDesc:'Ukuran minimum',quality:'Kualitas kompresi',scale:'Penskalaan lebar',byPercent:'Berdasarkan %',byPixel:'Berdasarkan piksel',download:'Unduh gambar terkompresi',reset:'Setel ulang',waiting:'Menunggu gambar',emptyTitle:'Jatuhkan gambar di sini',origSize:'Ukuran asli',compSize:'Ukuran terkompresi',saved:'Kompresi',savedPrefix:'dihemat',increased:'Ukuran meningkat sebesar',noChange:'Tidak ada perubahan ukuran',methodPalette:'Palet',methodWebp:'Kompresi WebP',methodLossy:'Kompresi lossy',methodLossless:'Tanpa kerugian',methodJpeg:'Kompresi JPEG',smartChoice:'Pilihan cerdas',moreTools:'Alat gambar lainnya',rcCompress:'Kompres',rcConvert:'Konversi Format',rcCrop:'Potong & Skala',rcIdphoto:'Foto ID',rcWatermark:'Watermark',rcBgcolor:'Warna BG',rcSplice:'Gabung Gambar',rcImg2pdf:'Ke PDF',rcFilter:'Filter'},
+th:{brand:'imagec',toolWhitebg:'ลบพื้นขาว',toolCompress:'บีบอัด',toolConvert:'แปลง',toolCrop:'ครอป',toolIdphoto:'รูปบัตร',toolWatermark:'ลายน้ำ',toolBgcolor:'สีพื้นหลัง',toolSplice:'ต่อรูป',toolImg2pdf:'เป็น PDF',toolFilter:'ฟิลเตอร์',title:'เครื่องมือบีบอัดรูปภาพ',subtitle:'บีบอัดรูปภาพออนไลน์ฟรีสำหรับ PNG/JPG/WebP ด้วยการบีบอัดหลายระดับ การบีบอัด PNG อัจฉริยะ และพรีวิวแบบเรียลไทม์ ประมวลผลในเบราว์เซอร์เครื่อง',privacy:'ในเครื่อง · ไม่อัปโหลด',upload:'คลิกเลือกหรือลากรูปมาวาง',formats:'รองรับ PNG, JPG, WebP<br>วางรูปจากคลิปบอร์ดได้',level:'ระดับการบีบอัด',lvLight:'เบา',lvLightDesc:'คุณภาพเกือบเหมือนเดิม',lvStd:'มาตรฐาน',lvStdDesc:'แนะนำ · สมดุล',lvStrong:'แรง',lvStrongDesc:'เล็กกว่ามาก',lvExtreme:'สุดขีด',lvExtremeDesc:'ขนาดเล็กสุด',quality:'คุณภาพการบีบอัด',scale:'ปรับขนาดความกว้าง',byPercent:'ตามเปอร์เซ็นต์',byPixel:'ตามพิกเซล',download:'ดาวน์โหลดรูปที่บีบอัดแล้ว',reset:'รีเซ็ตค่าเริ่มต้น',waiting:'รอรูปภาพ',emptyTitle:'ลากรูปมาวางที่นี่',origSize:'ขนาดเดิม',compSize:'ขนาดบีบอัดแล้ว',saved:'อัตราการบีบอัด',savedPrefix:'ประหยัด',increased:'ขนาดเพิ่มขึ้น',noChange:'ไม่มีการเปลี่ยนแปลงขนาด',methodPalette:'จานสี',methodWebp:'บีบอัด WebP',methodLossy:'บีบอัดแบบสูญเสีย',methodLossless:'ไม่สูญเสีย',methodJpeg:'บีบอัด JPEG',smartChoice:'ตัวเลือกอัจฉริยะ',moreTools:'เครื่องมือรูปภาพเพิ่มเติม',rcCompress:'บีบอัด',rcConvert:'แปลงรูปแบบ',rcCrop:'ครอปและปรับขนาด',rcIdphoto:'พื้นหลังรูปบัตร',rcWatermark:'ลายน้ำ',rcBgcolor:'สีพื้นหลัง',rcSplice:'ต่อรูปภาพ',rcImg2pdf:'เป็น PDF',rcFilter:'ฟิลเตอร์'},
 };
 
 function formatSize(bytes){
@@ -375,6 +374,8 @@ let state={
   method:'',
   quality:75,
   level:'standard',
+  compressMode:'quality',
+  targetKb:200,
   scaleMode:'percent',
   scaleValue:100,
   lang:'zh',
@@ -452,8 +453,8 @@ function onFileSelected(file){
       state.originalCanvas=canvas;
       state.canvas=canvas;
       $('#empty').style.display='none';
-      $('#preview').style.display='block';
-      $('#preview').src=canvas.toDataURL('image/png');
+      const compare=$('#compare');
+      if(compare)compare.hidden=false;
       $('#meta').textContent=img.width+'×'+img.height+' · '+formatSize(file.size);
       $('#stats').style.display='grid';
       $('#origSize').textContent=formatSize(file.size);
@@ -468,6 +469,17 @@ function onFileSelected(file){
   reader.readAsDataURL(file);
 }
 
+function syncWorkingPreview(){
+  if(!state.canvas)return;
+  const orig=$('#previewOrig');
+  const url=state.canvas.toDataURL('image/png');
+  if(orig)orig.src=url;
+  const preview=$('#preview');
+  if(preview&&!state.compressedUrl)preview.src=url;
+  if(state.originalSize!=null){
+    $('#meta').textContent=state.canvas.width+'×'+state.canvas.height+' · '+formatSize(state.originalSize);
+  }
+}
 function applyScale(){
   if(!state.originalCanvas)return;
   const oc=state.originalCanvas;
@@ -477,13 +489,17 @@ function applyScale(){
   }else{
     newW=Math.max(1,state.scaleValue);
   }
-  if(newW===oc.width&&state.canvas===oc)return;
+  if(newW===oc.width&&state.canvas===oc){
+    syncWorkingPreview();
+    return;
+  }
   const ratio=newW/oc.width;
   const newH=Math.max(1,Math.round(oc.height*ratio));
   const nc=document.createElement('canvas');
   nc.width=newW;nc.height=newH;
   nc.getContext('2d').drawImage(oc,0,0,newW,newH);
   state.canvas=nc;
+  syncWorkingPreview();
 }
 
 async function quantizePngChunked(imageData,levels){
@@ -558,30 +574,60 @@ async function compressWebp(canvas,quality,lossless){
   });
 }
 
+async function encodeOnce(canvas,quality){
+  const isPng=state.imgType==='image/png';
+  const isWebp=state.imgType==='image/webp';
+  if(isPng){
+    const cr=await compressPng(canvas,quality);
+    if(cr)return{blob:cr.blob,method:cr.method,ext:'png'};
+    return{blob:state.originalBlob,method:'original',ext:'png'};
+  }
+  if(isWebp){
+    const blob=await compressWebp(canvas,quality,false);
+    if(blob)return{blob,method:'webp-lossy',ext:'webp'};
+    return{blob:state.originalBlob,method:'original',ext:'webp'};
+  }
+  const blob=await compressJpeg(canvas,quality);
+  if(blob)return{blob,method:'jpeg',ext:'jpg'};
+  return{blob:state.originalBlob,method:'original',ext:'jpg'};
+}
+
+async function compressToTarget(canvas,targetBytes){
+  let lo=1,hi=95,best=null;
+  for(let i=0;i<8;i++){
+    const mid=Math.round((lo+hi)/2);
+    const result=await encodeOnce(canvas,mid);
+    if(!result||!result.blob)break;
+    if(result.blob.size<=targetBytes){
+      best=result;
+      state.quality=mid;
+      lo=mid+1;
+    }else{
+      hi=mid-1;
+      if(!best||result.blob.size<best.blob.size)best=result;
+    }
+  }
+  if(!best)best=await encodeOnce(canvas,Math.max(1,hi));
+  const qEl=$('#quality');
+  if(qEl){qEl.value=state.quality;$('#qualityV').textContent=String(state.quality);}
+  return best;
+}
+
 async function doCompress(){
   if(!state.canvas)return;
   const canvas=state.canvas;
-  const quality=state.quality;
   $('#wrap').parentElement.classList.add('computing');
   $('#wrap').setAttribute('data-loading',t('waiting'));
   try{
     let result;
+    if(state.compressMode==='target'){
+      result=await compressToTarget(canvas,state.targetKb*1024);
+    }else{
+      result=await encodeOnce(canvas,state.quality);
+    }
     const isPng=state.imgType==='image/png';
     const isWebp=state.imgType==='image/webp';
-    if(isPng){
-      const cr=await compressPng(canvas,quality);
-      if(cr)result={blob:cr.blob,method:cr.method,ext:'png'};
-      else result={blob:state.originalBlob,method:'original',ext:'png'};
-    }else if(isWebp){
-      const blob=await compressWebp(canvas,quality,false);
-      if(blob)result={blob,method:'webp-lossy',ext:'webp'};
-      else result={blob:state.originalBlob,method:'original',ext:'webp'};
-    }else{
-      const blob=await compressJpeg(canvas,quality);
-      if(blob)result={blob,method:'jpeg',ext:'jpg'};
-      else result={blob:state.originalBlob,method:'original',ext:'jpg'};
-    }
-    if(result.blob.size>=state.originalSize){
+    if(result.blob.size>=state.originalSize && state.compressMode!=='target'){
       result={blob:state.originalBlob,method:'original',ext:isPng?'png':isWebp?'webp':'jpg'};
     }
     state.compressedBlob=result.blob;
@@ -606,7 +652,11 @@ async function doCompress(){
     ratioEl.style.display='block';
     const methodMap={'palette':'methodPalette','webp-lossy':'methodWebp','jpeg':'methodJpeg','original':'smartChoice'};
     const methodKey=methodMap[result.method]||'smartChoice';
-    strategyEl.textContent=t(methodKey);
+    let strategy=t(methodKey);
+    if(state.compressMode==='target'){
+      strategy+=' · '+state.targetKb+' KB';
+    }
+    strategyEl.textContent=strategy;
     strategyEl.style.display='block';
   }catch(err){
     console.error(err);
@@ -647,6 +697,42 @@ function setupEvents(){
   });
   const quality=$('#quality');
   const qualityV=$('#qualityV');
+  const qualityControls=$('#qualityControls');
+  const targetControls=$('#targetControls');
+  const targetKb=$('#targetKb');
+  const targetKbV=$('#targetKbV');
+  const compressModeEl=$('#compressMode');
+  function setCompressMode(mode){
+    state.compressMode=mode==='target'?'target':'quality';
+    compressModeEl.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.mode===state.compressMode));
+    if(qualityControls)qualityControls.style.display=state.compressMode==='quality'?'':'none';
+    if(targetControls)targetControls.style.display=state.compressMode==='target'?'':'none';
+    scheduleCompress();
+  }
+  if(compressModeEl){
+    compressModeEl.addEventListener('click',e=>{
+      const btn=e.target.closest('button');
+      if(!btn)return;
+      setCompressMode(btn.dataset.mode);
+    });
+  }
+  function setTargetKb(kb){
+    state.targetKb=Math.max(20,Math.min(2000,+kb||200));
+    if(targetKb)targetKb.value=state.targetKb;
+    if(targetKbV)targetKbV.textContent=state.targetKb+' KB';
+    scheduleCompress();
+  }
+  if(targetKb){
+    targetKb.addEventListener('input',()=>setTargetKb(targetKb.value));
+  }
+  const targetPresets=$('#targetPresets');
+  if(targetPresets){
+    targetPresets.addEventListener('click',e=>{
+      const btn=e.target.closest('[data-kb]');
+      if(!btn)return;
+      setTargetKb(btn.dataset.kb);
+    });
+  }
   quality.addEventListener('input',()=>{
     state.quality=+quality.value;
     qualityV.textContent=quality.value;
@@ -707,8 +793,12 @@ function setupEvents(){
   });
   $('#reset').addEventListener('click',()=>{
     state.quality=75;state.level='standard';
+    state.compressMode='quality';state.targetKb=200;
     state.scaleMode='percent';state.scaleValue=100;
     quality.value=75;$('#qualityV').textContent='75';
+    if(targetKb)targetKb.value=200;
+    if(targetKbV)targetKbV.textContent='200 KB';
+    setCompressMode('quality');
     levelGroup.querySelectorAll('.levelCard').forEach(c=>c.classList.toggle('active',c.dataset.level==='standard'));
     scaleMode.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.mode==='percent'));
     scalePercent.style.display='block';scalePixel.style.display='none';
@@ -723,7 +813,7 @@ function setupEvents(){
 function initTooltips(){
   const lang=state.lang||'en';
   const tips=TIPS[lang]||TIPS.en;
-  const map={levelTipQ:'levelTip',qualityTipQ:'qualityTip',scaleTipQ:'scaleTip'};
+  const map={levelTipQ:'levelTip',qualityTipQ:'qualityTip',scaleTipQ:'scaleTip',targetTipQ:'targetTip'};
   document.querySelectorAll('.tooltip').forEach(el=>{
     const key=el.dataset.i18n;
     const tipKey=map[key];
@@ -787,6 +877,21 @@ init();
     <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
   </div>
 </footer>
+<script>
+function syncQualityLabel(){
+  const lab=document.getElementById('qualityLabel');
+  if(!lab)return;
+  const isPng=typeof state!=='undefined'&&state&&state.imgType==='image/png';
+  const key=isPng?'qualityPng':'qualityJpg';
+  const lang=typeof language!=='undefined'?language:'zh';
+  const pack=(typeof messages!=='undefined'&&(messages[lang]||messages.zh))||{};
+  lab.textContent=pack[key]||(isPng?'色阶 / 细节':'压缩质量');
+  lab.setAttribute('data-i18n', key);
+}
+document.addEventListener('change',function(e){if(e.target&&e.target.id==='file')setTimeout(syncQualityLabel,80);});
+setTimeout(syncQualityLabel,0);
+setInterval(syncQualityLabel,1000);
+</script>
 <script src="/tool-cards.js"></script>
 <script src="/chrome.js"></script>
 </body>

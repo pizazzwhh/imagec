@@ -23,6 +23,9 @@
 | 📎 **Image Splicer** | Combine multiple images vertically or horizontally | [/splice](https://imagec.xin/splice) |
 | 📄 **Image to PDF** | Convert images to PDF, multi-page support | [/img2pdf](https://imagec.xin/img2pdf) |
 | 🌈 **Image Filters** | Apply vintage, B&W, blur, sharpen and more | [/filter](https://imagec.xin/filter) |
+| 📱 [HEIC](https://imagec.xin/heic) · **Convert HEIC** | Apple HEIC/HEIF → JPG or PNG (local) | [/heic](https://imagec.xin/heic) |
+| 🔄 [旋转翻转](https://imagec.xin/rotate) · **Rotate & flip** | Rotate 90° steps or mirror | [/rotate](https://imagec.xin/rotate) |
+| 🛡️ [清除元数据](https://imagec.xin/exif) · **Strip metadata** | Remove EXIF/GPS by re-encoding | [/exif](https://imagec.xin/exif) |
 
 ---
 
@@ -46,11 +49,16 @@ Visit **[https://imagec.xin/](https://imagec.xin/)** — no installation needed.
 ### Run Locally
 
 ```bash
-git clone https://github.com/pizazzwhh/transparent-background-tool.git
-cd transparent-background-tool
-python -m http.server 8080
+git clone https://github.com/pizazzwhh/imagec.git
+cd imagec
+# Recommended (static + feedback API):
+npm run preview
+# Static only: npx --yes serve -l 8080
 # Open http://localhost:8080
+# Feedback inbox URL is printed in the terminal (token in data/feedback-token.txt)
 ```
+
+Company-PC accept checklist (Chinese): [docs/COMPANY-ACCEPT.md](docs/COMPANY-ACCEPT.md)
 
 ### Notify search engines (IndexNow)
 

@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI 抠图 - 本地去背景导出透明 PNG｜imagec</title>
+  <meta name="description" content="在浏览器里用本地 AI 去掉图片背景，导出透明 PNG。首次使用会下载约 40MB 模型权重并缓存在浏览器里。图片不上传。" />
+  <meta name="keywords" content="AI 抠图,去背景,去除背景,透明 PNG,remove background,cutout,本地处理" />
+  <meta name="author" content="imagec" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <meta name="googlebot" content="index,follow" />
+  <meta name="bingbot" content="index,follow" />
+  <meta name="msvalidate.01" content="6D09E7478DB0959D20C7BBBF26665B04" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="canonical" href="https://imagec.xin/cutout" />
+  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/cutout?lang=zh" />
+  <link rel="alternate" hreflang="en" href="https://imagec.xin/cutout?lang=en" />
+  <link rel="alternate" hreflang="ja" href="https://imagec.xin/cutout?lang=ja" />
+  <link rel="alternate" hreflang="ko" href="https://imagec.xin/cutout?lang=ko" />
+  <link rel="alternate" hreflang="es" href="https://imagec.xin/cutout?lang=es" />
+  <link rel="alternate" hreflang="fr" href="https://imagec.xin/cutout?lang=fr" />
+  <link rel="alternate" hreflang="de" href="https://imagec.xin/cutout?lang=de" />
+  <link rel="alternate" hreflang="ru" href="https://imagec.xin/cutout?lang=ru" />
+  <link rel="alternate" hreflang="pt" href="https://imagec.xin/cutout?lang=pt" />
+  <link rel="alternate" hreflang="ar" href="https://imagec.xin/cutout?lang=ar" />
+  <link rel="alternate" hreflang="vi" href="https://imagec.xin/cutout?lang=vi" />
+  <link rel="alternate" hreflang="id" href="https://imagec.xin/cutout?lang=id" />
+  <link rel="alternate" hreflang="th" href="https://imagec.xin/cutout?lang=th" />
+  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/cutout" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="imagec" />
+  <meta property="og:title" content="AI 抠图 - 本地去背景导出透明 PNG｜imagec" />
+  <meta property="og:description" content="本地 AI 去掉背景，导出透明 PNG。首次使用会把约 40MB 模型权重缓存在浏览器里。图片不上传。" />
+  <meta property="og:url" content="https://imagec.xin/cutout" />
+  <meta property="og:image" content="https://imagec.xin/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AI 抠图 - 本地去背景导出透明 PNG｜imagec" />
+  <meta name="twitter:description" content="本地 AI 去掉背景，导出透明 PNG。图片不上传。" />
+  <meta name="twitter:image" content="https://imagec.xin/og-image.jpg" />
+  <meta name="theme-color" content="#FAFAF9" />
+  <meta name="application-name" content="imagec" />
+  <meta name="apple-mobile-web-app-title" content="imagec" />
+  <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"AI 抠图","alternateName":"imagec","url":"https://imagec.xin/cutout","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"在浏览器里用本地 AI 去掉图片背景，导出透明 PNG。首次使用会下载约 40MB 模型权重并缓存在浏览器里。图片不上传。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["AI 抠图","去背景","透明 PNG","下载","本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"AI 抠图","item":"https://imagec.xin/cutout"}]}</script>
+<link rel="stylesheet" href="/site.css" />
+</head>
+<body class="tool">
+<main class="shell">
+  <header class="topbar"><a class="brand" href="/"><span class="mark"><svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="6" fill="#FAFAF9"/><path fill="#1C1917" fill-rule="evenodd" d="M8 2h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6V8a6 6 0 0 1 6-6zm5 5h38a1 1 0 0 1 1 1v38a1 1 0 0 1-1 1H13a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><rect x="36" y="36" width="26" height="26" rx="6" fill="#2563EB"/></svg></span><span class="brand-name">imagec</span></a><div class="topbar-right"><a class="searchBtn" href="/?focus=search" aria-label="搜索工具" data-chrome-aria="searchTools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a><select class="langSelect" id="langSelect"></select></div></header>
+
+  <section class="panel">
+    <div class="hero">
+      <h1 data-i18n="title">AI 抠图</h1>
+      <p data-i18n="subtitle">用本地 AI 去掉背景，导出透明 PNG。</p>
+      <div class="privacyLine safeBadge">
+        <span data-i18n="privacy">本地处理 · 不上传服务器</span>
+      </div>
+      <p class="notice" data-i18n="cdnNote">首次使用会下载约 40MB 的模型权重，并缓存在浏览器里。</p>
+      <p class="heroLinks"><a href="/whitebg" data-i18n="linkWhitebg">去白底</a> <span aria-hidden="true">·</span> <a href="/bgcolor" data-i18n="linkBg">换背景色</a></p>
+    </div>
+    <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
+    <div class="workspace">
+      <aside class="controls">
+        <label class="drop" id="drop" for="file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+          <strong data-i18n="upload">点击选择或拖入图片</strong>
+          <small data-i18n="formats">支持 PNG、JPG、WebP</small>
+        </label>
+        <input id="file" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" />
+
+        <div class="pin">
+          <p class="notice" id="progress" hidden></p>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="process" type="button" disabled data-i18n="process">开始抠图</button>
+          <button class="secondary" id="download" type="button" disabled data-i18n="download">下载透明 PNG</button>
+          <button class="secondary" id="clear" type="button" disabled data-i18n="clear">清空</button>
+        </div>
+      </aside>
+
+      <section class="stage" aria-label="preview">
+        <div class="stagebar">
+          <div class="meta" id="meta" data-i18n="waiting" aria-live="polite">等待图片</div>
+        </div>
+        <div class="canvasWrap" id="wrap">
+          <canvas id="canvas"></canvas>
+        </div>
+        <div class="empty" id="empty">
+          <strong data-i18n="emptyTitle">把图片放进来，去掉背景</strong>
+        </div>
+      </section>
+    </div>
+  </section>
+
+<section class="relatedTools">
+    <h2 data-i18n="moreTools">更多图片工具</h2>
+    <div class="toolsGrid" data-tool-cards></div>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const LANGS=[
+  {code:'zh',name:'中文',dir:'ltr'},{code:'en',name:'English',dir:'ltr'},{code:'ja',name:'日本語',dir:'ltr'},
+  {code:'ko',name:'한국어',dir:'ltr'},{code:'es',name:'Español',dir:'ltr'},{code:'fr',name:'Français',dir:'ltr'},
+  {code:'de',name:'Deutsch',dir:'ltr'},{code:'ru',name:'Русский',dir:'ltr'},{code:'pt',name:'Português',dir:'ltr'},
+  {code:'ar',name:'العربية',dir:'rtl'},{code:'vi',name:'Tiếng Việt',dir:'ltr'},{code:'id',name:'Bahasa Indonesia',dir:'ltr'},
+  {code:'th',name:'ไทย',dir:'ltr'}
+];
+const SEO={
+  zh:{title:'AI 抠图 - 本地去背景导出透明 PNG｜imagec',desc:'在浏览器里用本地 AI 去掉图片背景，导出透明 PNG。首次使用会下载约 40MB 模型权重并缓存在浏览器里。图片不上传。'},
+  en:{title:'Remove background locally | imagec',desc:'Remove an image background in the browser and download a transparent PNG. The first run downloads about 40MB of model weights into the browser cache. Images are never uploaded.'},
+  ja:{title:'AI で背景を削除 | imagec',desc:'ブラウザ内の AI で背景を消し、透明 PNG を保存します。初回は約 40MB のモデルをブラウザのキャッシュへダウンロードします。画像はアップロードしません。'},
+  ko:{title:'AI로 배경 제거 | imagec',desc:'브라우저의 AI로 배경을 지우고 투명 PNG를 받습니다. 처음에는 약 40MB 모델 가중치를 브라우저 캐시에 받습니다. 이미지는 올리지 않습니다.'},
+  es:{title:'Quitar el fondo en local | imagec',desc:'Quita el fondo con IA en el navegador y descarga un PNG transparente. La primera vez se descargan unos 40 MB de pesos al caché del navegador. La imagen no se sube.'},
+  fr:{title:'Retirer le fond en local | imagec',desc:'Retirez le fond avec une IA dans le navigateur et téléchargez un PNG transparent. Le premier passage télécharge environ 40 Mo de poids dans le cache du navigateur. L’image n’est pas envoyée.'},
+  de:{title:'Hintergrund lokal entfernen | imagec',desc:'Hintergrund per KI im Browser entfernen und ein transparentes PNG laden. Beim ersten Mal werden etwa 40 MB Modellgewichte im Browser-Cache gespeichert. Das Bild wird nicht hochgeladen.'},
+  ru:{title:'Удалить фон локально | imagec',desc:'Уберите фон с помощью ИИ в браузере и скачайте прозрачный PNG. При первом запуске в кэш браузера загружается около 40 МБ весов. Изображение не отправляется.'},
+  pt:{title:'Remover fundo localmente | imagec',desc:'Remova o fundo com IA no navegador e baixe um PNG transparente. Na primeira vez, cerca de 40 MB de pesos vão para o cache do navegador. A imagem não é enviada.'},
+  ar:{title:'إزالة الخلفية محلياً | imagec',desc:'أزل الخلفية بالذكاء الاصطناعي في المتصفح ونزّل PNG شفافاً. أول تشغيل ينزّل أوزان النموذج (حوالي 40 ميغابايت) إلى ذاكرة المتصفح. لا يتم رفع الصورة.'},
+  vi:{title:'Xóa nền bằng AI tại máy | imagec',desc:'Xóa nền bằng AI trong trình duyệt và tải PNG trong suốt. Lần đầu tải khoảng 40MB trọng số vào bộ nhớ đệm trình duyệt. Ảnh không được tải lên.'},
+  id:{title:'Hapus latar secara lokal | imagec',desc:'Hapus latar dengan AI di browser dan unduh PNG transparan. Pertama kali, bobot model sekitar 40MB diunduh ke cache browser. Gambar tidak diunggah.'},
+  th:{title:'ลบพื้นหลังในเครื่อง | imagec',desc:'ลบพื้นหลังด้วย AI ในเบราว์เซอร์ แล้วดาวน์โหลด PNG โปร่งใส ครั้งแรกจะดาวน์โหลดน้ำหนักโมเดลประมาณ 40MB ไว้ในแคช รูปไม่อัปโหลด'}
+};
+const messages={
+  zh:{title:'AI 抠图',subtitle:'用本地 AI 去掉背景，导出透明 PNG。',privacy:'本地处理 · 不上传服务器',cdnNote:'首次使用会下载约 40MB 的模型权重，并缓存在浏览器里。',upload:'点击选择或拖入图片',formats:'支持 PNG、JPG、WebP',process:'开始抠图',download:'下载透明 PNG',clear:'清空',waiting:'等待图片',emptyTitle:'把图片放进来，去掉背景',ready:'{w} × {h} px',progressModel:'正在下载模型… {n}%',progressWasm:'正在准备组件… {n}%',working:'正在抠图…',errType:'请选择 PNG、JPG 或 WebP。',errLoad:'图片打不开。请换一张 PNG、JPG 或 WebP 再试。',errLib:'抠图组件加载失败。请检查网络，允许 jsDelivr 后刷新页面。',errRun:'这张图没能去掉背景。请换一张，或确认网络可以下载模型后再试。',moreTools:'更多图片工具',linkWhitebg:'去白底',linkBg:'换背景色',cardCutoutTitle:'AI 抠图',cardCutoutDesc:'本地 AI 去掉背景，导出透明 PNG'},
+  en:{title:'Remove background',subtitle:'Remove the background with on-device AI and export a transparent PNG.',privacy:'Local · no upload',cdnNote:'The first run downloads about 40MB of model weights into the browser cache.',upload:'Choose or drop an image',formats:'PNG, JPG, and WebP',process:'Remove background',download:'Download transparent PNG',clear:'Clear',waiting:'Waiting for an image',emptyTitle:'Drop an image to remove its background',ready:'{w} × {h} px',progressModel:'Downloading the model… {n}%',progressWasm:'Preparing the runtime… {n}%',working:'Removing the background…',errType:'Choose a PNG, JPG, or WebP image.',errLoad:'Couldn’t open that image. Try another PNG, JPG, or WebP.',errLib:'The background-removal library failed to load. Check the network, allow jsDelivr, and refresh.',errRun:'The background could not be removed. Try another image, or check that the model download can finish.',moreTools:'More image tools',linkWhitebg:'Remove white background',linkBg:'Change background color',cardCutoutTitle:'Remove background',cardCutoutDesc:'Remove the background locally and export a transparent PNG'},
+  ja:{title:'AI で背景を削除',subtitle:'端末内の AI で背景を消し、透明 PNG を保存します。画像はアップロードしません。初回はモデルをブラウザのキャッシュへダウンロードします。',privacy:'端末内処理 · 送信しません',cdnNote:'初回は約 40MB のモデルをブラウザのキャッシュへダウンロードします。画像は端末内だけで処理され、アップロードされません。',upload:'画像を選択またはドロップ',formats:'PNG、JPG、WebP',process:'背景を削除',download:'透明 PNG を保存',clear:'クリア',waiting:'画像待ち',emptyTitle:'画像をドロップして背景を消す',ready:'{w} × {h} px',progressModel:'モデルをダウンロード中… {n}%',progressWasm:'実行環境を準備中… {n}%',working:'背景を削除しています…',errType:'PNG、JPG、WebP を選んでください。',errLoad:'画像を開けませんでした。別の PNG / JPG / WebP を試してください。',errLib:'背景削除コンポーネントを読み込めませんでした。ネットワークを確認し、jsDelivr を許可して再読み込みしてください。',errRun:'背景を削除できませんでした。別の画像を試すか、モデルをダウンロードできるか確認してください。',moreTools:'ほかの画像ツール',linkWhitebg:'白背景を透明に',linkBg:'背景色の変更',cardCutoutTitle:'AI 背景削除',cardCutoutDesc:'端末内の AI で背景を消し、透明 PNG にする'},
+  ko:{title:'AI 배경 제거',subtitle:'기기 안 AI로 배경을 지우고 투명 PNG로 받습니다. 이미지는 올리지 않습니다. 처음에는 모델 가중치를 브라우저 캐시에 받습니다.',privacy:'기기에서 처리 · 업로드 없음',cdnNote:'처음 실행할 때 약 40MB 모델 가중치를 브라우저 캐시에 받습니다. 이미지는 이 기기에서만 처리되며 업로드되지 않습니다.',upload:'이미지를 선택하거나 놓으세요',formats:'PNG, JPG, WebP',process:'배경 제거',download:'투명 PNG 받기',clear:'지우기',waiting:'이미지 대기',emptyTitle:'이미지를 놓아 배경을 지우세요',ready:'{w} × {h} px',progressModel:'모델 받는 중… {n}%',progressWasm:'실행 환경 준비 중… {n}%',working:'배경을 지우는 중…',errType:'PNG, JPG 또는 WebP를 선택하세요.',errLoad:'이미지를 열 수 없습니다. 다른 PNG, JPG, WebP를 시도하세요.',errLib:'배경 제거 구성요소를 불러오지 못했습니다. 네트워크를 확인하고 jsDelivr를 허용한 뒤 새로고침하세요.',errRun:'배경을 지우지 못했습니다. 다른 이미지를 쓰거나 모델 다운로드가 되는지 확인하세요.',moreTools:'다른 이미지 도구',linkWhitebg:'흰 배경 제거',linkBg:'배경색 변경',cardCutoutTitle:'AI 배경 제거',cardCutoutDesc:'기기에서 AI로 배경을 지우고 투명 PNG로 저장'},
+  es:{title:'Quitar fondo',subtitle:'Quita el fondo con IA en este dispositivo y descarga un PNG transparente. La imagen no se sube. La primera vez el modelo se guarda en la caché del navegador.',privacy:'Local · sin subir',cdnNote:'La primera vez se descargan unos 40 MB de pesos del modelo a la caché del navegador. La imagen se queda en este dispositivo y no se sube.',upload:'Elige o suelta una imagen',formats:'PNG, JPG y WebP',process:'Quitar fondo',download:'Descargar PNG transparente',clear:'Vaciar',waiting:'Esperando imagen',emptyTitle:'Suelta una imagen para quitar el fondo',ready:'{w} × {h} px',progressModel:'Descargando el modelo… {n}%',progressWasm:'Preparando el entorno… {n}%',working:'Quitando el fondo…',errType:'Elige un PNG, JPG o WebP.',errLoad:'No se pudo abrir la imagen. Prueba otro PNG, JPG o WebP.',errLib:'No se pudo cargar la biblioteca de recorte. Revisa la red, permite jsDelivr y actualiza.',errRun:'No se pudo quitar el fondo. Prueba otra imagen o comprueba que el modelo pueda descargarse.',moreTools:'Más herramientas',linkWhitebg:'Quitar fondo blanco',linkBg:'Cambiar color de fondo',cardCutoutTitle:'Quitar fondo',cardCutoutDesc:'Quita el fondo en local y exporta un PNG transparente'},
+  fr:{title:'Retirer le fond',subtitle:'Retirez le fond avec une IA sur cet appareil, puis téléchargez un PNG transparent. L’image n’est pas envoyée. Le premier passage met les poids du modèle en cache.',privacy:'Local · rien n’est envoyé',cdnNote:'Le premier passage télécharge environ 40 Mo de poids dans le cache du navigateur. L’image reste sur cet appareil et n’est pas envoyée.',upload:'Choisissez ou déposez une image',formats:'PNG, JPG et WebP',process:'Retirer le fond',download:'Télécharger le PNG transparent',clear:'Effacer',waiting:'En attente d’image',emptyTitle:'Déposez une image pour retirer le fond',ready:'{w} × {h} px',progressModel:'Téléchargement du modèle… {n} %',progressWasm:'Préparation du moteur… {n} %',working:'Retrait du fond…',errType:'Choisissez un PNG, JPG ou WebP.',errLoad:'Impossible d’ouvrir cette image. Essayez un autre PNG, JPG ou WebP.',errLib:'La bibliothèque de détourage n’a pas pu être chargée. Vérifiez le réseau, autorisez jsDelivr, puis actualisez.',errRun:'Le fond n’a pas pu être retiré. Essayez une autre image, ou vérifiez que le modèle peut être téléchargé.',moreTools:'Autres outils',linkWhitebg:'Retirer le fond blanc',linkBg:'Changer la couleur de fond',cardCutoutTitle:'Détourer',cardCutoutDesc:'Retire le fond en local et exporte un PNG transparent'},
+  de:{title:'Hintergrund entfernen',subtitle:'Hintergrund per KI auf diesem Gerät entfernen und ein transparentes PNG laden. Nichts wird hochgeladen. Beim ersten Mal landen die Modellgewichte im Browser-Cache.',privacy:'Lokal · kein Upload',cdnNote:'Beim ersten Mal werden etwa 40 MB Modellgewichte in den Browser-Cache geladen. Das Bild bleibt auf diesem Gerät und wird nicht hochgeladen.',upload:'Bild wählen oder ablegen',formats:'PNG, JPG und WebP',process:'Hintergrund entfernen',download:'Transparentes PNG laden',clear:'Leeren',waiting:'Warte auf ein Bild',emptyTitle:'Bild ablegen, um den Hintergrund zu entfernen',ready:'{w} × {h} px',progressModel:'Modell wird geladen… {n} %',progressWasm:'Laufzeit wird vorbereitet… {n} %',working:'Hintergrund wird entfernt…',errType:'Bitte PNG, JPG oder WebP wählen.',errLoad:'Bild konnte nicht geöffnet werden. Bitte anderes PNG, JPG oder WebP versuchen.',errLib:'Die Freistellungsbibliothek konnte nicht geladen werden. Netzwerk prüfen, jsDelivr erlauben und neu laden.',errRun:'Der Hintergrund ließ sich nicht entfernen. Anderes Bild versuchen oder prüfen, ob das Modell geladen werden kann.',moreTools:'Weitere Werkzeuge',linkWhitebg:'Weißen Hintergrund entfernen',linkBg:'Hintergrundfarbe ändern',cardCutoutTitle:'Hintergrund entfernen',cardCutoutDesc:'Hintergrund lokal entfernen und als transparentes PNG speichern'},
+  ru:{title:'Удалить фон',subtitle:'Уберите фон с помощью ИИ на этом устройстве и скачайте прозрачный PNG. Изображение не отправляется. При первом запуске веса модели сохраняются в кэше браузера.',privacy:'Локально · без загрузки',cdnNote:'При первом запуске в кэш браузера загружается около 40 МБ весов модели. Изображение остаётся на устройстве и не отправляется.',upload:'Выберите или перетащите изображение',formats:'PNG, JPG и WebP',process:'Удалить фон',download:'Скачать прозрачный PNG',clear:'Очистить',waiting:'Ожидание изображения',emptyTitle:'Перетащите изображение, чтобы убрать фон',ready:'{w} × {h} px',progressModel:'Загрузка модели… {n}%',progressWasm:'Подготовка среды… {n}%',working:'Удаление фона…',errType:'Выберите PNG, JPG или WebP.',errLoad:'Не удалось открыть изображение. Попробуйте другой PNG, JPG или WebP.',errLib:'Не удалось загрузить библиотеку удаления фона. Проверьте сеть, разрешите jsDelivr и обновите страницу.',errRun:'Не удалось убрать фон. Попробуйте другое изображение или проверьте загрузку модели.',moreTools:'Другие инструменты',linkWhitebg:'Убрать белый фон',linkBg:'Изменить цвет фона',cardCutoutTitle:'Удалить фон',cardCutoutDesc:'Убрать фон локально и сохранить прозрачный PNG'},
+  pt:{title:'Remover fundo',subtitle:'Remova o fundo com IA neste dispositivo e baixe um PNG transparente. Nada é enviado. Na primeira vez os pesos do modelo ficam no cache do navegador.',privacy:'Local · sem envio',cdnNote:'Na primeira vez, cerca de 40 MB de pesos do modelo vão para o cache do navegador. A imagem fica neste dispositivo e não é enviada.',upload:'Escolha ou solte uma imagem',formats:'PNG, JPG e WebP',process:'Remover fundo',download:'Baixar PNG transparente',clear:'Limpar',waiting:'À espera de uma imagem',emptyTitle:'Solte uma imagem para remover o fundo',ready:'{w} × {h} px',progressModel:'A transferir o modelo… {n}%',progressWasm:'A preparar o ambiente… {n}%',working:'A remover o fundo…',errType:'Escolha um PNG, JPG ou WebP.',errLoad:'Não foi possível abrir a imagem. Tente outro PNG, JPG ou WebP.',errLib:'Não foi possível carregar a biblioteca de recorte. Verifique a rede, permita o jsDelivr e atualize.',errRun:'Não foi possível remover o fundo. Tente outra imagem ou confirme que o modelo consegue ser transferido.',moreTools:'Mais ferramentas',linkWhitebg:'Remover fundo branco',linkBg:'Mudar cor de fundo',cardCutoutTitle:'Remover fundo',cardCutoutDesc:'Remove o fundo localmente e exporta um PNG transparente'},
+  ar:{title:'إزالة الخلفية',subtitle:'أزل الخلفية بذكاء اصطناعي على هذا الجهاز ثم نزّل PNG شفافاً. لا تُرفع الصورة. أول تشغيل يخزّن أوزان النموذج في ذاكرة المتصفح.',privacy:'محلي · بلا رفع',cdnNote:'أول تشغيل ينزّل أوزان النموذج (حوالي 40 ميغابايت) إلى ذاكرة المتصفح. تبقى الصورة على هذا الجهاز ولا تُرفع.',upload:'اختر صورة أو أفلتها',formats:'PNG وJPG وWebP',process:'إزالة الخلفية',download:'تنزيل PNG شفاف',clear:'مسح',waiting:'بانتظار صورة',emptyTitle:'أفلت صورة لإزالة الخلفية',ready:'{w} × {h} px',progressModel:'جارٍ تنزيل النموذج… {n}%',progressWasm:'جارٍ تجهيز بيئة التشغيل… {n}%',working:'جارٍ إزالة الخلفية…',errType:'اختر PNG أو JPG أو WebP.',errLoad:'تعذر فتح الصورة. جرّب PNG أو JPG أو WebP آخر.',errLib:'تعذر تحميل مكتبة إزالة الخلفية. تحقق من الشبكة، اسمح لـ jsDelivr، ثم حدّث الصفحة.',errRun:'تعذرت إزالة الخلفية. جرّب صورة أخرى أو تأكد من إمكانية تنزيل النموذج.',moreTools:'المزيد من الأدوات',linkWhitebg:'إزالة الخلفية البيضاء',linkBg:'تغيير لون الخلفية',cardCutoutTitle:'إزالة الخلفية',cardCutoutDesc:'أزل الخلفية محلياً وصدّر PNG شفافاً'},
+  vi:{title:'Xóa nền AI',subtitle:'Xóa nền bằng AI ngay trên máy rồi tải PNG trong suốt. Ảnh không được tải lên. Lần đầu sẽ tải trọng số mô hình vào bộ nhớ đệm trình duyệt.',privacy:'Tại máy · không tải lên',cdnNote:'Lần đầu sẽ tải khoảng 40MB trọng số mô hình vào bộ nhớ đệm trình duyệt. Ảnh chỉ xử lý trên máy này và không được tải lên.',upload:'Chọn hoặc thả một ảnh',formats:'PNG, JPG, WebP',process:'Xóa nền',download:'Tải PNG trong suốt',clear:'Xóa',waiting:'Đang chờ ảnh',emptyTitle:'Thả ảnh vào để xóa nền',ready:'{w} × {h} px',progressModel:'Đang tải mô hình… {n}%',progressWasm:'Đang chuẩn bị môi trường… {n}%',working:'Đang xóa nền…',errType:'Hãy chọn PNG, JPG hoặc WebP.',errLoad:'Không mở được ảnh. Hãy thử PNG, JPG hoặc WebP khác.',errLib:'Không tải được thư viện xóa nền. Kiểm tra mạng, cho phép jsDelivr rồi tải lại.',errRun:'Không xóa được nền. Hãy thử ảnh khác, hoặc kiểm tra việc tải mô hình.',moreTools:'Công cụ khác',linkWhitebg:'Xóa nền trắng',linkBg:'Đổi màu nền',cardCutoutTitle:'Xóa nền AI',cardCutoutDesc:'Xóa nền bằng AI tại máy, xuất PNG trong suốt'},
+  id:{title:'Hapus latar',subtitle:'Hapus latar dengan AI di perangkat ini, lalu unduh PNG transparan. Gambar tidak diunggah. Pertama kali bobot model disimpan di cache browser.',privacy:'Lokal · tidak diunggah',cdnNote:'Pertama kali, bobot model sekitar 40MB diunduh ke cache browser. Gambar tetap di perangkat ini dan tidak diunggah.',upload:'Pilih atau jatuhkan gambar',formats:'PNG, JPG, dan WebP',process:'Hapus latar',download:'Unduh PNG transparan',clear:'Kosongkan',waiting:'Menunggu gambar',emptyTitle:'Jatuhkan gambar untuk menghapus latar',ready:'{w} × {h} px',progressModel:'Mengunduh model… {n}%',progressWasm:'Menyiapkan runtime… {n}%',working:'Menghapus latar…',errType:'Pilih PNG, JPG, atau WebP.',errLoad:'Tidak bisa membuka gambar. Coba PNG, JPG, atau WebP lain.',errLib:'Pustaka penghapus latar gagal dimuat. Periksa jaringan, izinkan jsDelivr, lalu segarkan.',errRun:'Latar tidak bisa dihapus. Coba gambar lain, atau pastikan model bisa diunduh.',moreTools:'Alat lain',linkWhitebg:'Hapus latar putih',linkBg:'Ubah warna latar',cardCutoutTitle:'Hapus latar',cardCutoutDesc:'Hapus latar secara lokal lalu ekspor PNG transparan'},
+  th:{title:'ลบพื้นหลัง',subtitle:'ลบพื้นหลังด้วย AI บนเครื่องนี้ แล้วดาวน์โหลด PNG โปร่งใส รูปไม่อัปโหลด ครั้งแรกจะเก็บน้ำหนักโมเดลไว้ในแคชของเบราว์เซอร์',privacy:'ในเครื่อง · ไม่อัปโหลด',cdnNote:'ครั้งแรกจะดาวน์โหลดน้ำหนักโมเดลประมาณ 40MB ไว้ในแคชของเบราว์เซอร์ รูปถูกประมวลผลในเครื่องนี้เท่านั้น ไม่อัปโหลด',upload:'คลิกเลือกหรือลากรูปมาวาง',formats:'รองรับ PNG, JPG, WebP',process:'ลบพื้นหลัง',download:'ดาวน์โหลด PNG โปร่งใส',clear:'ล้าง',waiting:'รอรูป',emptyTitle:'วางรูปเพื่อลบพื้นหลัง',ready:'{w} × {h} px',progressModel:'กำลังดาวน์โหลดโมเดล… {n}%',progressWasm:'กำลังเตรียมส่วนรัน… {n}%',working:'กำลังลบพื้นหลัง…',errType:'โปรดเลือก PNG, JPG หรือ WebP',errLoad:'เปิดรูปไม่ได้ ลอง PNG, JPG หรือ WebP อื่น',errLib:'โหลดไลบรารีลบพื้นหลังไม่สำเร็จ ตรวจเครือข่าย อนุญาต jsDelivr แล้วรีเฟรช',errRun:'ลบพื้นหลังไม่ได้ ลองรูปอื่น หรือตรวจว่าดาวน์โหลดโมเดลได้',moreTools:'เครื่องมืออื่น',linkWhitebg:'เอาพื้นขาวออก',linkBg:'เปลี่ยนสีพื้นหลัง',cardCutoutTitle:'ลบพื้นหลัง',cardCutoutDesc:'ลบพื้นหลังในเครื่อง แล้วส่งออก PNG โปร่งใส'}
+};
+const LIB_URLS=[
+  'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm',
+  'https://fastly.jsdelivr.net/npm/@imgly/background-removal@1.7.0/+esm',
+  'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm'
+];
+let language=detectLang();
+let sourceFile=null;
+let resultBlob=null;
+let baseName='image';
+let viewW=0;
+let viewH=0;
+let status='empty';
+let seq=0;
+let runId=0;
+let libPromise=null;
+const MAX_EDGE=4096;
+const canvas=$('#canvas');
+const ctx=canvas.getContext('2d');
+const langSelect=$('#langSelect');
+LANGS.forEach(l=>{
+  const opt=document.createElement('option');
+  opt.value=l.code;
+  opt.textContent=l.name;
+  langSelect.appendChild(opt);
+});
+function detectLang(){
+  const param=new URL(location.href).searchParams.get('lang');
+  if(param&&messages[param])return param;
+  let saved='';
+  try{saved=localStorage.getItem('language')||'';}catch(e){}
+  if(saved&&messages[saved])return saved;
+  const navLangs=navigator.languages||[navigator.language||'zh'];
+  for(const l of navLangs){
+    const lc=String(l).toLowerCase();
+    if(lc.startsWith('zh'))return 'zh';
+    const code=lc.slice(0,2);
+    if(messages[code])return code;
+  }
+  return 'zh';
+}
+function t(key){
+  const pack=messages[language]||messages.en||messages.zh;
+  if(pack&&pack[key]!=null)return pack[key];
+  if(messages.en&&messages.en[key]!=null)return messages.en[key];
+  if(messages.zh&&messages.zh[key]!=null)return messages.zh[key];
+  return key;
+}
+function setMeta(attr,name,content){
+  let el=document.querySelector(`meta[${attr}="${name}"]`);
+  if(!el){el=document.createElement('meta');el.setAttribute(attr,name);document.head.appendChild(el);}
+  el.setAttribute('content',content);
+}
+function pickRemove(mod){
+  if(!mod)return null;
+  if(typeof mod.removeBackground==='function')return mod.removeBackground;
+  if(typeof mod.default==='function')return mod.default;
+  if(mod.default&&typeof mod.default.removeBackground==='function')return mod.default.removeBackground;
+  return null;
+}
+function ensureLib(){
+  if(!libPromise){
+    libPromise=(async()=>{
+      for(const url of LIB_URLS){
+        try{
+          const mod=await import(url);
+          const fn=pickRemove(mod);
+          if(fn)return fn;
+        }catch(e){}
+      }
+      return null;
+    })();
+  }
+  return libPromise.then(fn=>{
+    if(!fn)libPromise=null;
+    return fn;
+  });
+}
+function applyI18n(){
+  const def=LANGS.find(l=>l.code===language)||LANGS[0];
+  document.documentElement.lang=language==='zh'?'zh-CN':language;
+  document.documentElement.dir=def.dir;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    const value=t(key);
+    if(value!==key)el.innerHTML=value;
+  });
+  const seo=SEO[language]||SEO.en||SEO.zh;
+  document.title=seo.title;
+  setMeta('name','description',seo.desc);
+  setMeta('property','og:title',seo.title);
+  setMeta('property','og:description',seo.desc);
+  setMeta('name','twitter:title',seo.title);
+  setMeta('name','twitter:description',seo.desc);
+  const ld=document.querySelector('#ldjson');
+  if(ld){
+    try{
+      const obj=JSON.parse(ld.textContent);
+      obj.name=t('title');
+      obj.description=seo.desc;
+      ld.textContent=JSON.stringify(obj);
+    }catch(e){}
+  }
+  const wrap=$('#wrap');
+  if(wrap)wrap.setAttribute('data-loading',t('working'));
+  paintMeta();
+  const banner=$('#libStatus');
+  if(banner&&!banner.hidden&&banner.dataset.key)banner.textContent=t(banner.dataset.key);
+}
+function setLanguage(lang){
+  if(!messages[lang])lang='en';
+  language=lang;
+  try{localStorage.setItem('language',lang);}catch(e){}
+  langSelect.value=language;
+  applyI18n();
+}
+function showBanner(key){
+  const el=$('#libStatus');
+  if(!el)return;
+  if(!key){el.hidden=true;el.textContent='';delete el.dataset.key;return;}
+  el.dataset.key=key;
+  el.hidden=false;
+  el.textContent=t(key);
+}
+function setProgress(text){
+  const el=$('#progress');
+  if(!el)return;
+  if(!text){el.hidden=true;el.textContent='';return;}
+  el.hidden=false;
+  el.textContent=text;
+}
+function isAllowed(file){
+  const type=(file.type||'').toLowerCase();
+  const name=(file.name||'').toLowerCase();
+  if(type==='image/png'||type==='image/jpeg'||type==='image/webp')return true;
+  return name.endsWith('.png')||name.endsWith('.jpg')||name.endsWith('.jpeg')||name.endsWith('.webp');
+}
+function loadImage(blob){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    const url=URL.createObjectURL(blob);
+    img.onload=()=>{URL.revokeObjectURL(url);resolve(img);};
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('load'));};
+    img.src=url;
+  });
+}
+function paintMeta(){
+  const meta=$('#meta');
+  if(!meta)return;
+  if(status==='working'){
+    meta.textContent=$('#progress').textContent||t('working');
+    return;
+  }
+  if((status==='ready'||status==='done')&&viewW&&viewH){
+    meta.textContent=t('ready').replace('{w}',String(viewW)).replace('{h}',String(viewH));
+    return;
+  }
+  meta.textContent=t('waiting');
+}
+function setBusy(on){
+  document.body.classList.toggle('computing',!!on);
+  $('#wrap').setAttribute('data-loading',t('working'));
+}
+function drawImage(img){
+  viewW=img.naturalWidth||img.width||0;
+  viewH=img.naturalHeight||img.height||0;
+  const edge=Math.max(viewW,viewH)||1;
+  const scale=edge>MAX_EDGE?MAX_EDGE/edge:1;
+  const w=Math.max(1,Math.round(viewW*scale));
+  const h=Math.max(1,Math.round(viewH*scale));
+  canvas.width=w;
+  canvas.height=h;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,w,h);
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality='high';
+  ctx.drawImage(img,0,0,w,h);
+}
+function showEmpty(){
+  sourceFile=null;
+  resultBlob=null;
+  viewW=0;
+  viewH=0;
+  status='empty';
+  setBusy(false);
+  setProgress('');
+  canvas.width=0;
+  canvas.height=0;
+  canvas.style.display='none';
+  $('#empty').style.display='';
+  $('#process').disabled=true;
+  $('#download').disabled=true;
+  $('#clear').disabled=true;
+  $('#file').value='';
+  paintMeta();
+}
+function downloadBlob(blob,name){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function load(file){
+  if(!file)return;
+  if(!isAllowed(file)){showBanner('errType');return;}
+  const id=++seq;
+  runId++;
+  showBanner('');
+  setProgress('');
+  setBusy(false);
+  try{
+    const img=await loadImage(file);
+    if(id!==seq)return;
+    sourceFile=file;
+    resultBlob=null;
+    baseName=(file.name||'image').replace(/\.[^.]+$/,'')||'image';
+    drawImage(img);
+    status='ready';
+    canvas.style.display='block';
+    $('#empty').style.display='none';
+    $('#process').disabled=false;
+    $('#download').disabled=true;
+    $('#clear').disabled=false;
+    paintMeta();
+  }catch(e){
+    if(id!==seq)return;
+    showEmpty();
+    showBanner('errLoad');
+  }
+}
+async function processFile(){
+  if(!sourceFile||$('#process').disabled)return;
+  const id=++runId;
+  const file=sourceFile;
+  showBanner('');
+  status='working';
+  $('#process').disabled=true;
+  $('#download').disabled=true;
+  $('#clear').disabled=false;
+  setBusy(true);
+  setProgress(t('working'));
+  paintMeta();
+  try{
+    const remove=await ensureLib();
+    if(id!==runId)return;
+    if(!remove){
+      status='ready';
+      setBusy(false);
+      setProgress('');
+      $('#process').disabled=false;
+      showBanner('errLib');
+      paintMeta();
+      return;
+    }
+    const blob=await remove(file,{
+      model:'small',
+      device:'cpu',
+      proxyToWorker:false,
+      output:{format:'image/png',quality:1},
+      progress:(key,current,total)=>{
+        if(id!==runId)return;
+        const pct=total?Math.min(100,Math.round(current/total*100)):0;
+        const model=String(key).indexOf('/models/')!==-1;
+        const text=(model?t('progressModel'):t('progressWasm')).replace('{n}',String(pct));
+        setProgress(text);
+        const meta=$('#meta');
+        if(meta)meta.textContent=text;
+      }
+    });
+    if(id!==runId)return;
+    if(!blob)throw new Error('empty');
+    const img=await loadImage(blob);
+    if(id!==runId)return;
+    resultBlob=blob;
+    drawImage(img);
+    status='done';
+    setBusy(false);
+    setProgress('');
+    canvas.style.display='block';
+    $('#empty').style.display='none';
+    $('#process').disabled=false;
+    $('#download').disabled=false;
+    $('#clear').disabled=false;
+    paintMeta();
+  }catch(e){
+    if(id!==runId)return;
+    status=sourceFile?'ready':'empty';
+    setBusy(false);
+    setProgress('');
+    $('#process').disabled=!sourceFile;
+    const msg=String((e&&e.message)||e||'');
+    showBanner(/Failed to fetch|onnxruntime|publicPath|Resource metadata|dynamically imported|import/i.test(msg)?'errLib':'errRun');
+    paintMeta();
+  }
+}
+$('#file').addEventListener('change',e=>{
+  if(e.target.files&&e.target.files[0])load(e.target.files[0]);
+});
+['dragenter','dragover'].forEach(type=>{
+  $('#drop').addEventListener(type,e=>{e.preventDefault();$('#drop').classList.add('over');});
+});
+['dragleave','drop'].forEach(type=>{
+  $('#drop').addEventListener(type,e=>{e.preventDefault();$('#drop').classList.remove('over');});
+});
+$('#drop').addEventListener('drop',e=>{
+  const file=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+  if(file)load(file);
+});
+document.addEventListener('paste',e=>{
+  const items=e.clipboardData&&e.clipboardData.items;
+  if(!items)return;
+  for(const item of items){
+    if(item.type&&item.type.indexOf('image/')===0){
+      const file=item.getAsFile();
+      if(file){load(file);break;}
+    }
+  }
+});
+$('#process').addEventListener('click',()=>{processFile();});
+$('#clear').addEventListener('click',()=>{seq++;runId++;showBanner('');showEmpty();});
+$('#download').addEventListener('click',()=>{
+  if($('#download').disabled||!resultBlob)return;
+  downloadBlob(resultBlob,baseName+'-cutout.png');
+});
+langSelect.addEventListener('change',()=>setLanguage(langSelect.value));
+setLanguage(language);
+(function watchCards(){
+  const grid=document.querySelector('[data-tool-cards]');
+  if(!grid)return;
+  const fix=()=>{
+    grid.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key=el.getAttribute('data-i18n');
+      const value=t(key);
+      if(value!==key&&el.textContent!==value)el.textContent=value;
+    });
+  };
+  new MutationObserver(fix).observe(grid,{childList:true,subtree:true});
+})();
+document.addEventListener('DOMContentLoaded',applyI18n);
+</script>
+<script>
+(function(){
+  var p = encodeURIComponent(location.pathname + location.search);
+  var u = '/__track__?t=' + Date.now() + '&p=' + p;
+  try {
+    if (navigator.sendBeacon) navigator.sendBeacon(u);
+  } catch(e) {}
+})();
+</script>
+<footer class="siteFooter">
+  <p class="sponsorLine"><span data-i18n="homeSponsorLead">觉得好用？</span> <a class="afdian" href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="homeSponsorCta">请我来包辣条</a></p>
+  <div class="actionRow" role="group" aria-label="站务">
+    <button type="button" class="action feedbackOpen" data-i18n="feedback" aria-haspopup="dialog">反馈 &amp; 建议</button>
+    <a class="action primary" href="https://toolc.xin" target="_blank" rel="noopener noreferrer" data-i18n="homeSister">toolc·精选软件工具</a>
+  </div>
+  <div>
+    <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
+  </div>
+</footer>
+<script src="/tool-cards.js"></script>
+<script src="/chrome.js"></script>
+</body>
+</html>

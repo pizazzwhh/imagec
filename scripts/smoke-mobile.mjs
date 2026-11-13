@@ -175,6 +175,7 @@ async function checkPage(page, origin, spec) {
 
       const anchor = ctaPainted ? report.cta : report.action;
       if (report.guideTop != null) {
+        // Optional legacy #guide: when present it must sit below the primary action.
         if (!anchor || !anchor.found) {
           mark(false, "#guide below primary action", "primary action missing");
         } else {

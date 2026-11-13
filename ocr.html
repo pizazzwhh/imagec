@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>图片识字 OCR - 本地识别中英文｜imagec</title>
+  <meta name="description" content="从图片里识别简体中文、英文或中英混合文字，复制或下载 TXT。浏览器本地识别，图片不上传。首次会下载语言模型并缓存。" />
+  <meta name="keywords" content="图片识字,OCR,中文识别,英文识别,Tesseract,提取文字,本地识别" />
+  <meta name="author" content="imagec" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <meta name="googlebot" content="index,follow" />
+  <meta name="bingbot" content="index,follow" />
+  <meta name="msvalidate.01" content="6D09E7478DB0959D20C7BBBF26665B04" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="canonical" href="https://imagec.xin/ocr" />
+  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/ocr?lang=zh" />
+  <link rel="alternate" hreflang="en" href="https://imagec.xin/ocr?lang=en" />
+  <link rel="alternate" hreflang="ja" href="https://imagec.xin/ocr?lang=ja" />
+  <link rel="alternate" hreflang="ko" href="https://imagec.xin/ocr?lang=ko" />
+  <link rel="alternate" hreflang="es" href="https://imagec.xin/ocr?lang=es" />
+  <link rel="alternate" hreflang="fr" href="https://imagec.xin/ocr?lang=fr" />
+  <link rel="alternate" hreflang="de" href="https://imagec.xin/ocr?lang=de" />
+  <link rel="alternate" hreflang="ru" href="https://imagec.xin/ocr?lang=ru" />
+  <link rel="alternate" hreflang="pt" href="https://imagec.xin/ocr?lang=pt" />
+  <link rel="alternate" hreflang="ar" href="https://imagec.xin/ocr?lang=ar" />
+  <link rel="alternate" hreflang="vi" href="https://imagec.xin/ocr?lang=vi" />
+  <link rel="alternate" hreflang="id" href="https://imagec.xin/ocr?lang=id" />
+  <link rel="alternate" hreflang="th" href="https://imagec.xin/ocr?lang=th" />
+  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/ocr" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="imagec" />
+  <meta property="og:title" content="图片识字 OCR - 本地识别中英文｜imagec" />
+  <meta property="og:description" content="识别图片里的简体中文、英文或中英混合文字，复制或下载 TXT。本地识别，不上传。" />
+  <meta property="og:url" content="https://imagec.xin/ocr" />
+  <meta property="og:image" content="https://imagec.xin/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="图片识字 OCR - 本地识别中英文｜imagec" />
+  <meta name="twitter:description" content="从图片里识别文字并下载 TXT。本地识别，不上传服务器。" />
+  <meta name="twitter:image" content="https://imagec.xin/og-image.jpg" />
+  <meta name="theme-color" content="#FAFAF9" />
+  <meta name="application-name" content="imagec" />
+  <meta name="apple-mobile-web-app-title" content="imagec" />
+  <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"图片识字","alternateName":"imagec","url":"https://imagec.xin/ocr","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"从图片里识别简体中文、英文或中英混合文字，复制或下载 TXT。浏览器本地识别，图片不上传。首次会下载语言模型并缓存。","inLanguage":["zh-CN","en"],"featureList":["上传或粘贴图片","简体中文","英文","中英混合","识别进度","复制文字","下载 TXT","本地识别不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"图片识字","item":"https://imagec.xin/ocr"}]}</script>
+  <link rel="stylesheet" href="/site.css" />
+  <style>
+    body.tool .canvasWrap { height: min(280px, 38vh); min-height: 160px; }
+    #output { min-height: 160px; line-height: 1.55; }
+    .ocrProgress { height: 8px; margin: 0 0 10px; background: #E7E5E4; border-radius: 99px; overflow: hidden; }
+    .ocrProgress[hidden] { display: none; }
+    .ocrProgress > div { height: 100%; width: 0; background: #2563EB; }
+  </style>
+</head>
+<body class="tool ocr">
+<main class="shell">
+  <header class="topbar"><a class="brand" href="/"><span class="mark"><svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="6" fill="#FAFAF9"/><path fill="#1C1917" fill-rule="evenodd" d="M8 2h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6V8a6 6 0 0 1 6-6zm5 5h38a1 1 0 0 1 1 1v38a1 1 0 0 1-1 1H13a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><rect x="36" y="36" width="26" height="26" rx="6" fill="#2563EB"/></svg></span><span class="brand-name">imagec</span></a><div class="topbar-right"><a class="searchBtn" href="/?focus=search" aria-label="搜索工具" data-chrome-aria="searchTools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a><select class="langSelect" id="langSelect"></select></div></header>
+
+  <section class="panel">
+    <div class="hero">
+      <h1 data-i18n="title">图片识字</h1>
+      <p data-i18n="subtitle">识别图片里的中英文，复制或下载 TXT。</p>
+      <div class="privacyLine safeBadge">
+        <span data-i18n="privacy">本地处理 · 不上传服务器</span>
+      </div>
+      <p class="heroLinks"><a href="/exif" data-i18n="linkExif">清除元数据</a> <span aria-hidden="true">·</span> <a href="/convert" data-i18n="linkConvert">转换格式</a></p>
+    </div>
+    <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
+    <div class="workspace">
+      <aside class="controls">
+        <label class="drop" id="drop" for="file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+          <strong data-i18n="upload">点击选择或拖入图片</strong>
+          <small data-i18n="formats">支持 PNG、JPG、WebP<br>也可直接粘贴图片</small>
+        </label>
+        <input id="file" type="file" accept="image/png,image/jpeg,image/webp" />
+
+        <div class="pin">
+          <div class="group">
+            <div class="labelrow"><label data-i18n="langLabel">识别语言</label></div>
+            <div class="seg" id="langSeg" role="group">
+              <button type="button" data-lang="chi_sim" data-i18n="langChi" aria-pressed="false">简体中文</button>
+              <button type="button" data-lang="eng" data-i18n="langEng" aria-pressed="false">English</button>
+              <button type="button" class="active" data-lang="chi_sim+eng" data-i18n="langBoth" aria-pressed="true">中英</button>
+            </div>
+          </div>
+          <p class="notice" data-i18n="modelNote">第一次识别会下载语言模型（大约几 MB），并缓存在这个浏览器里。首次需要联网，之后的识别都在本机完成。</p>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="copy" type="button" disabled data-i18n="copy">复制文字</button>
+          <button class="secondary" id="download" type="button" disabled data-i18n="download">下载 TXT</button>
+          <button class="secondary" id="clear" type="button" disabled data-i18n="clear">清空</button>
+        </div>
+      </aside>
+
+      <section class="stage" aria-label="preview">
+        <div class="stagebar">
+          <div class="meta" id="meta" data-i18n="waiting" aria-live="polite">等待图片</div>
+        </div>
+        <div class="ocrProgress" id="ocrProgress" hidden role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="ocrFill"></div>
+        </div>
+        <div class="canvasWrap" id="wrap">
+          <canvas id="canvas"></canvas>
+        </div>
+        <div class="group">
+          <div class="labelrow"><label for="output" data-i18n="result">识别结果</label></div>
+          <textarea id="output" rows="8" spellcheck="false" autocomplete="off"></textarea>
+        </div>
+        <div class="empty" id="empty">
+          <strong data-i18n="emptyTitle">把图片放进来，识别里面的文字</strong>
+        </div>
+      </section>
+    </div>
+  </section>
+
+<section class="relatedTools">
+    <h2 data-i18n="moreTools">更多图片工具</h2>
+    <div class="toolsGrid" data-tool-cards></div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" id="tessLib"></script>
+<script>
+(function(){
+  var TESS_FALLBACKS=[
+    'https://fastly.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',
+    'https://unpkg.com/tesseract.js@5/dist/tesseract.min.js'
+  ];
+  function loadScript(src){
+    return new Promise(function(resolve,reject){
+      var s=document.createElement('script');
+      var done=false;
+      var t=setTimeout(function(){finish(new Error('timeout'));},8000);
+      function finish(err){
+        if(done)return; done=true; clearTimeout(t);
+        s.onload=s.onerror=null;
+        if(err){s.remove();reject(err);} else resolve();
+      }
+      s.src=src; s.async=true;
+      s.onload=function(){finish();};
+      s.onerror=function(){finish(new Error('fail'));};
+      document.head.appendChild(s);
+    });
+  }
+  window.ensureTesseract=async function(){
+    if(typeof Tesseract!=='undefined')return Tesseract;
+    for(var i=0;i<TESS_FALLBACKS.length;i++){
+      try{
+        await loadScript(TESS_FALLBACKS[i]);
+        if(typeof Tesseract!=='undefined')return Tesseract;
+      }catch(e){}
+    }
+    return null;
+  };
+})();
+</script>
+<script>
+const $=s=>document.querySelector(s);
+const LANGS=[
+  {code:'zh',name:'中文',dir:'ltr'},{code:'en',name:'English',dir:'ltr'},{code:'ja',name:'日本語',dir:'ltr'},
+  {code:'ko',name:'한국어',dir:'ltr'},{code:'es',name:'Español',dir:'ltr'},{code:'fr',name:'Français',dir:'ltr'},
+  {code:'de',name:'Deutsch',dir:'ltr'},{code:'ru',name:'Русский',dir:'ltr'},{code:'pt',name:'Português',dir:'ltr'},
+  {code:'ar',name:'العربية',dir:'rtl'},{code:'vi',name:'Tiếng Việt',dir:'ltr'},{code:'id',name:'Bahasa Indonesia',dir:'ltr'},
+  {code:'th',name:'ไทย',dir:'ltr'}
+];
+const OCR_LANG={'chi_sim':1,'eng':1,'chi_sim+eng':1};
+const PHASE={
+  'loading tesseract core':[2,18],
+  'initializing tesseract':[18,30],
+  'loading language traineddata':[30,72],
+  'initializing api':[72,84],
+  'recognizing text':[84,99]
+};
+const SEO={
+  zh:{title:'图片识字 OCR - 本地识别中英文｜imagec',desc:'从图片里识别简体中文、英文或中英混合文字，复制或下载 TXT。浏览器本地识别，图片不上传。首次会下载语言模型并缓存。'},
+  en:{title:'Image OCR | Chinese and English | imagec',desc:'Read Simplified Chinese, English, or mixed text from a PNG, JPG, or WebP. Copy the text or download a TXT file. Recognition runs in the browser. The image is not uploaded. The first run downloads a language model and caches it.'}
+};
+const messages={
+  zh:{title:'图片识字',subtitle:'识别图片里的中英文，复制或下载 TXT。',privacy:'本地处理 · 不上传服务器',upload:'点击选择或拖入图片',formats:'支持 PNG、JPG、WebP<br>也可直接粘贴图片',langLabel:'识别语言',langChi:'简体中文',langEng:'English',langBoth:'中英',modelNote:'第一次识别会下载语言模型（大约几 MB），并缓存在这个浏览器里。首次需要联网，之后的识别都在本机完成。',copy:'复制文字',download:'下载 TXT',clear:'清空',copied:'已复制',waiting:'等待图片',emptyTitle:'把图片放进来，识别里面的文字',result:'识别结果',working:'正在准备识别…',progress:'{label} · {n}%',ready:'{w} × {h} px · {n} 字',emptyText:'没有识别到文字。可以换一种语言，或换一张更清晰的图片。',progCore:'正在加载识别组件',progInit:'正在初始化',progLang:'正在下载语言模型',progApi:'正在准备识别',progRecognize:'正在识别文字',progWorking:'正在处理',errType:'请选择 PNG、JPG 或 WebP。',errHeic:'暂不支持 HEIC，请先用「转换 HEIC」转成 JPG 或 PNG。',errLoad:'图片加载失败，可能是格式不支持或文件已损坏。',errLib:'识别组件加载失败。请检查网络，或允许 jsDelivr 后刷新页面。',errNet:'语言模型下载失败。请检查网络后重试。第一次识别需要联网。',errFail:'没有识别成功。请换一张更清晰的图片，或改用另一种语言后再试。',errCopy:'复制失败。请在文字框里手动选择并复制。',moreTools:'更多图片工具',linkExif:'清除元数据',linkConvert:'转换格式'},
+  en:{title:'Image OCR',subtitle:'Read Chinese and English text from an image.',privacy:'Local · no upload',upload:'Choose or drop an image',formats:'PNG, JPG, and WebP<br>You can also paste an image',langLabel:'Language',langChi:'Chinese',langEng:'English',langBoth:'Chinese + English',modelNote:'The first run downloads language models (a few MB) and caches them in this browser. A network connection is needed the first time. Later runs stay on this device.',copy:'Copy text',download:'Download TXT',clear:'Clear',copied:'Copied',waiting:'Waiting for an image',emptyTitle:'Drop an image to read the text',result:'Recognized text',working:'Preparing recognition…',progress:'{label} · {n}%',ready:'{w} × {h} px · {n} characters',emptyText:'No text was found. Try another language, or a clearer image.',progCore:'Loading the OCR engine',progInit:'Starting the engine',progLang:'Downloading the language model',progApi:'Preparing recognition',progRecognize:'Reading the image',progWorking:'Working',errType:'Choose a PNG, JPG, or WebP.',errHeic:'HEIC is not supported here. Convert it to JPG or PNG first.',errLoad:'Could not load the image. The format may be unsupported or the file is damaged.',errLib:'The OCR library failed to load. Check the network, allow jsDelivr, and refresh.',errNet:'The language model could not be downloaded. Check the network and try again. The first run needs a connection.',errFail:'Recognition did not finish. Try a clearer image, or switch language and run it again.',errCopy:'Could not copy. Select the text in the box and copy it yourself.',moreTools:'More image tools',linkExif:'Strip metadata',linkConvert:'Convert a format'}
+};
+let language=detectLang();
+let ocrLang='chi_sim+eng';
+let sourceFile=null;
+let sourceImg=null;
+let baseName='image';
+let worker=null;
+let workerLang='';
+let workerGen=0;
+let lock=Promise.resolve();
+let seq=0;
+let logSeq=0;
+let busy=false;
+let state='empty';
+let lastLog=null;
+let lastSize={w:0,h:0,n:0};
+const canvas=$('#canvas');
+const ctx=canvas.getContext('2d');
+const langSelect=$('#langSelect');
+LANGS.forEach(l=>{
+  const opt=document.createElement('option');
+  opt.value=l.code;
+  opt.textContent=l.name;
+  langSelect.appendChild(opt);
+});
+function knownLang(code){return LANGS.some(l=>l.code===code);}
+function detectLang(){
+  const param=new URL(location.href).searchParams.get('lang');
+  if(param&&knownLang(param))return param;
+  let saved='';
+  try{saved=localStorage.getItem('language')||'';}catch(e){}
+  if(saved&&knownLang(saved))return saved;
+  const navLangs=navigator.languages||[navigator.language||'zh'];
+  for(const l of navLangs){
+    const lc=String(l).toLowerCase();
+    if(lc.startsWith('zh'))return 'zh';
+    const code=lc.slice(0,2);
+    if(knownLang(code))return code;
+  }
+  return 'zh';
+}
+function t(key){
+  const pack=messages[language];
+  if(pack&&pack[key]!=null)return pack[key];
+  if(messages.en&&messages.en[key]!=null)return messages.en[key];
+  if(messages.zh&&messages.zh[key]!=null)return messages.zh[key];
+  return key;
+}
+function tf(key,map){
+  let s=t(key);
+  Object.keys(map||{}).forEach(k=>{s=s.replaceAll('{'+k+'}',String(map[k]));});
+  return s;
+}
+function setMeta(attr,name,content){
+  let el=document.querySelector(`meta[${attr}="${name}"]`);
+  if(!el){el=document.createElement('meta');el.setAttribute(attr,name);document.head.appendChild(el);}
+  el.setAttribute('content',content);
+}
+function syncLang(){
+  $('#langSeg').querySelectorAll('button').forEach(btn=>{
+    const on=btn.getAttribute('data-lang')===ocrLang;
+    btn.classList.toggle('active',on);
+    btn.setAttribute('aria-pressed',on?'true':'false');
+  });
+}
+function applyI18n(){
+  const def=LANGS.find(l=>l.code===language)||LANGS[0];
+  document.documentElement.lang=language==='zh'?'zh-CN':language;
+  document.documentElement.dir=def.dir;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    const value=t(key);
+    if(value!==key)el.innerHTML=value;
+  });
+  syncLang();
+  const seo=SEO[language]||SEO.en||SEO.zh;
+  document.title=seo.title;
+  setMeta('name','description',seo.desc);
+  setMeta('property','og:title',seo.title);
+  setMeta('property','og:description',seo.desc);
+  setMeta('name','twitter:title',seo.title);
+  setMeta('name','twitter:description',seo.desc);
+  const ld=document.querySelector('#ldjson');
+  if(ld){
+    try{
+      const obj=JSON.parse(ld.textContent);
+      obj.name=t('title');
+      obj.description=seo.desc;
+      ld.textContent=JSON.stringify(obj);
+    }catch(e){}
+  }
+  const banner=$('#libStatus');
+  if(banner&&!banner.hidden&&banner.dataset.key)banner.textContent=t(banner.dataset.key);
+  paintMeta();
+}
+function setLanguage(lang){
+  if(!knownLang(lang))lang='en';
+  language=lang;
+  try{localStorage.setItem('language',lang);}catch(e){}
+  langSelect.value=language;
+  applyI18n();
+}
+function showBanner(key){
+  const el=$('#libStatus');
+  if(!el)return;
+  if(!key){el.hidden=true;el.textContent='';delete el.dataset.key;return;}
+  el.dataset.key=key;
+  el.hidden=false;
+  el.textContent=t(key);
+}
+function kindOf(file){
+  const name=(file.name||'').toLowerCase();
+  const type=(file.type||'').toLowerCase();
+  if(type.indexOf('heic')!==-1||type.indexOf('heif')!==-1||name.endsWith('.heic')||name.endsWith('.heif'))return 'heic';
+  if(type==='image/png'||name.endsWith('.png'))return 'png';
+  if(type==='image/jpeg'||type==='image/jpg'||name.endsWith('.jpg')||name.endsWith('.jpeg'))return 'jpeg';
+  if(type==='image/webp'||name.endsWith('.webp'))return 'webp';
+  return '';
+}
+function safeName(name){
+  const clean=String(name||'image').replace(/[\\/:*?"<>|]+/g,'').trim();
+  return clean||'image';
+}
+function loadImage(blob){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    const url=URL.createObjectURL(blob);
+    img.onload=()=>{URL.revokeObjectURL(url);resolve(img);};
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('load'));};
+    img.src=url;
+  });
+}
+function phaseKey(status){
+  const s=String(status||'');
+  if(s.indexOf('language')!==-1)return 'progLang';
+  if(s.indexOf('recogniz')!==-1)return 'progRecognize';
+  if(s.indexOf('core')!==-1)return 'progCore';
+  if(s.indexOf('api')!==-1)return 'progApi';
+  if(s.indexOf('initial')!==-1)return 'progInit';
+  return 'progWorking';
+}
+function overallPct(m){
+  const status=m&&m.status||'';
+  const span=PHASE[status];
+  const p=m&&typeof m.progress==='number'?Math.max(0,Math.min(1,m.progress)):0;
+  if(!span)return Math.round(p*100);
+  return Math.round(span[0]+(span[1]-span[0])*p);
+}
+function paintProgress(){
+  const n=overallPct(lastLog||{});
+  const label=t(phaseKey(lastLog&&lastLog.status));
+  $('#meta').textContent=tf('progress',{label:label,n:n});
+  const bar=$('#ocrProgress');
+  bar.hidden=false;
+  bar.setAttribute('aria-valuenow',String(n));
+  $('#ocrFill').style.width=n+'%';
+}
+function hideProgress(){
+  const bar=$('#ocrProgress');
+  if(!bar)return;
+  bar.hidden=true;
+  bar.setAttribute('aria-valuenow','0');
+  $('#ocrFill').style.width='0';
+}
+function paintMeta(){
+  const meta=$('#meta');
+  if(!meta)return;
+  if(busy){
+    if(lastLog&&logSeq===seq)paintProgress();
+    else meta.textContent=t('working');
+    return;
+  }
+  if(state==='ready'){
+    meta.textContent=lastSize.n?tf('ready',lastSize):t('emptyText');
+    return;
+  }
+  meta.textContent=t('waiting');
+}
+function onLogger(m){
+  if(logSeq!==seq)return;
+  lastLog=m||null;
+  busy=true;
+  paintProgress();
+}
+function withLock(fn){
+  const prev=lock;
+  let release;
+  lock=new Promise(r=>{release=r;});
+  return prev.then(fn).finally(release);
+}
+async function ensureWorkerBody(lang,gen){
+  if(gen!==workerGen)throw new Error('abort');
+  if(typeof Tesseract==='undefined'||typeof Tesseract.createWorker!=='function'){
+    const Tess=window.ensureTesseract?await window.ensureTesseract():null;
+    if(!Tess||typeof Tess.createWorker!=='function')throw new Error('lib');
+  }
+  if(!OCR_LANG[lang])lang='chi_sim+eng';
+  if(worker&&workerLang===lang)return worker;
+  if(worker&&typeof worker.reinitialize==='function'){
+    try{
+      await worker.reinitialize(lang);
+      if(gen!==workerGen)throw new Error('abort');
+      workerLang=lang;
+      return worker;
+    }catch(e){
+      if(e&&e.message==='abort')throw e;
+      try{if(worker)await worker.terminate();}catch(err){}
+      worker=null;
+      workerLang='';
+    }
+  }else if(worker){
+    try{await worker.terminate();}catch(e){}
+    worker=null;
+    workerLang='';
+  }
+  if(gen!==workerGen)throw new Error('abort');
+  const created=await Tesseract.createWorker(lang,1,{logger:onLogger});
+  if(gen!==workerGen){
+    try{await created.terminate();}catch(e){}
+    throw new Error('abort');
+  }
+  worker=created;
+  workerLang=lang;
+  return created;
+}
+function drawPreview(img){
+  const edge=Math.max(img.naturalWidth,img.naturalHeight)||1;
+  const scale=edge>1600?1600/edge:1;
+  const w=Math.max(1,Math.round(img.naturalWidth*scale));
+  const h=Math.max(1,Math.round(img.naturalHeight*scale));
+  canvas.width=w;
+  canvas.height=h;
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.clearRect(0,0,w,h);
+  ctx.drawImage(img,0,0,w,h);
+  canvas.style.display='block';
+}
+function prepareSource(img,file){
+  const edge=Math.max(img.naturalWidth,img.naturalHeight)||1;
+  if(edge<=2400)return file;
+  const scale=2400/edge;
+  const c=document.createElement('canvas');
+  c.width=Math.max(1,Math.round(img.naturalWidth*scale));
+  c.height=Math.max(1,Math.round(img.naturalHeight*scale));
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+  return c;
+}
+function countChars(text){return Array.from(text||'').length;}
+function applyText(res){
+  const text=String(res&&res.data&&res.data.text||'').replace(/\s+$/,'');
+  $('#output').value=text;
+  busy=false;
+  state='ready';
+  lastLog=null;
+  hideProgress();
+  lastSize.n=countChars(text);
+  const has=text.length>0;
+  $('#copy').disabled=!has;
+  $('#download').disabled=!has;
+  $('#clear').disabled=false;
+  showBanner('');
+  paintMeta();
+}
+function failKey(err){
+  const msg=String(err&&(err.message||err)||'');
+  if(msg==='abort')return '';
+  if(msg==='lib'||/createWorker|tesseract/i.test(msg)&&/not defined|undefined/i.test(msg))return 'errLib';
+  if(/fetch|network|NetworkError|Failed to load|lang\.traineddata|Import/i.test(msg))return 'errNet';
+  return 'errFail';
+}
+function recognize(file){
+  const id=++seq;
+  const lang=OCR_LANG[ocrLang]?ocrLang:'chi_sim+eng';
+  const gen=workerGen;
+  busy=true;
+  state='working';
+  lastLog=null;
+  $('#output').value='';
+  $('#copy').disabled=true;
+  $('#download').disabled=true;
+  $('#clear').disabled=false;
+  hideProgress();
+  paintMeta();
+  showBanner('');
+  withLock(async()=>{
+    if(id!==seq||gen!==workerGen)return;
+    logSeq=id;
+    const w=await ensureWorkerBody(lang,gen);
+    if(id!==seq||gen!==workerGen)return;
+    let res;
+    try{
+      res=await w.recognize(file);
+    }catch(err){
+      if(id!==seq||gen!==workerGen)return;
+      if(!canvas.width)throw err;
+      res=await w.recognize(canvas);
+    }
+    if(id!==seq||gen!==workerGen)return;
+    applyText(res);
+  }).catch(err=>{
+    if(id!==seq||gen!==workerGen)return;
+    busy=false;
+    lastLog=null;
+    hideProgress();
+    state='error';
+    const key=failKey(err);
+    if(key)showBanner(key);
+    $('#meta').textContent=key?t(key):t('waiting');
+  });
+}
+function showEmpty(){
+  sourceFile=null;
+  sourceImg=null;
+  busy=false;
+  state='empty';
+  lastLog=null;
+  logSeq=0;
+  lastSize={w:0,h:0,n:0};
+  canvas.width=0;
+  canvas.height=0;
+  canvas.style.display='none';
+  $('#output').value='';
+  $('#empty').style.display='';
+  $('#copy').disabled=true;
+  $('#download').disabled=true;
+  $('#clear').disabled=true;
+  $('#file').value='';
+  hideProgress();
+  paintMeta();
+}
+function downloadBlob(blob,name){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+async function copyText(){
+  const text=$('#output').value;
+  if(!text)return;
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText)await navigator.clipboard.writeText(text);
+    else{
+      $('#output').focus();
+      $('#output').select();
+      if(!document.execCommand('copy'))throw new Error('copy');
+    }
+    const btn=$('#copy');
+    btn.textContent=t('copied');
+    setTimeout(()=>{btn.textContent=t('copy');},1600);
+    showBanner('');
+  }catch(e){
+    showBanner('errCopy');
+  }
+}
+async function load(file){
+  if(!file)return;
+  const kind=kindOf(file);
+  if(kind==='heic'){showBanner('errHeic');return;}
+  if(kind!=='png'&&kind!=='jpeg'&&kind!=='webp'){showBanner('errType');return;}
+  const id=++seq;
+  showBanner('');
+  try{
+    const img=await loadImage(file);
+    if(id!==seq)return;
+    sourceFile=file;
+    sourceImg=img;
+    baseName=safeName((file.name||'image').replace(/\.[^.]+$/,''));
+    lastSize.w=img.naturalWidth||0;
+    lastSize.h=img.naturalHeight||0;
+    drawPreview(img);
+    $('#empty').style.display='none';
+    $('#clear').disabled=false;
+    recognize(prepareSource(img,file));
+  }catch(e){
+    if(id!==seq)return;
+    showEmpty();
+    showBanner('errLoad');
+  }
+}
+function bindDrop(){
+  const drop=$('#drop');
+  ['dragenter','dragover'].forEach(type=>{
+    drop.addEventListener(type,ev=>{ev.preventDefault();drop.classList.add('over');});
+  });
+  ['dragleave','drop'].forEach(type=>{
+    drop.addEventListener(type,ev=>{ev.preventDefault();drop.classList.remove('over');});
+  });
+  drop.addEventListener('drop',e=>{
+    const file=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+    if(file)load(file);
+  });
+}
+$('#file').addEventListener('change',e=>{
+  if(e.target.files&&e.target.files[0])load(e.target.files[0]);
+});
+bindDrop();
+document.addEventListener('paste',e=>{
+  const items=e.clipboardData&&e.clipboardData.items;
+  if(!items)return;
+  for(const item of items){
+    if(item.type&&item.type.indexOf('image/')===0){
+      const file=item.getAsFile();
+      if(file){load(file);break;}
+    }
+  }
+});
+$('#langSeg').addEventListener('click',e=>{
+  const btn=e.target.closest('button[data-lang]');
+  if(!btn)return;
+  const next=btn.getAttribute('data-lang');
+  if(!OCR_LANG[next])return;
+  const same=next===ocrLang;
+  ocrLang=next;
+  syncLang();
+  if(!sourceFile||!sourceImg)return;
+  if(same&&state==='ready'&&$('#output').value)return;
+  recognize(prepareSource(sourceImg,sourceFile));
+});
+$('#output').addEventListener('input',()=>{
+  if(state!=='ready'&&state!=='error')state='ready';
+  const text=$('#output').value;
+  lastSize.n=countChars(text);
+  const has=text.length>0;
+  $('#copy').disabled=!has;
+  $('#download').disabled=!has;
+  if(!busy)paintMeta();
+});
+$('#copy').addEventListener('click',()=>{if(!$('#copy').disabled)copyText();});
+$('#download').addEventListener('click',()=>{
+  const text=$('#output').value;
+  if($('#download').disabled||!text)return;
+  downloadBlob(new Blob([text],{type:'text/plain;charset=utf-8'}),safeName(baseName)+'-ocr.txt');
+});
+$('#clear').addEventListener('click',()=>{
+  seq++;
+  workerGen++;
+  const w=worker;
+  worker=null;
+  workerLang='';
+  showBanner('');
+  showEmpty();
+  if(w)w.terminate().catch(()=>{});
+});
+langSelect.addEventListener('change',()=>setLanguage(langSelect.value));
+setLanguage(language);
+if(window.ensureTesseract){window.ensureTesseract().then(function(T){if(!T)showBanner('errLib');});}else if(typeof Tesseract==='undefined')showBanner('errLib');
+(function watchCards(){
+  const grid=document.querySelector('[data-tool-cards]');
+  if(!grid)return;
+  const fix=()=>{
+    grid.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key=el.getAttribute('data-i18n');
+      const value=t(key);
+      if(value!==key&&el.textContent!==value)el.textContent=value;
+    });
+  };
+  new MutationObserver(fix).observe(grid,{childList:true,subtree:true});
+})();
+document.addEventListener('DOMContentLoaded',applyI18n);
+</script>
+<script>
+(function(){
+  var p = encodeURIComponent(location.pathname + location.search);
+  var u = '/__track__?t=' + Date.now() + '&p=' + p;
+  try {
+    if (navigator.sendBeacon) navigator.sendBeacon(u);
+  } catch(e) {}
+})();
+</script>
+<footer class="siteFooter">
+  <p class="sponsorLine"><span data-i18n="homeSponsorLead">觉得好用？</span> <a class="afdian" href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="homeSponsorCta">请我来包辣条</a></p>
+  <div class="actionRow" role="group" aria-label="站务">
+    <button type="button" class="action feedbackOpen" data-i18n="feedback" aria-haspopup="dialog">反馈 &amp; 建议</button>
+    <a class="action primary" href="https://toolc.xin" target="_blank" rel="noopener noreferrer" data-i18n="homeSister">toolc·精选软件工具</a>
+  </div>
+  <div>
+    <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
+  </div>
+</footer>
+<script src="/tool-cards.js"></script>
+<script src="/chrome.js"></script>
+</body>
+</html>

@@ -2,5 +2,8 @@ User-agent: *
 Allow: /
 Disallow: /__stats__
 Disallow: /stats.html
+Disallow: /inbox
+Disallow: /inbox.html
+Disallow: /api/
 
 Sitemap: https://imagec.xin/sitemap.xml

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>反馈收件箱 · imagec</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/site.css">
+  <style>
+    body.inbox {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font);
+    }
+    .inboxShell {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 24px 16px 64px;
+    }
+    .inboxHead {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .inboxHead h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+    .inboxMeta {
+      color: var(--ink-2);
+      font-size: var(--fs-sm);
+    }
+    .inboxGate, .inboxToolbar, .inboxCard {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .inboxGate label {
+      display: block;
+      font-weight: var(--fw-bold);
+      margin-bottom: 8px;
+    }
+    .inboxGate input, .inboxToolbar select {
+      width: 100%;
+      max-width: 420px;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      font: inherit;
+    }
+    .inboxGate .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .inboxToolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .inboxToolbar .spacer { flex: 1; }
+    .inboxCard.is-unread { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+    .inboxCard header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: var(--fw-bold);
+      background: var(--bg);
+      color: var(--ink-2);
+    }
+    .tag.suggest { background: #EFF6FF; color: #1D4ED8; }
+    .tag.bug { background: #FEF2F2; color: #B91C1C; }
+    .tag.other { background: #F5F5F4; color: #57534E; }
+    .tag.done { background: #ECFDF5; color: #047857; }
+    .inboxMsg {
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.5;
+      margin: 0 0 10px;
+    }
+    .inboxAside {
+      font-size: var(--fs-xs);
+      color: var(--ink-2);
+      display: grid;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+    .inboxActions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .inboxEmpty, .inboxError {
+      padding: 24px;
+      text-align: center;
+      color: var(--ink-2);
+    }
+    .inboxError { color: var(--danger); }
+    body.inbox button.primary, body.inbox button.secondary {
+      min-height: 36px;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--line);
+      font-weight: var(--fw-bold);
+      cursor: pointer;
+      background: var(--surface);
+    }
+    body.inbox button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+  </style>
+</head>
+<body class="inbox">
+  <main class="inboxShell">
+    <div class="inboxHead">
+      <div>
+        <h1>反馈收件箱</h1>
+        <p class="inboxMeta">仅本机 / 内网查看。勿公开分享带 token 的链接。</p>
+      </div>
+      <a href="/">← 回首页</a>
+    </div>
+
+    <section class="inboxGate" id="gate">
+      <label for="token">管理口令（FEEDBACK_TOKEN）</label>
+      <input id="token" type="password" autocomplete="current-password" placeholder="粘贴 token">
+      <div class="row">
+        <button type="button" class="primary" id="unlock">进入收件箱</button>
+        <button type="button" class="secondary" id="clearToken">清除已存口令</button>
+      </div>
+      <p class="inboxMeta" style="margin-top:10px">本地预览启动时终端会打印带 token 的 inbox 链接；口令也写在 <code>data/feedback-token.txt</code>。</p>
+    </section>
+
+    <section id="app" hidden>
+      <div class="inboxToolbar">
+        <select id="filterType" aria-label="类型">
+          <option value="all">全部类型</option>
+          <option value="suggest">建议</option>
+          <option value="bug">问题</option>
+          <option value="other">其他</option>
+        </select>
+        <select id="filterStatus" aria-label="状态">
+          <option value="open">未处理</option>
+          <option value="done">已处理</option>
+          <option value="all">全部状态</option>
+          <option value="spam">垃圾</option>
+        </select>
+        <span class="spacer"></span>
+        <button type="button" class="secondary" id="refresh">刷新</button>
+        <button type="button" class="secondary" id="logout">退出</button>
+      </div>
+      <div id="list"></div>
+      <p class="inboxEmpty" id="empty" hidden>暂无反馈</p>
+      <p class="inboxError" id="error" hidden></p>
+    </section>
+  </main>
+
+  <script src="/feedback-config.js"></script>
+  <script>
+  (function () {
+    var KEY = "imagec_feedback_token";
+    var tokenInput = document.getElementById("token");
+    var gate = document.getElementById("gate");
+    var app = document.getElementById("app");
+    var list = document.getElementById("list");
+    var empty = document.getElementById("empty");
+    var errorEl = document.getElementById("error");
+    var items = [];
+
+    function endpoint() {
+      var cfg = window.IMAGEC_FEEDBACK || {};
+      return (cfg.endpoint && String(cfg.endpoint).trim()) || "/api/feedback";
+    }
+    function getToken() {
+      var q = new URLSearchParams(location.search).get("token");
+      if (q) {
+        try { localStorage.setItem(KEY, q); } catch (e) {}
+        return q;
+      }
+      try { return localStorage.getItem(KEY) || ""; } catch (e) { return ""; }
+    }
+    function setToken(v) {
+      try {
+        if (v) localStorage.setItem(KEY, v);
+        else localStorage.removeItem(KEY);
+      } catch (e) {}
+    }
+    function typeLabel(t) {
+      if (t === "bug") return "问题";
+      if (t === "other") return "其他";
+      return "建议";
+    }
+    function showError(msg) {
+      errorEl.hidden = !msg;
+      errorEl.textContent = msg || "";
+    }
+    function authHeaders() {
+      return { Authorization: "Bearer " + getToken(), "Content-Type": "application/json" };
+    }
+    function filtered() {
+      var type = document.getElementById("filterType").value;
+      var status = document.getElementById("filterStatus").value;
+      return items.filter(function (item) {
+        if (type !== "all" && item.type !== type) return false;
+        if (status !== "all" && (item.status || "open") !== status) return false;
+        return true;
+      });
+    }
+    function render() {
+      var rows = filtered();
+      list.innerHTML = "";
+      empty.hidden = rows.length > 0;
+      rows.forEach(function (item) {
+        var card = document.createElement("article");
+        card.className = "inboxCard" + (item.read ? "" : " is-unread");
+        var head = document.createElement("header");
+        head.innerHTML =
+          '<span class="tag ' + item.type + '">' + typeLabel(item.type) + "</span>" +
+          '<span class="tag ' + (item.status || "open") + '">' + ({open:"未处理",done:"已处理",spam:"垃圾"}[item.status || "open"] || item.status) + "</span>" +
+          '<span class="inboxMeta">' + (item.createdAt || "") + "</span>";
+        var msg = document.createElement("p");
+        msg.className = "inboxMsg";
+        msg.textContent = item.message || "";
+        var aside = document.createElement("div");
+        aside.className = "inboxAside";
+        aside.innerHTML =
+          "<div>页面：" + escapeHtml(item.page || "/") + "</div>" +
+          "<div>联系：" + escapeHtml(item.contact || "（未填）") + "</div>" +
+          "<div>语言：" + escapeHtml(item.lang || "—") + "</div>";
+        var actions = document.createElement("div");
+        actions.className = "inboxActions";
+        actions.appendChild(btn(item.read ? "标为未读" : "标为已读", function () {
+          patch(item.id, { read: !item.read });
+        }));
+        actions.appendChild(btn("标为已处理", function () {
+          patch(item.id, { status: "done", read: true });
+        }));
+        actions.appendChild(btn("标为垃圾", function () {
+          patch(item.id, { status: "spam", read: true });
+        }));
+        actions.appendChild(btn("删除", function () {
+          if (!confirm("确定删除这条反馈？")) return;
+          remove(item.id);
+        }, true));
+        card.appendChild(head);
+        card.appendChild(msg);
+        card.appendChild(aside);
+        card.appendChild(actions);
+        list.appendChild(card);
+      });
+    }
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+    function btn(label, onClick, danger) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = danger ? "secondary" : "secondary";
+      b.textContent = label;
+      b.addEventListener("click", onClick);
+      return b;
+    }
+    function unlock() {
+      var token = tokenInput.value.trim() || getToken();
+      if (!token) {
+        showError("请填写口令");
+        return;
+      }
+      setToken(token);
+      gate.hidden = true;
+      app.hidden = false;
+      load();
+    }
+    function load() {
+      showError("");
+      fetch(endpoint(), { headers: authHeaders(), credentials: "same-origin" })
+        .then(function (res) {
+          if (res.status === 401) throw new Error("口令错误或未授权");
+          if (!res.ok) throw new Error("加载失败 HTTP " + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          items = (data && data.items) || [];
+          render();
+        })
+        .catch(function (err) {
+          items = [];
+          render();
+          showError((err && err.message) || "加载失败。请确认已用 npm run preview 启动，且口令正确。");
+          gate.hidden = false;
+          app.hidden = true;
+        });
+    }
+    function patch(id, body) {
+      fetch(endpoint() + "/" + encodeURIComponent(id), {
+        method: "PATCH",
+        headers: authHeaders(),
+        credentials: "same-origin",
+        body: JSON.stringify(body)
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("更新失败");
+          return load();
+        })
+        .catch(function (err) {
+          showError(err.message || "更新失败");
+        });
+    }
+    function remove(id) {
+      fetch(endpoint() + "/" + encodeURIComponent(id), {
+        method: "DELETE",
+        headers: authHeaders(),
+        credentials: "same-origin"
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error("删除失败");
+          return load();
+        })
+        .catch(function (err) {
+          showError(err.message || "删除失败");
+        });
+    }
+
+    document.getElementById("unlock").addEventListener("click", unlock);
+    document.getElementById("clearToken").addEventListener("click", function () {
+      setToken("");
+      tokenInput.value = "";
+    });
+    document.getElementById("refresh").addEventListener("click", load);
+    document.getElementById("logout").addEventListener("click", function () {
+      setToken("");
+      location.href = "/inbox";
+    });
+    document.getElementById("filterType").addEventListener("change", render);
+    document.getElementById("filterStatus").addEventListener("change", render);
+    tokenInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") unlock();
+    });
+
+    var existing = getToken();
+    if (existing) {
+      tokenInput.value = existing;
+      unlock();
+    }
+  })();
+  </script>
+</body>
+</html>

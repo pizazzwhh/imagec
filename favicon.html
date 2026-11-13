@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>生成 Favicon - 多尺寸 PNG 与清单｜imagec</title>
+  <meta name="description" content="上传一张图，生成本地网站图标 PNG：16、32、48、64、128、180、192、512，可打包 ZIP，并下载 site.webmanifest。浏览器本地处理，不上传。" />
+  <meta name="keywords" content="favicon生成,网站图标,apple touch icon,webmanifest,favicon png,本地处理" />
+  <meta name="author" content="imagec" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
+  <meta name="googlebot" content="index,follow" />
+  <meta name="bingbot" content="index,follow" />
+  <meta name="msvalidate.01" content="6D09E7478DB0959D20C7BBBF26665B04" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+  <link rel="canonical" href="https://imagec.xin/favicon" />
+  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/favicon?lang=zh" />
+  <link rel="alternate" hreflang="en" href="https://imagec.xin/favicon?lang=en" />
+  <link rel="alternate" hreflang="ja" href="https://imagec.xin/favicon?lang=ja" />
+  <link rel="alternate" hreflang="ko" href="https://imagec.xin/favicon?lang=ko" />
+  <link rel="alternate" hreflang="es" href="https://imagec.xin/favicon?lang=es" />
+  <link rel="alternate" hreflang="fr" href="https://imagec.xin/favicon?lang=fr" />
+  <link rel="alternate" hreflang="de" href="https://imagec.xin/favicon?lang=de" />
+  <link rel="alternate" hreflang="ru" href="https://imagec.xin/favicon?lang=ru" />
+  <link rel="alternate" hreflang="pt" href="https://imagec.xin/favicon?lang=pt" />
+  <link rel="alternate" hreflang="ar" href="https://imagec.xin/favicon?lang=ar" />
+  <link rel="alternate" hreflang="vi" href="https://imagec.xin/favicon?lang=vi" />
+  <link rel="alternate" hreflang="id" href="https://imagec.xin/favicon?lang=id" />
+  <link rel="alternate" hreflang="th" href="https://imagec.xin/favicon?lang=th" />
+  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/favicon" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="imagec" />
+  <meta property="og:title" content="生成 Favicon - 多尺寸 PNG 与清单｜imagec" />
+  <meta property="og:description" content="一张图导出 16 到 512 的 PNG 图标，打包 ZIP，并可下载 site.webmanifest。本地处理，不上传。" />
+  <meta property="og:url" content="https://imagec.xin/favicon" />
+  <meta property="og:image" content="https://imagec.xin/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="生成 Favicon - 多尺寸 PNG 与清单｜imagec" />
+  <meta name="twitter:description" content="导出多尺寸 favicon PNG，并可下载 site.webmanifest。本地处理，不上传。" />
+  <meta name="twitter:image" content="https://imagec.xin/og-image.jpg" />
+  <meta name="theme-color" content="#FAFAF9" />
+  <meta name="application-name" content="imagec" />
+  <meta name="apple-mobile-web-app-title" content="imagec" />
+  <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"生成 Favicon","alternateName":"imagec","url":"https://imagec.xin/favicon","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"上传一张图，生成本地网站图标 PNG：16、32、48、64、128、180、192、512，可打包 ZIP，并下载 site.webmanifest。浏览器本地处理，不上传。","inLanguage":["zh-CN","en"],"featureList":["多尺寸 PNG 图标","16 到 512","打包 ZIP","site.webmanifest","本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"生成 Favicon","item":"https://imagec.xin/favicon"}]}</script>
+  <link rel="stylesheet" href="/site.css" />
+  <style>
+    .stage .queue { margin-top: 12px; }
+    .qItem { cursor: pointer; }
+    .qItem.on { border-color: #2563EB; box-shadow: inset 0 0 0 1px #2563EB; }
+  </style>
+</head>
+<body class="tool">
+<main class="shell">
+  <header class="topbar"><a class="brand" href="/"><span class="mark"><svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="6" fill="#FAFAF9"/><path fill="#1C1917" fill-rule="evenodd" d="M8 2h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6V8a6 6 0 0 1 6-6zm5 5h38a1 1 0 0 1 1 1v38a1 1 0 0 1-1 1H13a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><rect x="36" y="36" width="26" height="26" rx="6" fill="#2563EB"/></svg></span><span class="brand-name">imagec</span></a><div class="topbar-right"><a class="searchBtn" href="/?focus=search" aria-label="搜索工具" data-chrome-aria="searchTools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a><select class="langSelect" id="langSelect"></select></div></header>
+
+  <section class="panel">
+    <div class="hero">
+      <h1 data-i18n="title">生成 Favicon</h1>
+      <p data-i18n="subtitle">导出多尺寸网站图标与 webmanifest。</p>
+      <div class="privacyLine safeBadge">
+        <span data-i18n="privacy">本地处理 · 不上传服务器</span>
+      </div>
+      <p class="heroLinks"><a href="/crop" data-i18n="linkCrop">裁剪缩放</a> <span aria-hidden="true">·</span> <a href="/round" data-i18n="linkRound">圆角阴影</a></p>
+    </div>
+    <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
+    <div class="workspace">
+      <aside class="controls">
+        <label class="drop" id="drop" for="file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+          <strong data-i18n="upload">点击选择或拖入图片</strong>
+          <small data-i18n="formats">建议正方形 PNG、JPG、WebP<br>也可直接粘贴图片</small>
+        </label>
+        <input id="file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" />
+
+        <div class="pin">
+          <p class="notice" data-i18n="fitNote">非正方形会按比例居中，四周留透明。文件名为 favicon-16x16.png 这种形式。</p>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="zipBtn" type="button" disabled data-i18n="zip">下载全部 PNG（ZIP）</button>
+          <button class="secondary" id="manifestBtn" type="button" disabled data-i18n="manifest">下载 site.webmanifest</button>
+          <button class="secondary" id="clear" type="button" disabled data-i18n="clear">清空</button>
+        </div>
+      </aside>
+
+      <section class="stage" aria-label="preview">
+        <div class="stagebar">
+          <div class="meta" id="meta" data-i18n="waiting" aria-live="polite">等待图片</div>
+        </div>
+        <div class="canvasWrap" id="wrap">
+          <canvas id="canvas"></canvas>
+        </div>
+        <div class="queue" id="queue" role="list"></div>
+        <div class="empty" id="empty">
+          <strong data-i18n="emptyTitle">把图片放进来，生成一套图标</strong>
+        </div>
+      </section>
+    </div>
+  </section>
+
+<section class="relatedTools">
+    <h2 data-i18n="moreTools">更多图片工具</h2>
+    <div class="toolsGrid" data-tool-cards></div>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const LANGS=[
+  {code:'zh',name:'中文',dir:'ltr'},{code:'en',name:'English',dir:'ltr'},{code:'ja',name:'日本語',dir:'ltr'},
+  {code:'ko',name:'한국어',dir:'ltr'},{code:'es',name:'Español',dir:'ltr'},{code:'fr',name:'Français',dir:'ltr'},
+  {code:'de',name:'Deutsch',dir:'ltr'},{code:'ru',name:'Русский',dir:'ltr'},{code:'pt',name:'Português',dir:'ltr'},
+  {code:'ar',name:'العربية',dir:'rtl'},{code:'vi',name:'Tiếng Việt',dir:'ltr'},{code:'id',name:'Bahasa Indonesia',dir:'ltr'},
+  {code:'th',name:'ไทย',dir:'ltr'}
+];
+const SIZES=[16,32,48,64,128,180,192,512];
+const SEO={
+  zh:{title:'生成 Favicon - 多尺寸 PNG 与清单｜imagec',desc:'上传一张图，生成本地网站图标 PNG：16、32、48、64、128、180、192、512，可打包 ZIP，并下载 site.webmanifest。浏览器本地处理，不上传。'},
+  en:{title:'Favicon generator | PNG sizes and manifest | imagec',desc:'Turn one image into favicon PNGs at 16, 32, 48, 64, 128, 180, 192, and 512. Download a ZIP, plus an optional site.webmanifest. Processed locally — nothing is uploaded.'}
+};
+const messages={
+  zh:{title:'生成 Favicon',subtitle:'导出多尺寸网站图标与 webmanifest。',privacy:'本地处理 · 不上传服务器',upload:'点击选择或拖入图片',formats:'建议正方形 PNG、JPG、WebP<br>也可直接粘贴图片',fitNote:'非正方形会按比例居中，四周留透明。文件名为 favicon-16x16.png 这种形式。',zip:'下载全部 PNG（ZIP）',manifest:'下载 site.webmanifest',clear:'清空',waiting:'等待图片',emptyTitle:'把图片放进来，生成一套图标',ready:'{n} 个尺寸 · 当前 {s}×{s}',sizeName:'favicon-{s}x{s}.png',dl:'下载',tagApple:'Apple 触控图标',tagManifest:'清单图标',tagPng:'PNG',errType:'请选择 PNG、JPG、WebP 或 GIF。',errHeic:'暂不支持 HEIC，请先用「转换 HEIC」转成 JPG 或 PNG。',errLoad:'图片加载失败，可能是格式不支持或文件已损坏。',errExport:'导出失败，请换一张图再试。',moreTools:'更多图片工具',linkCrop:'裁剪缩放',linkRound:'圆角阴影'},
+  en:{title:'Favicon generator',subtitle:'Export multi-size favicons and a site.webmanifest.',privacy:'Local · no upload',upload:'Choose or drop an image',formats:'A square PNG, JPG, or WebP works best<br>You can also paste an image',fitNote:'Images that are not square are centered, with transparent padding. Files are named favicon-16x16.png and so on.',zip:'Download all PNGs (ZIP)',manifest:'Download site.webmanifest',clear:'Clear',waiting:'Waiting for an image',emptyTitle:'Drop an image to build a favicon set',ready:'{n} sizes · showing {s}×{s}',sizeName:'favicon-{s}x{s}.png',dl:'Download',tagApple:'Apple touch icon',tagManifest:'Manifest icon',tagPng:'PNG',errType:'Choose a PNG, JPG, WebP, or GIF.',errHeic:'HEIC is not supported here. Convert it to JPG or PNG first.',errLoad:'Could not load the image. The format may be unsupported or the file is damaged.',errExport:'Could not export. Try another image.',moreTools:'More image tools',linkCrop:'Crop and resize',linkRound:'Rounded corners'}
+};
+let language=detectLang();
+let icons=[];
+let selected=0;
+let baseName='site';
+const langSelect=$('#langSelect');
+LANGS.forEach(l=>{
+  const opt=document.createElement('option');
+  opt.value=l.code;
+  opt.textContent=l.name;
+  langSelect.appendChild(opt);
+});
+function knownLang(code){return LANGS.some(l=>l.code===code);}
+function detectLang(){
+  const param=new URL(location.href).searchParams.get('lang');
+  if(param&&knownLang(param))return param;
+  let saved='';
+  try{saved=localStorage.getItem('language')||'';}catch(e){}
+  if(saved&&knownLang(saved))return saved;
+  const navLangs=navigator.languages||[navigator.language||'zh'];
+  for(const l of navLangs){
+    const lc=String(l).toLowerCase();
+    if(lc.startsWith('zh'))return 'zh';
+    const code=lc.slice(0,2);
+    if(knownLang(code))return code;
+  }
+  return 'zh';
+}
+function t(key){
+  const pack=messages[language];
+  if(pack&&pack[key]!=null)return pack[key];
+  if(messages.en&&messages.en[key]!=null)return messages.en[key];
+  if(messages.zh&&messages.zh[key]!=null)return messages.zh[key];
+  return key;
+}
+function tf(key,map){
+  let s=t(key);
+  Object.keys(map||{}).forEach(k=>{s=s.replaceAll('{'+k+'}',String(map[k]));});
+  return s;
+}
+function setMeta(attr,name,content){
+  let el=document.querySelector(`meta[${attr}="${name}"]`);
+  if(!el){el=document.createElement('meta');el.setAttribute(attr,name);document.head.appendChild(el);}
+  el.setAttribute('content',content);
+}
+function applyI18n(){
+  const def=LANGS.find(l=>l.code===language)||LANGS[0];
+  document.documentElement.lang=language==='zh'?'zh-CN':language;
+  document.documentElement.dir=def.dir;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    const value=t(key);
+    if(value!==key)el.innerHTML=value;
+  });
+  const seo=SEO[language]||SEO.en||SEO.zh;
+  document.title=seo.title;
+  setMeta('name','description',seo.desc);
+  setMeta('property','og:title',seo.title);
+  setMeta('property','og:description',seo.desc);
+  setMeta('name','twitter:title',seo.title);
+  setMeta('name','twitter:description',seo.desc);
+  const ld=document.querySelector('#ldjson');
+  if(ld){
+    try{
+      const obj=JSON.parse(ld.textContent);
+      obj.name=t('title');
+      obj.description=seo.desc;
+      ld.textContent=JSON.stringify(obj);
+    }catch(e){}
+  }
+  const banner=$('#libStatus');
+  if(banner&&!banner.hidden&&banner.dataset.key)banner.textContent=t(banner.dataset.key);
+  labelRows();
+  paintMeta();
+}
+function setLanguage(lang){
+  if(!knownLang(lang))lang='en';
+  language=lang;
+  try{localStorage.setItem('language',lang);}catch(e){}
+  langSelect.value=language;
+  applyI18n();
+}
+function showBanner(key){
+  const el=$('#libStatus');
+  if(!el)return;
+  if(!key){el.hidden=true;el.textContent='';delete el.dataset.key;return;}
+  el.dataset.key=key;
+  el.hidden=false;
+  el.textContent=t(key);
+}
+function kindOf(file){
+  const name=(file.name||'').toLowerCase();
+  const type=(file.type||'').toLowerCase();
+  if(type.indexOf('heic')!==-1||type.indexOf('heif')!==-1||name.endsWith('.heic')||name.endsWith('.heif'))return 'heic';
+  if(type==='image/png'||name.endsWith('.png'))return 'png';
+  if(type==='image/jpeg'||type==='image/jpg'||name.endsWith('.jpg')||name.endsWith('.jpeg'))return 'jpeg';
+  if(type==='image/webp'||name.endsWith('.webp'))return 'webp';
+  if(type==='image/gif'||name.endsWith('.gif'))return 'gif';
+  if(type.indexOf('image/')===0)return 'image';
+  return '';
+}
+function fileName(size){return 'favicon-'+size+'x'+size+'.png';}
+function tagFor(size){
+  if(size===180)return t('tagApple');
+  if(size===192||size===512)return t('tagManifest');
+  return t('tagPng');
+}
+function paintMeta(){
+  const meta=$('#meta');
+  if(!meta)return;
+  if(icons.length){
+    const size=icons[selected]?icons[selected].size:icons[0].size;
+    meta.textContent=tf('ready',{n:icons.length,s:size});
+    return;
+  }
+  meta.textContent=t('waiting');
+}
+function labelRows(){
+  $('#queue').querySelectorAll('.qItem').forEach((row,i)=>{
+    const icon=icons[i];
+    if(!icon)return;
+    row.querySelector('.qName').textContent=tf('sizeName',{s:icon.size});
+    row.querySelector('.qStatus').textContent=tagFor(icon.size);
+    row.querySelector('[data-act="dl"]').textContent=t('dl');
+  });
+}
+function showIcon(){
+  const icon=icons[selected];
+  if(!icon)return;
+  const canvas=$('#canvas');
+  canvas.width=icon.canvas.width;
+  canvas.height=icon.canvas.height;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(icon.canvas,0,0);
+  const shown=Math.min(360,Math.max(icon.size,icon.size*4));
+  canvas.style.width=shown+'px';
+  canvas.style.height=shown+'px';
+  canvas.style.imageRendering=icon.size<=48?'pixelated':'auto';
+  canvas.style.display='block';
+  $('#empty').style.display='none';
+  $('#queue').querySelectorAll('.qItem').forEach((el,i)=>el.classList.toggle('on',i===selected));
+  paintMeta();
+}
+function drawContain(img,size){
+  let src=img;
+  let sw=img.naturalWidth||img.width;
+  let sh=img.naturalHeight||img.height;
+  while(sw*0.5>size&&sh*0.5>size){
+    const step=document.createElement('canvas');
+    step.width=Math.max(1,Math.round(sw*0.5));
+    step.height=Math.max(1,Math.round(sh*0.5));
+    const sctx=step.getContext('2d');
+    sctx.imageSmoothingEnabled=true;
+    sctx.imageSmoothingQuality='high';
+    sctx.drawImage(src,0,0,step.width,step.height);
+    src=step;
+    sw=step.width;
+    sh=step.height;
+  }
+  const out=document.createElement('canvas');
+  out.width=size;
+  out.height=size;
+  const ctx=out.getContext('2d');
+  ctx.clearRect(0,0,size,size);
+  ctx.imageSmoothingEnabled=true;
+  ctx.imageSmoothingQuality='high';
+  const scale=Math.min(size/sw,size/sh);
+  const w=Math.max(1,Math.round(sw*scale));
+  const h=Math.max(1,Math.round(sh*scale));
+  ctx.drawImage(src,Math.round((size-w)/2),Math.round((size-h)/2),w,h);
+  return out;
+}
+function paintQueue(){
+  const queue=$('#queue');
+  queue.innerHTML='';
+  icons.forEach((icon,i)=>{
+    const row=document.createElement('article');
+    row.className='qItem'+(i===selected?' on':'');
+    row.setAttribute('role','listitem');
+    row.innerHTML='<img class="qThumb" alt=""><div class="qBody"><div class="qName"></div><div class="qStatus"></div></div><div class="qBtns"><button type="button" class="secondary" data-act="dl"></button></div>';
+    const thumb=document.createElement('canvas');
+    thumb.width=44;
+    thumb.height=44;
+    thumb.getContext('2d').drawImage(icon.canvas,0,0,44,44);
+    row.querySelector('.qThumb').src=thumb.toDataURL('image/png');
+    row.querySelector('.qName').textContent=tf('sizeName',{s:icon.size});
+    row.querySelector('.qStatus').textContent=tagFor(icon.size);
+    const dl=row.querySelector('[data-act="dl"]');
+    dl.textContent=t('dl');
+    dl.addEventListener('click',ev=>{ev.stopPropagation();downloadOne(i);});
+    row.addEventListener('click',()=>{selected=i;showIcon();});
+    queue.appendChild(row);
+  });
+}
+function showEmpty(){
+  icons=[];
+  selected=0;
+  baseName='site';
+  const canvas=$('#canvas');
+  canvas.width=0;
+  canvas.height=0;
+  canvas.style.display='none';
+  canvas.style.width='';
+  canvas.style.height='';
+  $('#queue').innerHTML='';
+  $('#empty').style.display='';
+  $('#zipBtn').disabled=true;
+  $('#manifestBtn').disabled=true;
+  $('#clear').disabled=true;
+  $('#file').value='';
+  paintMeta();
+}
+function loadImage(blob){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    const url=URL.createObjectURL(blob);
+    img.onload=()=>{URL.revokeObjectURL(url);resolve(img);};
+    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('load'));};
+    img.src=url;
+  });
+}
+async function load(file){
+  if(!file)return;
+  const kind=kindOf(file);
+  if(kind==='heic'){showBanner('errHeic');return;}
+  if(!kind){showBanner('errType');return;}
+  showBanner('');
+  try{
+    const img=await loadImage(file);
+    baseName=(file.name||'site').replace(/\.[^.]+$/,'').replace(/[^\w\-]+/g,'_').slice(0,40)||'site';
+    icons=SIZES.map(size=>({size,canvas:drawContain(img,size)}));
+    selected=icons.findIndex(icon=>icon.size===512);
+    if(selected<0)selected=0;
+    $('#empty').style.display='none';
+    $('#zipBtn').disabled=false;
+    $('#manifestBtn').disabled=false;
+    $('#clear').disabled=false;
+    paintQueue();
+    showIcon();
+  }catch(e){
+    showEmpty();
+    showBanner('errLoad');
+  }
+}
+function downloadBlob(blob,name){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function canvasBlob(canvas){
+  return new Promise(resolve=>{
+    try{canvas.toBlob(blob=>resolve(blob),'image/png');}
+    catch(e){resolve(null);}
+  });
+}
+async function downloadOne(i){
+  const icon=icons[i];
+  if(!icon)return;
+  const blob=await canvasBlob(icon.canvas);
+  if(!blob){showBanner('errExport');return;}
+  showBanner('');
+  downloadBlob(blob,fileName(icon.size));
+}
+const CRC_TABLE=(()=>{
+  const table=new Uint32Array(256);
+  for(let n=0;n<256;n++){
+    let c=n;
+    for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);
+    table[n]=c>>>0;
+  }
+  return table;
+})();
+function crc32(data){
+  let c=0xFFFFFFFF;
+  for(let i=0;i<data.length;i++)c=CRC_TABLE[(c^data[i])&0xFF]^(c>>>8);
+  return (c^0xFFFFFFFF)>>>0;
+}
+function buildZip(files){
+  const now=new Date();
+  let year=now.getFullYear();
+  if(year<1980)year=1980;
+  const time=(now.getHours()<<11)|(now.getMinutes()<<5)|Math.floor(now.getSeconds()/2);
+  const date=((year-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
+  const encoder=new TextEncoder();
+  const parts=[];
+  const central=[];
+  let offset=0;
+  files.forEach(file=>{
+    const name=encoder.encode(file.name);
+    const local=new Uint8Array(30+name.length);
+    const view=new DataView(local.buffer);
+    view.setUint32(0,0x04034b50,true);
+    view.setUint16(4,20,true);
+    view.setUint16(6,0x0800,true);
+    view.setUint16(10,time,true);
+    view.setUint16(12,date,true);
+    view.setUint32(14,file.crc,true);
+    view.setUint32(18,file.data.length,true);
+    view.setUint32(22,file.data.length,true);
+    view.setUint16(26,name.length,true);
+    local.set(name,30);
+    parts.push(local,file.data);
+    const cd=new Uint8Array(46+name.length);
+    const cdView=new DataView(cd.buffer);
+    cdView.setUint32(0,0x02014b50,true);
+    cdView.setUint16(4,20,true);
+    cdView.setUint16(6,20,true);
+    cdView.setUint16(8,0x0800,true);
+    cdView.setUint16(12,time,true);
+    cdView.setUint16(14,date,true);
+    cdView.setUint32(16,file.crc,true);
+    cdView.setUint32(20,file.data.length,true);
+    cdView.setUint32(24,file.data.length,true);
+    cdView.setUint16(28,name.length,true);
+    cdView.setUint32(42,offset,true);
+    cd.set(name,46);
+    central.push(cd);
+    offset+=local.length+file.data.length;
+  });
+  const cdSize=central.reduce((sum,part)=>sum+part.length,0);
+  const end=new Uint8Array(22);
+  const endView=new DataView(end.buffer);
+  endView.setUint32(0,0x06054b50,true);
+  endView.setUint16(8,files.length,true);
+  endView.setUint16(10,files.length,true);
+  endView.setUint32(12,cdSize,true);
+  endView.setUint32(16,offset,true);
+  const blobParts=parts.concat(central,[end]);
+  const total=blobParts.reduce((sum,part)=>sum+part.length,0);
+  const out=new Uint8Array(total);
+  let cursor=0;
+  blobParts.forEach(part=>{out.set(part,cursor);cursor+=part.length;});
+  return out;
+}
+async function downloadZip(){
+  if(!icons.length)return;
+  $('#zipBtn').disabled=true;
+  try{
+    const files=[];
+    for(const icon of icons){
+      const blob=await canvasBlob(icon.canvas);
+      if(!blob){showBanner('errExport');return;}
+      const data=new Uint8Array(await blob.arrayBuffer());
+      files.push({name:fileName(icon.size),data,crc:crc32(data)});
+    }
+    downloadBlob(new Blob([buildZip(files)],{type:'application/zip'}),'favicons.zip');
+    showBanner('');
+  }finally{
+    $('#zipBtn').disabled=!icons.length;
+  }
+}
+function manifestText(){
+  const name=baseName||'site';
+  const iconsJson=[192,512].map(size=>({
+    src:fileName(size),
+    sizes:size+'x'+size,
+    type:'image/png'
+  }));
+  return JSON.stringify({
+    name:name,
+    short_name:name.slice(0,12),
+    icons:iconsJson,
+    theme_color:'#ffffff',
+    background_color:'#ffffff',
+    display:'standalone'
+  },null,2);
+}
+function downloadManifest(){
+  const blob=new Blob([manifestText()],{type:'application/manifest+json'});
+  downloadBlob(blob,'site.webmanifest');
+}
+function bindDrop(){
+  const drop=$('#drop');
+  ['dragenter','dragover'].forEach(type=>{
+    drop.addEventListener(type,ev=>{ev.preventDefault();drop.classList.add('over');});
+  });
+  ['dragleave','drop'].forEach(type=>{
+    drop.addEventListener(type,ev=>{ev.preventDefault();drop.classList.remove('over');});
+  });
+  drop.addEventListener('drop',e=>{
+    const file=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+    if(file)load(file);
+  });
+}
+$('#file').addEventListener('change',e=>{
+  if(e.target.files&&e.target.files[0])load(e.target.files[0]);
+});
+bindDrop();
+document.addEventListener('paste',e=>{
+  const items=e.clipboardData&&e.clipboardData.items;
+  if(!items)return;
+  for(const item of items){
+    if(item.type&&item.type.indexOf('image/')===0){
+      const file=item.getAsFile();
+      if(file){load(file);break;}
+    }
+  }
+});
+$('#zipBtn').addEventListener('click',downloadZip);
+$('#manifestBtn').addEventListener('click',()=>{if(icons.length)downloadManifest();});
+$('#clear').addEventListener('click',()=>{showBanner('');showEmpty();});
+langSelect.addEventListener('change',()=>setLanguage(langSelect.value));
+setLanguage(language);
+(function watchCards(){
+  const grid=document.querySelector('[data-tool-cards]');
+  if(!grid)return;
+  const fix=()=>{
+    grid.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key=el.getAttribute('data-i18n');
+      const value=t(key);
+      if(value!==key&&el.textContent!==value)el.textContent=value;
+    });
+  };
+  new MutationObserver(fix).observe(grid,{childList:true,subtree:true});
+})();
+document.addEventListener('DOMContentLoaded',applyI18n);
+</script>
+<script>
+(function(){
+  var p = encodeURIComponent(location.pathname + location.search);
+  var u = '/__track__?t=' + Date.now() + '&p=' + p;
+  try {
+    if (navigator.sendBeacon) navigator.sendBeacon(u);
+  } catch(e) {}
+})();
+</script>
+<footer class="siteFooter">
+  <p class="sponsorLine"><span data-i18n="homeSponsorLead">觉得好用？</span> <a class="afdian" href="https://afdian.com/a/imagec" target="_blank" rel="noopener noreferrer" data-i18n="homeSponsorCta">请我来包辣条</a></p>
+  <div class="actionRow" role="group" aria-label="站务">
+    <button type="button" class="action feedbackOpen" data-i18n="feedback" aria-haspopup="dialog">反馈 &amp; 建议</button>
+    <a class="action primary" href="https://toolc.xin" target="_blank" rel="noopener noreferrer" data-i18n="homeSister">toolc·精选软件工具</a>
+  </div>
+  <div>
+    <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
+  </div>
+</footer>
+<script src="/tool-cards.js"></script>
+<script src="/chrome.js"></script>
+</body>
+</html>
