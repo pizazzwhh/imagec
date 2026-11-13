@@ -63,7 +63,7 @@
 
 | 项 | 结果 |
 |----|------|
-| 24 工具 + inbox/sponsors 路由 | 全部 HTTP 200 |
+| 24 工具 + inbox 路由 | 全部 HTTP 200 |
 | `npm run smoke:live`（抽样 10 页） | 全 PASS |
 | 首页搜索 OCR / SVG | 仅命中 `/ocr`、`/svgopt` |
 | 二维码 `/qr` | 输入链接后可生成预览（512 canvas），下载可点 |

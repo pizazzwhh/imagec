@@ -29,7 +29,6 @@ const PAGES = [
   { path: "/convert", tool: true },
   { path: "/crop", tool: true },
   { path: "/idphoto", tool: true },
-  { path: "/sponsors", sponsors: true },
 ];
 
 const TOOL_SLUGS = new Set([
@@ -49,8 +48,6 @@ const TOOL_SLUGS = new Set([
 ]);
 
 const LEGACY_HTML_PATHS = new Set(["/stats.html", "/index.html"]);
-
-const SPONSORS_PHRASE = "免费在线图片工具";
 
 function originFromEnv() {
   const raw = (process.env.BASE_URL || DEFAULT_ORIGIN).trim().replace(/\/+$/, "");
@@ -222,27 +219,6 @@ function redeemLeak(html) {
   return hits;
 }
 
-function sponsorsLinkOk(html, pageUrl, originHost) {
-  const re = /<a\b([^>]*)>([\s\S]*?)<\/a>/gi;
-  const found = [];
-  let match;
-  while ((match = re.exec(html))) {
-    const text = norm(match[2]);
-    if (!text.includes(SPONSORS_PHRASE)) continue;
-    const href = attr(`<a${match[1]}>`, "href");
-    found.push(href || "(no href)");
-    if (!href) continue;
-    let url;
-    try {
-      url = new URL(href, pageUrl);
-    } catch {
-      continue;
-    }
-    if (url.hostname === originHost && cleanPathname(url.pathname) === "/") return { ok: true, href };
-  }
-  return { ok: false, found };
-}
-
 function htmlWithoutEmbedded(html) {
   return html
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
@@ -384,15 +360,6 @@ async function checkPage(origin, page) {
 
   const redeem = redeemLeak(html);
   mark(redeem.length === 0, "no redeem", redeem.length ? redeem.join(", ") : "absent");
-
-  if (page.sponsors) {
-    const link = sponsorsLinkOk(html, url, host);
-    mark(
-      link.ok,
-      `「${SPONSORS_PHRASE}」→ /`,
-      link.ok ? link.href : `found ${link.found.join(", ") || "no matching anchor"}`,
-    );
-  }
 
   const bad = badToolHrefs(html, url, host);
   mark(bad.length === 0, "tool hrefs", bad.length ? bad.join(", ") : "no same-site tool .html links");

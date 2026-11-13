@@ -17,8 +17,8 @@
   };
 
   var SPONSOR = {
-    zh: {wallTitle:"赞助者",wallLead:"这里会放赞助者名单。",wallEmpty:"名单还空着。",wallCta:"去爱发电",sizePackLabel:"证件照尺寸",size1:"1寸",size2:"2寸",sizeSmall2:"小二寸",sizeResume:"简历照",sizePackHint:"295×413、413×579、413×531。再点取消。",presetClear:"清透",presetWarmtone:"暖调",presetCooltone:"冷调",presetMono:"黑白",presetSoftlight:"柔光",presetShopsharp:"锐化电商",namePdf2img:"PDF 转图片",descPdf2img:"把 PDF 每一页导出成图片",namePalette:"色板提取",descPalette:"从图片提取主色并复制色值",nameFavicon:"Favicon 包",descFavicon:"一键导出多尺寸网站图标",nameBarcode:"条形码生成",descBarcode:"生成 EAN / CODE128 等条形码",nameGifsplit:"GIF 拆帧",descGifsplit:"把 GIF 拆成逐帧 PNG",nameOcr:"图片转文字",descOcr:"本地 OCR 识别图片里的文字",nameSvgopt:"SVG 优化",descSvgopt:"精简 SVG，减小体积"},
-    en: {wallTitle:"Sponsors",wallLead:"Sponsor names will go here.",wallEmpty:"The list is empty.",wallCta:"Support on Afdian",sizePackLabel:"ID photo sizes",size1:"1 inch",size2:"2 inch",sizeSmall2:"Small 2 inch",sizeResume:"Resume",sizePackHint:"295×413, 413×579, 413×531. Click again to cancel.",presetClear:"Clear",presetWarmtone:"Warm tone",presetCooltone:"Cool tone",presetMono:"Black and white",presetSoftlight:"Soft light",presetShopsharp:"Product sharpen",namePdf2img:"PDF to images",descPdf2img:"Export each PDF page as an image",namePalette:"Color palette",descPalette:"Extract main colors and copy hex",nameFavicon:"Favicon pack",descFavicon:"Export multi-size site icons",nameBarcode:"Barcode",descBarcode:"Generate EAN / CODE128 barcodes",nameGifsplit:"Split GIF",descGifsplit:"Split a GIF into PNG frames",nameOcr:"Image to text",descOcr:"Local OCR for text in images",nameSvgopt:"Optimize SVG",descSvgopt:"Minify SVG and shrink the file"},
+    zh: {sizePackLabel:"证件照尺寸",size1:"1寸",size2:"2寸",sizeSmall2:"小二寸",sizeResume:"简历照",sizePackHint:"295×413、413×579、413×531。再点取消。",presetClear:"清透",presetWarmtone:"暖调",presetCooltone:"冷调",presetMono:"黑白",presetSoftlight:"柔光",presetShopsharp:"锐化电商",namePdf2img:"PDF 转图片",descPdf2img:"把 PDF 每一页导出成图片",namePalette:"色板提取",descPalette:"从图片提取主色并复制色值",nameFavicon:"Favicon 包",descFavicon:"一键导出多尺寸网站图标",nameBarcode:"条形码生成",descBarcode:"生成 EAN / CODE128 等条形码",nameGifsplit:"GIF 拆帧",descGifsplit:"把 GIF 拆成逐帧 PNG",nameOcr:"图片转文字",descOcr:"本地 OCR 识别图片里的文字",nameSvgopt:"SVG 优化",descSvgopt:"精简 SVG，减小体积"},
+    en: {sizePackLabel:"ID photo sizes",size1:"1 inch",size2:"2 inch",sizeSmall2:"Small 2 inch",sizeResume:"Resume",sizePackHint:"295×413, 413×579, 413×531. Click again to cancel.",presetClear:"Clear",presetWarmtone:"Warm tone",presetCooltone:"Cool tone",presetMono:"Black and white",presetSoftlight:"Soft light",presetShopsharp:"Product sharpen",namePdf2img:"PDF to images",descPdf2img:"Export each PDF page as an image",namePalette:"Color palette",descPalette:"Extract main colors and copy hex",nameFavicon:"Favicon pack",descFavicon:"Export multi-size site icons",nameBarcode:"Barcode",descBarcode:"Generate EAN / CODE128 barcodes",nameGifsplit:"Split GIF",descGifsplit:"Split a GIF into PNG frames",nameOcr:"Image to text",descOcr:"Local OCR for text in images",nameSvgopt:"Optimize SVG",descSvgopt:"Minify SVG and shrink the file"},
   };
 
   var NAME_KEYS = {
@@ -692,21 +692,7 @@
 
   var LANG_MENU = {zh:"语言",en:"Language",ja:"言語",ko:"언어",es:"Idioma",fr:"Langue",de:"Sprache",ru:"Язык",pt:"Idioma",ar:"اللغة",vi:"Ngôn ngữ",id:"Bahasa",th:"ภาษา"};
   function syncBlogCards() {
-    var blogHrefs = currentLang() === "zh"
-      ? ["/blog/white-to-transparent-guide.html", "/blog/ecommerce-white-background.html"]
-      : ["/blog/remove-white-background-guide.html", "/blog/compress-png-to-100kb.html", "/blog/id-photo-maker-online.html"];
-    var blogGrid = document.querySelector(".blogGrid");
-    if (blogGrid && blogHrefs.length === 3 && blogGrid.querySelectorAll(".blogCard").length < 3) {
-      var seed = blogGrid.querySelector(".blogCard");
-      if (seed) {
-        var extra = seed.cloneNode(true);
-        extra.querySelectorAll("[data-i18n]").forEach(function (el) {
-          var key = el.getAttribute("data-i18n") || "";
-          if (key.indexOf("blog1") === 0) el.setAttribute("data-i18n", key.replace("blog1", "blog3"));
-        });
-        blogGrid.appendChild(extra);
-      }
-    }
+    var blogHrefs = ["/blog/white-to-transparent-guide", "/blog/ecommerce-white-background"];
     document.querySelectorAll(".blogCard").forEach(function (card, i) {
       if (blogHrefs[i]) {
         card.hidden = false;

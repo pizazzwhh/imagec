@@ -154,9 +154,9 @@ body.home .topbar {
 }
 .siteFooter a, body.studio > footer a { color: var(--ink-2); text-decoration: none; }
 .siteFooter a:hover, body.studio > footer a:hover { color: var(--accent); }
-.quietLinks, .sponsorLinks { margin: 0 0 8px; color: var(--ink-2); font-size: var(--fs-sm); }
+.quietLinks { margin: 0 0 8px; color: var(--ink-2); font-size: var(--fs-sm); }
 .siteFooter .feedbackLine { margin: 0 0 8px; color: var(--ink-2); font-size: var(--fs-sm); }
-.quietLinks a, .sponsorLinks a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 2px; }
+.quietLinks a { color: var(--ink-2); text-decoration: underline; text-underline-offset: 2px; }
 button.feedbackOpen,
 body.tool button.feedbackOpen,
 body.studio button.feedbackOpen {
@@ -868,17 +868,9 @@ body.studio:not(.tool-ready) main.shell > .quietLinks {
 }
 
 /* ===== Tool workspace (family A) ===== */
-body.tool .panel.sponsorSheet {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
 /* Title sits 28px (topbar margin) + 8px under the bar, same rhythm as home. */
 body.tool .hero,
 body.studio .hero { padding: 8px 0 16px; text-align: start; }
-body.tool .panel.sponsorSheet .hero { padding: 20px 24px 16px; }
 body.tool .hero h1, body.studio .hero h1 {
   margin: 0 0 6px;
   max-width: 40rem;
@@ -1562,6 +1554,14 @@ body.studio .inline { display: flex; gap: 12px; }
 body.studio input[type=color] { width: 44px; height: 36px; padding: 0; border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius-sm); }
 
 /* Related tools use the home .toolsGrid / a.toolCard rules. */
+.guideReads {
+  margin: var(--space-5) 0 0;
+  max-width: 42rem;
+  color: #57534E;
+  font-size: var(--fs-base);
+  line-height: 1.65;
+}
+.guideReads a { font-weight: var(--fw-med); text-underline-offset: 2px; }
 .relatedTools, .toolsShowcase { margin-top: var(--space-5); }
 .relatedTools h2, .toolsShowcase h2 {
   margin: 0 0 16px;
@@ -1590,7 +1590,6 @@ body.studio input[type=color] { width: 44px; height: 36px; padding: 0; border: 1
   body.tool.round:not(.has-file) .controls { border-right: 0; }
   body.tool.batch.has-file .actions:has(#zipBtn[hidden]) { grid-template-columns: 1fr; }
   body.tool .hero, body.studio .hero { padding: 8px 0 16px; }
-  body.tool .panel.sponsorSheet .hero { padding: 16px; }
   body.tool.has-file .canvasWrap { height: min(320px, 48vh); }
   body.tool .stagebar { flex-wrap: wrap; gap: 6px; }
   body.tool.has-file .actions,
@@ -1626,64 +1625,6 @@ html[dir="rtl"] .toggle input:checked:after { transform: translateX(-18px); }
 html[dir="rtl"] .searchWrap svg { left: auto; right: 14px; }
 html[dir="rtl"] .searchInput { padding: 11px 40px 11px 14px; }
 
-/* Sponsors wall. sponsorLinks matches the quiet link row and stays its own class. */
-.sponsorSheet { max-width: 560px; }
-.sponsorWallBlock {
-  border-top: 1px solid var(--line);
-  padding: 16px 24px 20px;
-}
-.sponsorSheet .sponsorLinks { margin: 12px 0 0; color: var(--ink-2); line-height: 1.6; }
-.sponsorWall {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.sponsorWall:empty { display: none; }
-/* Locked wall card: one name per row. Colors are fixed, not theme tokens. */
-.sponsorWall li {
-  margin: 0;
-  min-width: 0;
-  max-width: 100%;
-  padding: 11px 14px;
-  border: 1px solid #E7E5E4;
-  border-radius: var(--radius);
-  background: #FAFAF9;
-  color: #1C1917;
-  font-size: var(--fs-sm);
-  line-height: 1.45;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  overflow: hidden;
-}
-.sponsorEmpty {
-  margin: 0;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--line);
-  color: var(--ink-2);
-  font-size: var(--fs-sm);
-  line-height: 1.45;
-}
-.sponsorWallBlock .sponsorLinks { margin-top: 12px; }
-@media (max-width: 800px) {
-  .sponsorWallBlock {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-  .sponsorSheet .sponsorLinks {
-    position: static;
-    left: auto;
-    right: auto;
-    bottom: auto;
-    box-shadow: none;
-  }
-}
 .sizePresets { display: flex; flex-wrap: wrap; gap: 8px; }
 .sizePresets button {
   flex: 1 1 72px;

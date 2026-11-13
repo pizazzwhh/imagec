@@ -121,6 +121,32 @@ function trackQuiet() {
   return new Response("ok", { headers: { "cache-control": "no-store" } });
 }
 
+// Retired English guides. ESA Pages serves a matching .html file before this
+// function runs, and 307s /path.html to /path only while that file exists.
+// After the file is removed, both the clean path and the .html alias reach
+// here. /sponsors is intentionally absent so that URL 404s.
+var RETIRED_BLOG = {
+  "/blog/remove-white-background-guide": "/whitebg",
+  "/blog/ecommerce-white-background-guide": "/whitebg",
+  "/blog/transparent-png-maker": "/whitebg",
+  "/blog/compress-png-to-100kb": "/compress",
+  "/blog/reduce-image-file-size": "/compress",
+  "/blog/image-to-pdf-converter": "/img2pdf",
+  "/blog/crop-resize-image-online": "/crop",
+  "/blog/image-resizer-for-social-media": "/crop",
+  "/blog/id-photo-maker-online": "/idphoto",
+  "/blog/add-watermark-to-photos": "/watermark",
+  "/blog/photo-watermark-ideas": "/watermark",
+  "/blog/webp-to-png-converter": "/convert"
+};
+
+function retiredBlogTarget(pathname) {
+  var path = String(pathname || "/");
+  if (path.length > 1) path = path.replace(/\/+$/, "");
+  if (path.slice(-5).toLowerCase() === ".html") path = path.slice(0, -5);
+  return RETIRED_BLOG[path] || "";
+}
+
 function getStatsFromLog() {
   const ek = new EdgeKV({ namespace: NS });
   const today = todayStr();
@@ -376,6 +402,17 @@ export default {
           headers: { "cache-control": "no-store" },
         });
       }
+    }
+
+    var retired = retiredBlogTarget(pathname);
+    if (retired) {
+      return new Response(null, {
+        status: 301,
+        headers: {
+          location: url.origin + retired,
+          "cache-control": "public, max-age=86400"
+        }
+      });
     }
 
     if (pathname === "/" || pathname === "") pathname = "/index.html";
