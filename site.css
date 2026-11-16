@@ -819,12 +819,14 @@ body .siteFooter button.action.feedbackOpen:hover {
    sponsor line together once chrome has folded params and applied copy.
    Opacity only — the drop target stays clickable during the enter. */
 body.tool:not(.tool-ready) .panel,
+body.tool:not(.tool-ready) .guideReads,
 body.tool:not(.tool-ready) .seoContent,
 body.tool:not(.tool-ready) .relatedTools,
 body.tool:not(.tool-ready) .toolsShowcase,
 body.tool:not(.tool-ready) main.shell > .quietLinks,
 body.studio:not(.tool-ready) .hero,
 body.studio:not(.tool-ready) > main > .toolCard,
+body.studio:not(.tool-ready) .guideReads,
 body.studio:not(.tool-ready) .seoContent,
 body.studio:not(.tool-ready) .relatedTools,
 body.studio:not(.tool-ready) main.shell > .quietLinks {
@@ -839,11 +841,13 @@ body.studio:not(.tool-ready) main.shell > .quietLinks {
   body.studio.tool-ready .hero {
     animation: toolEnter var(--dur-slow) var(--ease-out) both;
   }
+  body.tool.tool-ready .guideReads,
   body.tool.tool-ready .seoContent,
   body.tool.tool-ready .relatedTools,
   body.tool.tool-ready .toolsShowcase,
   body.tool.tool-ready main.shell > .quietLinks,
   body.studio.tool-ready > main > .toolCard,
+  body.studio.tool-ready .guideReads,
   body.studio.tool-ready .seoContent,
   body.studio.tool-ready .relatedTools,
   body.studio.tool-ready main.shell > .quietLinks {
@@ -856,12 +860,14 @@ body.studio:not(.tool-ready) main.shell > .quietLinks {
 }
 @media (prefers-reduced-motion: reduce) {
   body.tool .panel,
+  body.tool .guideReads,
   body.tool .seoContent,
   body.tool .relatedTools,
   body.tool .toolsShowcase,
   body.tool main.shell > .quietLinks,
   body.studio .hero,
   body.studio > main > .toolCard,
+  body.studio .guideReads,
   body.studio .seoContent,
   body.studio .relatedTools,
   body.studio main.shell > .quietLinks,
