@@ -1,11 +1,35 @@
 import Esa20240910, * as $Esa20240910 from "@alicloud/esa20240910";
 import * as $OpenApi from "@alicloud/openapi-client";
 import Credential from "@alicloud/credentials";
+import crypto from "crypto";
 import fs from "fs";
 import path from "path";
 import JSZip from "jszip";
 import FormData from "form-data";
 import https from "https";
+
+function resolveFeedbackToken(siteDir) {
+  if (process.env.FEEDBACK_TOKEN && String(process.env.FEEDBACK_TOKEN).trim()) {
+    return String(process.env.FEEDBACK_TOKEN).trim();
+  }
+  const tokenPath = path.join(siteDir, "data", "feedback-token.txt");
+  if (fs.existsSync(tokenPath)) {
+    const existing = fs.readFileSync(tokenPath, "utf8").trim();
+    if (existing) return existing;
+  }
+  const token = crypto.randomBytes(18).toString("base64url");
+  fs.mkdirSync(path.dirname(tokenPath), { recursive: true });
+  fs.writeFileSync(tokenPath, token + "\n", "utf8");
+  console.log("Generated FEEDBACK_TOKEN → data/feedback-token.txt");
+  return token;
+}
+
+function injectFeedbackToken(routineSource, token) {
+  if (!routineSource.includes("__IMAGEC_FEEDBACK_TOKEN__")) {
+    throw new Error("routine.js missing __IMAGEC_FEEDBACK_TOKEN__ placeholder");
+  }
+  return routineSource.replaceAll('"__IMAGEC_FEEDBACK_TOKEN__"', JSON.stringify(token));
+}
 
 function createClient() {
   const credential = new Credential.default();
@@ -95,8 +119,11 @@ async function main() {
 
   // Build zip: routine/index.js + assets/*
   console.log("\nPackaging...");
+  const feedbackToken = resolveFeedbackToken(folderPath);
+  const routineCode = injectFeedbackToken(ROUTINE_CODE, feedbackToken);
+  console.log(`Feedback admin token: injected (${feedbackToken.length} chars from env/data)`);
   const zip = new JSZip();
-  zip.folder("routine").file("index.js", ROUTINE_CODE);
+  zip.folder("routine").file("index.js", routineCode);
   const assetsFolder = zip.folder("assets");
   for (const f of staticFiles) {
     const content = fs.readFileSync(f.fullPath);

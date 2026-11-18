@@ -254,8 +254,12 @@ const toolsGrid=$('#toolsGrid');
 const searchEmpty=$('#searchEmpty');
 const searchBtn=$('#searchBtn');
 
-function filterTools(q){
-  const query=q.trim().toLowerCase();
+function filterTools(){
+  if(window.imagecToolCards&&typeof window.imagecToolCards.applyHomeFilter==='function'){
+    window.imagecToolCards.applyHomeFilter();
+    return;
+  }
+  const query=searchInput.value.trim().toLowerCase();
   let visible=0;
   toolsGrid.querySelectorAll('.toolCard').forEach(card=>{
     if(!query){card.classList.remove('hidden');visible++;return;}
@@ -264,11 +268,10 @@ function filterTools(q){
     card.classList.toggle('hidden',!match);
     if(match)visible++;
   });
-  searchEmpty.classList.toggle('show',visible===0&&query!=='');
   searchEmpty.classList.toggle('show',query!==''&&visible===0);
 }
 
-searchInput.addEventListener('input',()=>filterTools(searchInput.value));
+searchInput.addEventListener('input',filterTools);
 if (window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
   setTimeout(() => toolsGrid.classList.add('settled'), 1100);
 }
