@@ -22,6 +22,130 @@ const LOG_KEY = "visits_log";
 const LOG_LIMIT = 2000;
 const PV_TOTAL_KEY = "pv_total";
 
+// Injected at deploy time from FEEDBACK_TOKEN or data/feedback-token.txt.
+const FEEDBACK_TOKEN = "__IMAGEC_FEEDBACK_TOKEN__";
+const FB_KEY = "feedback_log";
+const FB_LIMIT = 500;
+
+function jsonResponse(status, body) {
+  return new Response(JSON.stringify(body), {
+    status: status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store, no-cache, must-revalidate",
+    },
+  });
+}
+
+function feedbackAuthorized(request, url) {
+  if (!FEEDBACK_TOKEN) return false;
+  var auth = request.headers.get("authorization") || "";
+  var token = "";
+  if (/^bearer\s+/i.test(auth)) token = auth.replace(/^bearer\s+/i, "").trim();
+  if (!token) token = (url.searchParams.get("token") || "").trim();
+  return token === FEEDBACK_TOKEN;
+}
+
+function newFeedbackId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+
+function normalizeFeedback(raw, id) {
+  var type = raw && (raw.type === "bug" || raw.type === "other") ? raw.type : "suggest";
+  return {
+    id: id || (raw && raw.id) || newFeedbackId(),
+    type: type,
+    message: String((raw && raw.message) || "").trim().slice(0, 8000),
+    contact: String((raw && raw.contact) || "").trim().slice(0, 200),
+    page: String((raw && raw.page) || "/").trim().slice(0, 300),
+    lang: String((raw && raw.lang) || "").trim().slice(0, 16),
+    userAgent: String((raw && raw.userAgent) || "").trim().slice(0, 400),
+    createdAt: (raw && raw.createdAt) || new Date().toISOString(),
+    read: !!(raw && raw.read),
+    status: (raw && (raw.status === "done" || raw.status === "spam")) ? raw.status : "open",
+  };
+}
+
+async function readFeedbackLog(ek) {
+  var raw = await ek.get(FB_KEY);
+  var log = [];
+  if (raw) {
+    try { log = JSON.parse(raw); } catch (e) { log = []; }
+  }
+  if (!Array.isArray(log)) log = [];
+  return log;
+}
+
+async function handleFeedbackApi(request, url, pathname) {
+  var ek = new EdgeKV({ namespace: NS });
+  var itemMatch = pathname.match(/^\/api\/feedback\/([^/]+)$/);
+
+  if (pathname === "/api/feedback" && request.method === "POST") {
+    try {
+      var text = await request.text();
+      if (text && text.length > 20000) return jsonResponse(413, { ok: false, error: "too_large" });
+      var data = text ? JSON.parse(text) : {};
+      var message = String((data && data.message) || "").trim();
+      if (!message) return jsonResponse(400, { ok: false, error: "need_message" });
+      var entry = normalizeFeedback(data);
+      var log = await readFeedbackLog(ek);
+      log.unshift(entry);
+      if (log.length > FB_LIMIT) log = log.slice(0, FB_LIMIT);
+      await ek.put(FB_KEY, JSON.stringify(log));
+      return jsonResponse(201, { ok: true, id: entry.id });
+    } catch (e) {
+      if (e instanceof SyntaxError) return jsonResponse(400, { ok: false, error: "bad_json" });
+      return jsonResponse(500, { ok: false, error: "server" });
+    }
+  }
+
+  if (pathname === "/api/feedback" && request.method === "GET") {
+    if (!feedbackAuthorized(request, url)) return jsonResponse(401, { ok: false, error: "unauthorized" });
+    try {
+      var items = await readFeedbackLog(ek);
+      return jsonResponse(200, { ok: true, items: items });
+    } catch (e) {
+      return jsonResponse(500, { ok: false, error: "server" });
+    }
+  }
+
+  if (itemMatch) {
+    if (!feedbackAuthorized(request, url)) return jsonResponse(401, { ok: false, error: "unauthorized" });
+    var id = decodeURIComponent(itemMatch[1]);
+    try {
+      var list = await readFeedbackLog(ek);
+      var idx = -1;
+      for (var i = 0; i < list.length; i++) {
+        if (list[i] && list[i].id === id) { idx = i; break; }
+      }
+      if (request.method === "PATCH") {
+        if (idx < 0) return jsonResponse(404, { ok: false, error: "not_found" });
+        var patchText = await request.text();
+        var patch = patchText ? JSON.parse(patchText) : {};
+        var next = list[idx];
+        if (typeof patch.read === "boolean") next.read = patch.read;
+        if (patch.status === "open" || patch.status === "done" || patch.status === "spam") {
+          next.status = patch.status;
+        }
+        list[idx] = next;
+        await ek.put(FB_KEY, JSON.stringify(list));
+        return jsonResponse(200, { ok: true, item: next });
+      }
+      if (request.method === "DELETE") {
+        if (idx < 0) return jsonResponse(404, { ok: false, error: "not_found" });
+        list.splice(idx, 1);
+        await ek.put(FB_KEY, JSON.stringify(list));
+        return jsonResponse(200, { ok: true });
+      }
+    } catch (e) {
+      if (e instanceof SyntaxError) return jsonResponse(400, { ok: false, error: "bad_json" });
+      return jsonResponse(500, { ok: false, error: "server" });
+    }
+  }
+
+  return jsonResponse(404, { ok: false, error: "not_found" });
+}
+
 function todayStr() {
   const d = new Date();
   return d.toISOString().slice(0, 10);
@@ -294,6 +418,11 @@ export default {
   async fetch(request, context) {
     const url = new URL(request.url);
     let pathname = url.pathname;
+
+    var cleanPath = pathname.replace(/\/+$/, "") || "/";
+    if (cleanPath === "/api/feedback" || cleanPath.indexOf("/api/feedback/") === 0) {
+      return handleFeedbackApi(request, url, cleanPath);
+    }
 
     if (pathname === "/__stats__") {
       try {

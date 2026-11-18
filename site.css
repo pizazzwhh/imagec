@@ -489,7 +489,7 @@ body.home .hero-sub {
 body.home .searchWrap { margin: 0 0 28px; }
 .relatedTools .searchWrap,
 .toolsShowcase .searchWrap { margin: 0 0 16px; }
-.searchWrap svg {
+.searchWrap > svg {
   position: absolute;
   left: 14px;
   top: 50%;
@@ -509,6 +509,9 @@ body.home .searchWrap { margin: 0 0 28px; }
   color: #1C1917;
   box-shadow: none;
   transition: border-color var(--dur-med) var(--ease-out), box-shadow var(--dur-med) var(--ease-out);
+}
+.searchWrap.has-fav .searchInput {
+  padding-right: 84px;
 }
 .searchInput::placeholder { color: #A8A29E; }
 .searchInput:focus,
@@ -596,6 +599,247 @@ a.toolCard:focus-visible .tc-icon {
 }
 a.toolCard .tc-icon svg { width: 17px; height: 17px; }
 a.toolCard .tc-body { min-width: 0; display: flex; flex-direction: column; gap: 3px; padding-top: 1px; }
+body.home a.toolCard .tc-body,
+.relatedTools a.toolCard .tc-body,
+.toolsShowcase a.toolCard .tc-body { padding-inline-end: 36px; }
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+body.tool .searchFav,
+body.studio .searchFav,
+.searchFav {
+  position: absolute;
+  inset-inline-end: 6px;
+  top: 50%;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-sizing: border-box;
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  margin: 0;
+  padding: 0 10px 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transform: translateY(-50%);
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.searchFav-ico {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: inherit;
+}
+body.tool .searchFav svg,
+body.studio .searchFav svg,
+.searchFav svg {
+  position: static;
+  width: 14px;
+  height: 14px;
+  transform: none;
+  color: inherit;
+  stroke: currentColor;
+  fill: none;
+  pointer-events: none;
+}
+body.tool .searchFav .star-fill,
+body.studio .searchFav .star-fill,
+.searchFav .star-fill {
+  display: none;
+  fill: currentColor;
+  stroke: none;
+}
+body.tool .searchFav:hover,
+body.studio .searchFav:hover,
+.searchFav:hover {
+  color: var(--ink);
+  border-color: #D1D5DB;
+  background: var(--bg);
+}
+body.tool .searchFav.is-on,
+body.studio .searchFav.is-on,
+body.tool .searchFav[aria-pressed="true"],
+body.studio .searchFav[aria-pressed="true"],
+.searchFav.is-on,
+.searchFav[aria-pressed="true"] {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+body.tool .searchFav.is-on .star-outline,
+body.studio .searchFav.is-on .star-outline,
+body.tool .searchFav[aria-pressed="true"] .star-outline,
+body.studio .searchFav[aria-pressed="true"] .star-outline,
+.searchFav.is-on .star-outline,
+.searchFav[aria-pressed="true"] .star-outline { display: none; }
+body.tool .searchFav.is-on .star-fill,
+body.studio .searchFav.is-on .star-fill,
+body.tool .searchFav[aria-pressed="true"] .star-fill,
+body.studio .searchFav[aria-pressed="true"] .star-fill,
+.searchFav.is-on .star-fill,
+.searchFav[aria-pressed="true"] .star-fill {
+  display: block;
+  fill: currentColor;
+  stroke: none;
+  color: #fff;
+}
+body.tool .searchFav.is-on:hover,
+body.studio .searchFav.is-on:hover,
+body.tool .searchFav[aria-pressed="true"]:hover,
+body.studio .searchFav[aria-pressed="true"]:hover,
+.searchFav.is-on:hover,
+.searchFav[aria-pressed="true"]:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+}
+body.tool .searchFav:focus-visible,
+body.studio .searchFav:focus-visible,
+.searchFav:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+body.tool a.toolCard .fav-btn,
+body.studio a.toolCard .fav-btn,
+a.toolCard .fav-btn {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(28, 25, 23, 0.18);
+  border-radius: 8px;
+  background: #FAFAF9;
+  color: #78716C;
+  font-size: 0;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transform: none;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+body.tool a.toolCard .fav-btn svg,
+body.studio a.toolCard .fav-btn svg,
+a.toolCard .fav-btn svg {
+  width: 16px;
+  height: 16px;
+  color: inherit;
+  fill: none;
+  pointer-events: none;
+}
+body.tool a.toolCard .fav-btn .star-fill,
+body.studio a.toolCard .fav-btn .star-fill,
+a.toolCard .fav-btn .star-fill {
+  display: none;
+  fill: currentColor;
+}
+body.tool a.toolCard .fav-btn[aria-pressed="true"],
+body.studio a.toolCard .fav-btn[aria-pressed="true"],
+a.toolCard .fav-btn[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+body.tool a.toolCard .fav-btn[aria-pressed="true"] .star-outline,
+body.studio a.toolCard .fav-btn[aria-pressed="true"] .star-outline,
+a.toolCard .fav-btn[aria-pressed="true"] .star-outline { display: none; }
+body.tool a.toolCard .fav-btn[aria-pressed="true"] .star-fill,
+body.studio a.toolCard .fav-btn[aria-pressed="true"] .star-fill,
+a.toolCard .fav-btn[aria-pressed="true"] .star-fill {
+  display: block;
+  fill: currentColor;
+  color: #fff;
+}
+body.tool a.toolCard .fav-btn:hover:not([aria-pressed="true"]),
+body.studio a.toolCard .fav-btn:hover:not([aria-pressed="true"]),
+a.toolCard .fav-btn:hover:not([aria-pressed="true"]) {
+  border-color: rgba(28, 25, 23, 0.35);
+  color: #1C1917;
+  background: #FAFAF9;
+}
+body.tool a.toolCard .fav-btn[aria-pressed="true"]:hover,
+body.studio a.toolCard .fav-btn[aria-pressed="true"]:hover,
+a.toolCard .fav-btn[aria-pressed="true"]:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+}
+body.tool a.toolCard .fav-btn:focus-visible,
+body.studio a.toolCard .fav-btn:focus-visible,
+a.toolCard .fav-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.favEmpty {
+  margin-top: 20px;
+  padding: 28px 16px;
+  text-align: center;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--ink-2);
+}
+.favEmptyTitle {
+  margin: 0 0 6px;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  color: var(--ink);
+}
+.favEmptyHint {
+  margin: 0 0 14px;
+  font-size: var(--fs-sm);
+}
+.favEmpty .btn-clear {
+  min-height: 34px;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: var(--fw-bold);
+  cursor: pointer;
+}
+.favEmpty .btn-clear:hover { border-color: #CBD5E1; }
 a.toolCard .tc-body strong {
   font-size: var(--fs-base);
   font-weight: var(--fw-bold);
@@ -883,6 +1127,16 @@ body.studio:not(.tool-ready) main.shell > .quietLinks {
 /* Title sits 28px (topbar margin) + 8px under the bar, same rhythm as home. */
 body.tool .hero,
 body.studio .hero { padding: 8px 0 16px; text-align: start; }
+body.tool .panel.sponsorSheet .hero { padding: 20px 24px 16px; }
+body.tool .heroTitleRow,
+body.studio .heroTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 6px;
+}
 body.tool .hero h1, body.studio .hero h1 {
   margin: 0 0 6px;
   max-width: 40rem;
@@ -892,6 +1146,108 @@ body.tool .hero h1, body.studio .hero h1 {
   letter-spacing: -0.02em;
   line-height: 1.25;
   color: #1C1917;
+}
+body.tool .heroTitleRow h1,
+body.studio .heroTitleRow h1 {
+  margin: 0;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+/* Same star chip as tool-card .fav-btn; sit right after the title. */
+body.tool .heroFav,
+body.studio .heroFav {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  max-width: 32px;
+  max-height: 32px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(28, 25, 23, 0.18);
+  border-radius: 8px;
+  background: #FAFAF9;
+  color: #78716C;
+  font-size: 0;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transform: none;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+body.tool .heroFav-ico,
+body.studio .heroFav-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+body.tool .heroFav svg,
+body.studio .heroFav svg {
+  width: 16px;
+  height: 16px;
+  color: inherit;
+  fill: none;
+  pointer-events: none;
+}
+body.tool .heroFav .star-fill,
+body.studio .heroFav .star-fill {
+  display: none;
+  fill: currentColor;
+}
+body.tool .heroFav:hover:not(.is-on):not([aria-pressed="true"]),
+body.studio .heroFav:hover:not(.is-on):not([aria-pressed="true"]) {
+  border-color: rgba(28, 25, 23, 0.35);
+  color: #1C1917;
+  background: #FAFAF9;
+}
+body.tool .heroFav.is-on,
+body.studio .heroFav.is-on,
+body.tool .heroFav[aria-pressed="true"],
+body.studio .heroFav[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+body.tool .heroFav.is-on .star-outline,
+body.studio .heroFav.is-on .star-outline,
+body.tool .heroFav[aria-pressed="true"] .star-outline,
+body.studio .heroFav[aria-pressed="true"] .star-outline { display: none; }
+body.tool .heroFav.is-on .star-fill,
+body.studio .heroFav.is-on .star-fill,
+body.tool .heroFav[aria-pressed="true"] .star-fill,
+body.studio .heroFav[aria-pressed="true"] .star-fill {
+  display: block;
+  fill: currentColor;
+  color: #fff;
+}
+body.tool .heroFav.is-on:hover,
+body.studio .heroFav.is-on:hover,
+body.tool .heroFav[aria-pressed="true"]:hover,
+body.studio .heroFav[aria-pressed="true"]:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+}
+body.tool .heroFav:focus-visible,
+body.studio .heroFav:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+body.tool .heroFav:active:not(:disabled),
+body.studio .heroFav:active:not(:disabled) {
+  transform: none;
 }
 body.tool .hero p, body.studio .hero p {
   margin: 0;
@@ -1142,7 +1498,13 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
 }
 .toggle input:checked { background: var(--accent); }
 .toggle input:checked:after { transform: translateX(18px); }
-body.tool button, body.studio .btn, body.studio .tabRow button, body.studio .formatBtns button, body.studio .dirBtns button, body.tool .seg button, body.tool .presetGrid button {
+body.tool button:not(.fav-btn):not(.searchFav):not(.heroFav),
+body.studio .btn,
+body.studio .tabRow button,
+body.studio .formatBtns button,
+body.studio .dirBtns button,
+body.tool .seg button,
+body.tool .presetGrid button {
   border: 1px solid transparent;
   border-radius: var(--radius);
   min-height: 40px;
@@ -1161,6 +1523,14 @@ body.tool button:active:not(:disabled),
 body.studio .btn:active:not(:disabled),
 body.tool .seg button:active:not(:disabled) {
   transform: translateY(1px) scale(0.985);
+}
+body.tool a.toolCard .fav-btn:active:not(:disabled),
+body.studio a.toolCard .fav-btn:active:not(:disabled) {
+  transform: none;
+}
+body.tool .searchFav:active:not(:disabled),
+body.studio .searchFav:active:not(:disabled) {
+  transform: translateY(-50%);
 }
 body.tool button.primary, body.studio .btn.primary {
   background: var(--accent);
@@ -1415,7 +1785,23 @@ body.tool .pin .seg button.active {
   background: var(--accent-soft);
   color: var(--accent);
 }
-.heroLinks { margin: 10px 0 0; font-size: var(--fs-sm); color: #57534E; }
+.heroLinks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 4px;
+  margin: 10px 0 0;
+  font-size: var(--fs-sm);
+  color: #57534E;
+}
+.heroLinks-label {
+  color: #A8A29E;
+  font-weight: var(--fw-normal);
+}
+.heroLinks-label::after {
+  content: " ·";
+  margin-inline-start: 2px;
+}
 .heroLinks a { font-weight: var(--fw-bold); text-decoration: none; }
 .heroLinks a:hover { text-decoration: underline; }
 .queue { display: flex; flex-direction: column; gap: 10px; max-height: min(70vh, 640px); overflow: auto; }
@@ -1693,8 +2079,9 @@ html[dir="rtl"] body.tool .controls { border-right: 0; border-left: 1px solid va
 html[dir="rtl"] body.tool .workspace, html[dir="rtl"] body.studio .workarea { direction: rtl; }
 html[dir="rtl"] .toggle input:after { left: auto; right: 3px; }
 html[dir="rtl"] .toggle input:checked:after { transform: translateX(-18px); }
-html[dir="rtl"] .searchWrap svg { left: auto; right: 14px; }
+html[dir="rtl"] .searchWrap > svg { left: auto; right: 14px; }
 html[dir="rtl"] .searchInput { padding: 11px 40px 11px 14px; }
+html[dir="rtl"] .searchWrap.has-fav .searchInput { padding-left: 84px; padding-right: 40px; }
 
 .sizePresets { display: flex; flex-wrap: wrap; gap: 8px; }
 .sizePresets button {

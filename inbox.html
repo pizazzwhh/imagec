@@ -18,7 +18,7 @@
     .inboxShell {
       max-width: 920px;
       margin: 0 auto;
-      padding: 24px 16px 64px;
+      padding: 24px 16px 80px;
     }
     .inboxHead {
       display: flex;
@@ -35,6 +35,7 @@
     .inboxMeta {
       color: var(--ink-2);
       font-size: var(--fs-sm);
+      margin: 6px 0 0;
     }
     .inboxGate, .inboxToolbar, .inboxCard {
       border: 1px solid var(--line);
@@ -56,6 +57,7 @@
       border-radius: var(--radius-sm);
       padding: 8px 10px;
       font: inherit;
+      background: #fff;
     }
     .inboxGate .row {
       display: flex;
@@ -68,9 +70,35 @@
       flex-wrap: wrap;
       gap: 8px;
       align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
     }
-    .inboxToolbar .spacer { flex: 1; }
-    .inboxCard.is-unread { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+    .inboxToolbar .spacer { flex: 1; min-width: 8px; }
+    .inboxCount {
+      font-size: var(--fs-sm);
+      color: var(--ink-2);
+      white-space: nowrap;
+    }
+    .inboxCard {
+      transition: opacity 0.22s ease, transform 0.22s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .inboxCard.is-unread {
+      border-color: var(--accent);
+      box-shadow: inset 3px 0 0 var(--accent);
+    }
+    .inboxCard.is-busy {
+      opacity: 0.62;
+      pointer-events: none;
+    }
+    .inboxCard.is-leaving {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    .inboxCard.is-flash {
+      box-shadow: 0 0 0 3px var(--accent-soft), inset 3px 0 0 var(--accent);
+    }
     .inboxCard header {
       display: flex;
       flex-wrap: wrap;
@@ -90,7 +118,9 @@
     .tag.suggest { background: #EFF6FF; color: #1D4ED8; }
     .tag.bug { background: #FEF2F2; color: #B91C1C; }
     .tag.other { background: #F5F5F4; color: #57534E; }
+    .tag.open { background: #FFF7ED; color: #C2410C; }
     .tag.done { background: #ECFDF5; color: #047857; }
+    .tag.spam { background: #F5F5F4; color: #57534E; }
     .inboxMsg {
       white-space: pre-wrap;
       word-break: break-word;
@@ -105,26 +135,98 @@
       margin-bottom: 10px;
     }
     .inboxActions { display: flex; flex-wrap: wrap; gap: 8px; }
-    .inboxEmpty, .inboxError {
-      padding: 24px;
+    .inboxEmpty, .inboxError, .inboxLoading {
+      padding: 28px 16px;
       text-align: center;
       color: var(--ink-2);
     }
     .inboxError { color: var(--danger); }
-    body.inbox button.primary, body.inbox button.secondary {
+    .inboxGateError {
+      margin: 10px 0 0;
+      color: var(--danger);
+      font-size: var(--fs-sm);
+      min-height: 1.2em;
+    }
+    body.inbox button.primary,
+    body.inbox button.secondary,
+    body.inbox button.danger {
       min-height: 36px;
       padding: 6px 12px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--line);
+      font: inherit;
       font-weight: var(--fw-bold);
       cursor: pointer;
       background: var(--surface);
+      color: var(--ink);
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
     }
     body.inbox button.primary {
       background: var(--accent);
       border-color: var(--accent);
       color: #fff;
     }
+    body.inbox button.primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+    body.inbox button.secondary:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: #CBD5E1;
+    }
+    body.inbox button.danger {
+      color: var(--danger);
+      border-color: #FECACA;
+      background: #FEF2F2;
+    }
+    body.inbox button.danger:hover:not(:disabled) {
+      background: #FEE2E2;
+      border-color: #FCA5A5;
+    }
+    body.inbox button:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+    body.inbox button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .inboxToast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(12px);
+      z-index: 40;
+      min-width: 200px;
+      max-width: min(92vw, 420px);
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      background: #0F172A;
+      color: #F8FAFC;
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-bold);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.28);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .inboxToast.is-on {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .inboxToast.is-err { background: #991B1B; }
+    .inboxSpin {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      vertical-align: -2px;
+      margin-right: 6px;
+      animation: inboxSpin 0.7s linear infinite;
+    }
+    @keyframes inboxSpin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body class="inbox">
@@ -132,7 +234,7 @@
     <div class="inboxHead">
       <div>
         <h1>反馈收件箱</h1>
-        <p class="inboxMeta">仅本机 / 内网查看。勿公开分享带 token 的链接。</p>
+        <p class="inboxMeta">本机与线上共用同一口令。勿公开分享带 token 的链接。</p>
       </div>
       <a href="/">← 回首页</a>
     </div>
@@ -144,7 +246,8 @@
         <button type="button" class="primary" id="unlock">进入收件箱</button>
         <button type="button" class="secondary" id="clearToken">清除已存口令</button>
       </div>
-      <p class="inboxMeta" style="margin-top:10px">本地预览启动时终端会打印带 token 的 inbox 链接；口令也写在 <code>data/feedback-token.txt</code>。</p>
+      <p class="inboxGateError" id="gateError" role="alert" hidden></p>
+      <p class="inboxMeta" style="margin-top:10px">口令见 <code>data/feedback-token.txt</code>（本地 <code>npm run preview</code> 终端也会打印）。线上收件箱：<code>/inbox</code>。</p>
     </section>
 
     <section id="app" hidden>
@@ -161,15 +264,18 @@
           <option value="all">全部状态</option>
           <option value="spam">垃圾</option>
         </select>
+        <span class="inboxCount" id="count" aria-live="polite"></span>
         <span class="spacer"></span>
         <button type="button" class="secondary" id="refresh">刷新</button>
         <button type="button" class="secondary" id="logout">退出</button>
       </div>
+      <div class="inboxLoading" id="loading" hidden>加载中…</div>
       <div id="list"></div>
       <p class="inboxEmpty" id="empty" hidden>暂无反馈</p>
-      <p class="inboxError" id="error" hidden></p>
+      <p class="inboxError" id="error" role="alert" hidden></p>
     </section>
   </main>
+  <div class="inboxToast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="/feedback-config.js"></script>
   <script>
@@ -181,7 +287,16 @@
     var list = document.getElementById("list");
     var empty = document.getElementById("empty");
     var errorEl = document.getElementById("error");
+    var gateError = document.getElementById("gateError");
+    var loadingEl = document.getElementById("loading");
+    var countEl = document.getElementById("count");
+    var toastEl = document.getElementById("toast");
+    var unlockBtn = document.getElementById("unlock");
+    var refreshBtn = document.getElementById("refresh");
     var items = [];
+    var busyIds = {};
+    var toastTimer = 0;
+    var loadSeq = 0;
 
     function endpoint() {
       var cfg = window.IMAGEC_FEEDBACK || {};
@@ -206,12 +321,64 @@
       if (t === "other") return "其他";
       return "建议";
     }
+    function statusLabel(s) {
+      return ({ open: "未处理", done: "已处理", spam: "垃圾" }[s || "open"]) || s;
+    }
+    function authHeaders() {
+      return { Authorization: "Bearer " + getToken(), "Content-Type": "application/json" };
+    }
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+    function formatTime(iso) {
+      if (!iso) return "—";
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return String(iso);
+      var now = Date.now();
+      var diff = Math.round((now - d.getTime()) / 1000);
+      if (diff < 60) return "刚刚";
+      if (diff < 3600) return Math.floor(diff / 60) + " 分钟前";
+      if (diff < 86400) return Math.floor(diff / 3600) + " 小时前";
+      if (diff < 86400 * 7) return Math.floor(diff / 86400) + " 天前";
+      var pad = function (n) { return n < 10 ? "0" + n : String(n); };
+      return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) +
+        " " + pad(d.getHours()) + ":" + pad(d.getMinutes());
+    }
+    function showGateError(msg) {
+      gateError.hidden = !msg;
+      gateError.textContent = msg || "";
+    }
     function showError(msg) {
       errorEl.hidden = !msg;
       errorEl.textContent = msg || "";
     }
-    function authHeaders() {
-      return { Authorization: "Bearer " + getToken(), "Content-Type": "application/json" };
+    function toast(msg, isErr) {
+      if (!msg) return;
+      toastEl.textContent = msg;
+      toastEl.classList.toggle("is-err", !!isErr);
+      toastEl.classList.add("is-on");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () {
+        toastEl.classList.remove("is-on");
+      }, isErr ? 4200 : 2600);
+    }
+    function setBtnBusy(btn, busy, busyLabel) {
+      if (!btn) return;
+      if (busy) {
+        if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+        btn.disabled = true;
+        btn.setAttribute("aria-busy", "true");
+        btn.innerHTML = '<span class="inboxSpin" aria-hidden="true"></span>' + (busyLabel || "处理中…");
+      } else {
+        btn.disabled = false;
+        btn.removeAttribute("aria-busy");
+        btn.textContent = btn.dataset.label || btn.textContent;
+        delete btn.dataset.label;
+      }
     }
     function filtered() {
       var type = document.getElementById("filterType").value;
@@ -222,18 +389,44 @@
         return true;
       });
     }
-    function render() {
+    function updateCount() {
+      var rows = filtered();
+      var open = items.filter(function (i) { return (i.status || "open") === "open"; }).length;
+      countEl.textContent = "显示 " + rows.length + " / 共 " + items.length + " · 未处理 " + open;
+    }
+    function passesFilter(item) {
+      var type = document.getElementById("filterType").value;
+      var status = document.getElementById("filterStatus").value;
+      if (type !== "all" && item.type !== type) return false;
+      if (status !== "all" && (item.status || "open") !== status) return false;
+      return true;
+    }
+    function cardEl(id) {
+      var nodes = list.querySelectorAll(".inboxCard");
+      for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i].dataset.id === id) return nodes[i];
+      }
+      return null;
+    }
+    function render(opts) {
+      opts = opts || {};
+      var flashId = opts.flashId || "";
       var rows = filtered();
       list.innerHTML = "";
-      empty.hidden = rows.length > 0;
+      empty.hidden = rows.length > 0 || !loadingEl.hidden;
+      updateCount();
       rows.forEach(function (item) {
         var card = document.createElement("article");
-        card.className = "inboxCard" + (item.read ? "" : " is-unread");
+        card.className = "inboxCard" + (item.read ? "" : " is-unread") + (busyIds[item.id] ? " is-busy" : "");
+        card.dataset.id = item.id;
+        if (flashId && flashId === item.id) card.classList.add("is-flash");
         var head = document.createElement("header");
         head.innerHTML =
           '<span class="tag ' + item.type + '">' + typeLabel(item.type) + "</span>" +
-          '<span class="tag ' + (item.status || "open") + '">' + ({open:"未处理",done:"已处理",spam:"垃圾"}[item.status || "open"] || item.status) + "</span>" +
-          '<span class="inboxMeta">' + (item.createdAt || "") + "</span>";
+          '<span class="tag ' + (item.status || "open") + '">' + statusLabel(item.status) + "</span>" +
+          (item.read ? "" : '<span class="tag">未读</span>') +
+          '<span class="inboxMeta" title="' + escapeHtml(item.createdAt || "") + '">' +
+          escapeHtml(formatTime(item.createdAt)) + "</span>";
         var msg = document.createElement("p");
         msg.className = "inboxMsg";
         msg.textContent = item.message || "";
@@ -245,73 +438,69 @@
           "<div>语言：" + escapeHtml(item.lang || "—") + "</div>";
         var actions = document.createElement("div");
         actions.className = "inboxActions";
-        actions.appendChild(btn(item.read ? "标为未读" : "标为已读", function () {
-          patch(item.id, { read: !item.read });
+        var busy = !!busyIds[item.id];
+        actions.appendChild(actionBtn(item.read ? "标为未读" : "标为已读", "secondary", busy, function (btn) {
+          runPatch(item.id, { read: !item.read }, btn, item.read ? "已标为未读" : "已标为已读");
         }));
-        actions.appendChild(btn("标为已处理", function () {
-          patch(item.id, { status: "done", read: true });
+        actions.appendChild(actionBtn("标为已处理", "secondary", busy, function (btn) {
+          runPatch(item.id, { status: "done", read: true }, btn, "已标为已处理");
         }));
-        actions.appendChild(btn("标为垃圾", function () {
-          patch(item.id, { status: "spam", read: true });
+        actions.appendChild(actionBtn("标为垃圾", "secondary", busy, function (btn) {
+          runPatch(item.id, { status: "spam", read: true }, btn, "已标为垃圾");
         }));
-        actions.appendChild(btn("删除", function () {
+        actions.appendChild(actionBtn("删除", "danger", busy, function (btn) {
           if (!confirm("确定删除这条反馈？")) return;
-          remove(item.id);
-        }, true));
+          runRemove(item.id, btn);
+        }));
         card.appendChild(head);
         card.appendChild(msg);
         card.appendChild(aside);
         card.appendChild(actions);
         list.appendChild(card);
+        if (flashId && flashId === item.id) {
+          setTimeout(function () { card.classList.remove("is-flash"); }, 900);
+        }
       });
     }
-    function escapeHtml(s) {
-      return String(s)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-    function btn(label, onClick, danger) {
+    function actionBtn(label, kind, disabled, onClick) {
       var b = document.createElement("button");
       b.type = "button";
-      b.className = danger ? "secondary" : "secondary";
+      b.className = kind || "secondary";
       b.textContent = label;
-      b.addEventListener("click", onClick);
+      b.disabled = !!disabled;
+      b.addEventListener("click", function () { onClick(b); });
       return b;
     }
-    function unlock() {
-      var token = tokenInput.value.trim() || getToken();
-      if (!token) {
-        showError("请填写口令");
+    function applyLocal(id, patch) {
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].id !== id) continue;
+        if (typeof patch.read === "boolean") items[i].read = patch.read;
+        if (patch.status === "open" || patch.status === "done" || patch.status === "spam") {
+          items[i].status = patch.status;
+        }
+        return items[i];
+      }
+      return null;
+    }
+    function removeLocal(id) {
+      items = items.filter(function (item) { return item.id !== id; });
+    }
+    function leaveThen(id, next) {
+      var el = cardEl(id);
+      if (!el) {
+        next();
         return;
       }
-      setToken(token);
-      gate.hidden = true;
-      app.hidden = false;
-      load();
+      el.classList.add("is-leaving");
+      setTimeout(next, 220);
     }
-    function load() {
+    function runPatch(id, body, btn, okMsg) {
+      if (busyIds[id]) return;
+      busyIds[id] = true;
+      setBtnBusy(btn, true, "提交中…");
+      var card = cardEl(id);
+      if (card) card.classList.add("is-busy");
       showError("");
-      fetch(endpoint(), { headers: authHeaders(), credentials: "same-origin" })
-        .then(function (res) {
-          if (res.status === 401) throw new Error("口令错误或未授权");
-          if (!res.ok) throw new Error("加载失败 HTTP " + res.status);
-          return res.json();
-        })
-        .then(function (data) {
-          items = (data && data.items) || [];
-          render();
-        })
-        .catch(function (err) {
-          items = [];
-          render();
-          showError((err && err.message) || "加载失败。请确认已用 npm run preview 启动，且口令正确。");
-          gate.hidden = false;
-          app.hidden = true;
-        });
-    }
-    function patch(id, body) {
       fetch(endpoint() + "/" + encodeURIComponent(id), {
         method: "PATCH",
         headers: authHeaders(),
@@ -319,25 +508,141 @@
         body: JSON.stringify(body)
       })
         .then(function (res) {
-          if (!res.ok) throw new Error("更新失败");
-          return load();
+          if (res.status === 401) throw new Error("口令失效，请重新登录");
+          if (!res.ok) throw new Error("更新失败（HTTP " + res.status + "）");
+          return res.json().catch(function () { return {}; });
+        })
+        .then(function (data) {
+          var updated = null;
+          if (data && data.item) {
+            for (var i = 0; i < items.length; i++) {
+              if (items[i].id === id) {
+                items[i] = data.item;
+                updated = items[i];
+                break;
+              }
+            }
+            if (!updated) {
+              items.unshift(data.item);
+              updated = data.item;
+            }
+          } else {
+            updated = applyLocal(id, body);
+          }
+          delete busyIds[id];
+          setBtnBusy(btn, false);
+          var stillVisible = updated && passesFilter(updated);
+          if (!stillVisible) {
+            leaveThen(id, function () {
+              render();
+              toast(okMsg + " · 已移出当前筛选");
+            });
+          } else {
+            render({ flashId: id });
+            toast(okMsg);
+          }
         })
         .catch(function (err) {
-          showError(err.message || "更新失败");
+          delete busyIds[id];
+          setBtnBusy(btn, false);
+          if (card) card.classList.remove("is-busy");
+          var msg = (err && err.message) || "更新失败";
+          showError(msg);
+          toast(msg, true);
+          if (/口令失效/.test(msg)) softLock();
         });
     }
-    function remove(id) {
+    function runRemove(id, btn) {
+      if (busyIds[id]) return;
+      busyIds[id] = true;
+      setBtnBusy(btn, true, "删除中…");
+      var card = cardEl(id);
+      if (card) card.classList.add("is-busy");
+      showError("");
       fetch(endpoint() + "/" + encodeURIComponent(id), {
         method: "DELETE",
         headers: authHeaders(),
         credentials: "same-origin"
       })
         .then(function (res) {
-          if (!res.ok) throw new Error("删除失败");
-          return load();
+          if (res.status === 401) throw new Error("口令失效，请重新登录");
+          if (!res.ok) throw new Error("删除失败（HTTP " + res.status + "）");
+          delete busyIds[id];
+          setBtnBusy(btn, false);
+          removeLocal(id);
+          leaveThen(id, function () {
+            render();
+            toast("已删除");
+          });
         })
         .catch(function (err) {
-          showError(err.message || "删除失败");
+          delete busyIds[id];
+          setBtnBusy(btn, false);
+          if (card) card.classList.remove("is-busy");
+          var msg = (err && err.message) || "删除失败";
+          showError(msg);
+          toast(msg, true);
+          if (/口令失效/.test(msg)) softLock();
+        });
+    }
+    function softLock() {
+      gate.hidden = false;
+      app.hidden = true;
+      showGateError("口令失效或未授权，请重新输入。");
+    }
+    function unlock() {
+      var token = tokenInput.value.trim() || getToken();
+      if (!token) {
+        showGateError("请填写口令");
+        toast("请填写口令", true);
+        tokenInput.focus();
+        return;
+      }
+      setToken(token);
+      showGateError("");
+      setBtnBusy(unlockBtn, true, "验证中…");
+      load({ fromUnlock: true });
+    }
+    function load(opts) {
+      opts = opts || {};
+      var seq = ++loadSeq;
+      showError("");
+      loadingEl.hidden = false;
+      empty.hidden = true;
+      if (!opts.silentRefresh) list.innerHTML = "";
+      setBtnBusy(refreshBtn, true, "刷新中…");
+      fetch(endpoint(), { headers: authHeaders(), credentials: "same-origin" })
+        .then(function (res) {
+          if (res.status === 401) throw new Error("口令错误或未授权");
+          if (!res.ok) throw new Error("加载失败 HTTP " + res.status);
+          return res.json();
+        })
+        .then(function (data) {
+          if (seq !== loadSeq) return;
+          items = (data && data.items) || [];
+          busyIds = {};
+          loadingEl.hidden = true;
+          gate.hidden = true;
+          app.hidden = false;
+          setBtnBusy(unlockBtn, false);
+          setBtnBusy(refreshBtn, false);
+          render();
+          if (opts.fromUnlock) toast("已进入收件箱 · " + items.length + " 条");
+          else if (opts.fromRefresh) toast("已刷新 · " + items.length + " 条");
+        })
+        .catch(function (err) {
+          if (seq !== loadSeq) return;
+          items = [];
+          busyIds = {};
+          loadingEl.hidden = true;
+          setBtnBusy(unlockBtn, false);
+          setBtnBusy(refreshBtn, false);
+          var msg = (err && err.message) || "加载失败";
+          gate.hidden = false;
+          app.hidden = true;
+          showGateError(msg + "。请确认口令正确。");
+          toast(msg, true);
+          render();
         });
     }
 
@@ -345,10 +650,16 @@
     document.getElementById("clearToken").addEventListener("click", function () {
       setToken("");
       tokenInput.value = "";
+      showGateError("");
+      toast("已清除本地口令");
+      tokenInput.focus();
     });
-    document.getElementById("refresh").addEventListener("click", load);
+    refreshBtn.addEventListener("click", function () {
+      load({ fromRefresh: true, silentRefresh: true });
+    });
     document.getElementById("logout").addEventListener("click", function () {
       setToken("");
+      toast("已退出");
       location.href = "/inbox";
     });
     document.getElementById("filterType").addEventListener("change", render);
