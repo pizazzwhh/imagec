@@ -7,6 +7,7 @@ import path from "path";
 import JSZip from "jszip";
 import FormData from "form-data";
 import https from "https";
+import { readSiteVersion } from "./site-version.mjs";
 
 function resolveFeedbackToken(siteDir) {
   if (process.env.FEEDBACK_TOKEN && String(process.env.FEEDBACK_TOKEN).trim()) {
@@ -82,7 +83,8 @@ function uploadToOSS(ossConfig, fileBuffer) {
 }
 
 async function main() {
-  const args = process.argv.slice(2);
+  const dryRun = process.argv.includes("--dry-run");
+  const args = process.argv.slice(2).filter((arg) => arg !== "--dry-run");
   const routineName = args[0] || "transparent-background-tool";
   const siteDir = args[1] || ".";
 
@@ -102,9 +104,10 @@ async function main() {
       const rel = relPath ? path.join(relPath, item) : item;
       const stat = fs.statSync(fullPath);
       if (stat.isDirectory()) {
-        if (!excludeDirs.includes(item)) collectFiles(fullPath, rel);
+        if (!item.startsWith(".") && !excludeDirs.includes(item)) collectFiles(fullPath, rel);
       } else {
-        if (excludeFiles.includes(item)) continue;
+        if (item.startsWith(".") || excludeFiles.includes(item) || /\.md$/i.test(item)) continue;
+        if (!relPath && item === "version.json") continue;
         if (excludeExts.some((ext) => item.toLowerCase().endsWith(ext))) continue;
         staticFiles.push({ fullPath, rel });
       }
@@ -119,12 +122,15 @@ async function main() {
 
   // Build zip: routine/index.js + assets/*
   console.log("\nPackaging...");
-  const feedbackToken = resolveFeedbackToken(folderPath);
+  const feedbackToken = dryRun ? "dry-run-placeholder" : resolveFeedbackToken(folderPath);
   const routineCode = injectFeedbackToken(ROUTINE_CODE, feedbackToken);
   console.log(`Feedback admin token: injected (${feedbackToken.length} chars from env/data)`);
+  const siteVersion = readSiteVersion(folderPath);
+  console.log(`站点版本：${siteVersion.短号}　${siteVersion.时间}${siteVersion.有未提交改动 === "是" ? "　有未提交改动" : ""}　${siteVersion.说明}`);
   const zip = new JSZip();
   zip.folder("routine").file("index.js", routineCode);
   const assetsFolder = zip.folder("assets");
+  assetsFolder.file("version.json", JSON.stringify(siteVersion, null, 2) + "\n");
   for (const f of staticFiles) {
     const content = fs.readFileSync(f.fullPath);
     const relParts = f.rel.split(path.sep);
@@ -134,6 +140,8 @@ async function main() {
   }
   const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
   console.log(`Package size: ${(zipBuffer.length / 1024).toFixed(2)} KB`);
+
+  if (dryRun) return;
 
   const client = createClient();
 
@@ -210,7 +218,7 @@ async function main() {
     }
   }
   if (!buildReady) {
-    console.log("  Build still in progress, proceeding with publish...");
+    throw new Error("ESA build did not become ready. Production was not changed.");
   }
 
   // Step 5: Publish to production

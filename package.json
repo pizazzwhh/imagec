@@ -5,9 +5,17 @@
     "preview": "node scripts/preview.mjs",
     "smoke:live": "node scripts/smoke-live.mjs",
     "smoke:mobile": "node scripts/smoke-mobile.mjs",
-    "smoke:p3": "node scripts/smoke-p3.mjs"
+    "smoke:p3": "node scripts/smoke-p3.mjs",
+    "qa:local": "node scripts/qa-local.mjs",
+    "deploy:check": "node scripts/deploy-folder.mjs --dry-run",
+    "deploy:esa": "node scripts/deploy-folder.mjs"
   },
   "devDependencies": {
-    "playwright": "^1.56.1"
+    "playwright": "^1.56.1",
+    "@alicloud/esa20240910": "3.16.1",
+    "@alicloud/openapi-client": "0.4.15",
+    "@alicloud/credentials": "2.4.7",
+    "jszip": "3.10.2",
+    "form-data": "4.0.6"
   }
 }

@@ -5,7 +5,7 @@
  *   npx playwright install chromium
  *   node scripts/smoke-mobile.mjs
  *
- * Viewport is 375×812. BASE_URL defaults to https://imagec.xin.
+ * Viewport is 375×812. BASE_URL defaults to the local preview.
  * On failure, a viewport screenshot is written to artifacts/mobile-smoke/.
  *
  * Selectors come from the live pages:
@@ -21,7 +21,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const DEFAULT_ORIGIN = "https://imagec.xin";
+const DEFAULT_ORIGIN = "http://127.0.0.1:8090";
 const VIEWPORT = { width: 375, height: 812 };
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const screenshotDir = path.join(root, "artifacts", "mobile-smoke");
@@ -38,7 +38,8 @@ const PAGES = [
   { path: "/idphoto", name: "idphoto", workspace: "section.toolCard", action: "#dropzone", cta: "button.primary" },
 ];
 
-const TOOL_HREF = /^\/(?:whitebg|compress|convert|batch|qr|round|crop|idphoto|watermark|bgcolor|splice|img2pdf|filter)$/;
+const toolSource = fs.readFileSync(path.join(root, "tool-cards.js"), "utf8");
+const TOOL_PATHS = new Set([...toolSource.matchAll(/\{file:"([a-z0-9]+)"/g)].map(([, slug]) => "/" + slug));
 
 function originFromEnv() {
   const raw = (process.env.BASE_URL || DEFAULT_ORIGIN).trim().replace(/\/+$/, "");
@@ -75,7 +76,7 @@ function cardProblem(href, origin) {
   if (url.origin !== origin) return href;
   let pathname = url.pathname;
   if (pathname.length > 1 && pathname.endsWith("/")) pathname = pathname.slice(0, -1);
-  if (/\.html$/i.test(pathname) || !TOOL_HREF.test(pathname)) return href;
+  if (/\.html$/i.test(pathname) || !TOOL_PATHS.has(pathname)) return href;
   return null;
 }
 
@@ -213,7 +214,7 @@ async function main() {
   console.log(`BASE_URL ${origin}`);
   console.log(`viewport ${VIEWPORT.width}×${VIEWPORT.height}`);
 
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true, channel: process.env.IMAGEC_BROWSER_CHANNEL });
   let failed = 0;
   try {
     const context = await browser.newContext({

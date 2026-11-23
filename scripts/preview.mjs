@@ -23,6 +23,7 @@ import {
   storePaths,
   updateFeedback
 } from "./feedback-store.mjs";
+import { readSiteVersion, siteVersionJson } from "./site-version.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const PORT = Number(process.env.PORT || 8080);
@@ -196,6 +197,16 @@ const paths = storePaths();
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url || "/", `http://${HOST}:${PORT}`);
+    if (url.pathname === "/version.json" && (req.method === "GET" || req.method === "HEAD")) {
+      const body = siteVersionJson(ROOT);
+      res.writeHead(200, {
+        "Content-Type": "application/json; charset=utf-8",
+        "Cache-Control": "no-store"
+      });
+      if (req.method === "HEAD") return res.end();
+      res.end(body);
+      return;
+    }
     if (url.pathname === "/api/feedback" || url.pathname.startsWith("/api/feedback/")) {
       await handleApi(req, res, url);
       return;
@@ -217,6 +228,12 @@ server.on("error", (err) => {
 
 server.listen(PORT, HOST, () => {
   console.log(`imagec preview  http://${HOST}:${PORT}/`);
+  try {
+    const version = readSiteVersion(ROOT);
+    console.log(`version         http://${HOST}:${PORT}/version.json  ${version.短号} ${version.时间}${version.有未提交改动 === "是" ? " 有未提交改动" : ""}`);
+  } catch (err) {
+    console.log("version         unavailable");
+  }
   console.log(`feedback inbox  http://${HOST}:${PORT}/inbox?token=${token}`);
   console.log(`store           ${paths.storeFile}`);
   console.log(`token file      ${paths.tokenFile}`);

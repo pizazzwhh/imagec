@@ -6,6 +6,25 @@
 
 ---
 
+## Local release verification
+
+Use Node.js 22 or later. From the project directory:
+
+```powershell
+npm ci
+npx playwright install chromium
+npm run qa:local
+npm run deploy:check
+```
+
+On Windows with Edge installed, set `$env:IMAGEC_BROWSER_CHANNEL = "msedge"` to use Edge for the browser checks. The local QA command starts and stops its own preview and uses temporary feedback storage. It checks the 24 tool routes, mobile headers, crop and compression downloads, batch ZIP contents, and the feedback lifecycle.
+
+For interactive acceptance, run `npm run preview`. Set `BASE_URL` to the preview address when running additional smoke checks. The mobile smoke check defaults to `http://127.0.0.1:8090`.
+
+Use the ESA routine deployment for a manually approved production release. First run `npm run deploy:check` to validate the archive without uploading it. After local acceptance, configure the Alibaba Cloud credentials and provide the existing production `FEEDBACK_TOKEN`, then run `npm run deploy:esa`. The routine serves `/api/feedback` using its edge KV storage. After release, verify `/version.json` and confirm a test submission appears in the authenticated inbox.
+
+Tool pages keep concise introductions and links to related tools. Longer usage guides live under `/blog`. Keep any visible FAQ and its structured data in sync.
+
 ## 🛠 Image Tools
 
 | Tool | What it does | Link |
@@ -80,7 +99,7 @@ HTTP and SEO (Node 20+; the live script has no npm dependencies):
 npm run smoke:live
 ```
 
-Covers `/`, `/whitebg`, `/compress`, `/qr`, `/round`, `/batch`, `/convert`, `/crop`, and `/idphoto`: status 200, `Age` / `Last-Modified` / `ETag`, a title, a visible `h1`, and a canonical URL without `.html`. Tool pages must have `#guide` and a visible FAQ whose questions match the FAQPage JSON-LD. Same-site tool links such as `/compress.html` fail. External URLs are ignored. `/stats.html`, `/index.html`, and `/blog/*.html` are allowed, as are the legacy cross-links that still sit in `.heroLinks`. The same `.html` tool path outside that block fails. A link to `/sponsor` or `/sponsor.html`, or a `sponsorRedeem` control, fails.
+Covers `/`, `/whitebg`, `/compress`, `/qr`, `/round`, `/batch`, `/convert`, `/crop`, and `/idphoto`: status 200, `Age` / `Last-Modified` / `ETag`, a title, a visible `h1`, and a canonical URL without `.html`. A leftover `#guide` block, when one is still present, must keep its visible FAQ questions aligned with the FAQPage JSON-LD. Same-site tool links such as `/compress.html` fail. External URLs are ignored. `/stats.html`, `/index.html`, and `/blog/*.html` are allowed, as are the legacy cross-links that still sit in `.heroLinks`. The same `.html` tool path outside that block fails. A link to `/sponsor` or `/sponsor.html`, or a `sponsorRedeem` control, fails.
 
 Mobile first screen (Playwright, 375×812). Install the browser once:
 

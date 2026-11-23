@@ -5,6 +5,7 @@
  */
 import { chromium } from "playwright";
 import fs from "node:fs";
+import JSZip from "jszip";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -23,7 +24,7 @@ async function main() {
   ok("index has /ocr card", index.includes('href="/ocr"'));
   ok("index has /svgopt card", index.includes('href="/svgopt"'));
 
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true, channel: process.env.IMAGEC_BROWSER_CHANNEL });
   const page = await browser.newPage();
 
   // Homepage search
@@ -126,6 +127,26 @@ async function main() {
   ok("ocr copy enabled", copyEnabled || hit);
 
   try { fs.unlinkSync(pngPath); } catch (_) {}
+  // Decode and export a multi-frame GIF through the browser module.
+  await page.goto(ORIGIN + "/gifsplit", { waitUntil: "domcontentloaded" });
+  const frames = 120;
+  const gif = Buffer.concat([
+    Buffer.from("47494638396101000100800000000000ffffff", "hex"),
+    ...Array.from({ length: frames }, () => Buffer.from("21f90400020000002c0000000001000100000202440100", "hex")),
+    Buffer.from([0x3b]),
+  ]);
+  await page.setInputFiles("#file", { name: "animation.gif", mimeType: "image/gif", buffer: gif });
+  try {
+    const [download] = await Promise.all([
+      page.waitForEvent("download", { timeout: 20000 }),
+      page.locator("#zipBtn").click({ timeout: 20000 }),
+    ]);
+    const zip = await JSZip.loadAsync(fs.readFileSync(await download.path()));
+    ok("gifsplit exports every frame", Object.keys(zip.files).length === frames);
+  } catch (error) {
+    ok("gifsplit exports every frame", false, error.message.split("\n")[0]);
+  }
+
   await browser.close();
   if (failed) {
     console.error(`\nP3 acceptance: ${failed} failed`);

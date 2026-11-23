@@ -552,6 +552,8 @@ export default {
     let response;
     const ext = pathname.split(".").pop().toLowerCase();
     const contentType = mimeTypes[ext] || "application/octet-stream";
+    const assetHeaders = { "content-type": contentType };
+    if (pathname === "/version.json") assetHeaders["cache-control"] = "no-store";
 
     // Try multiple asset path patterns (ESA may use different base paths)
     const pathsToTry = [
@@ -564,7 +566,7 @@ export default {
       try {
         const content = await __ESA_ASSETS_GET__(tryPath);
         if (content) {
-          response = new Response(content, { headers: { "content-type": contentType } });
+          response = new Response(content, { headers: assetHeaders });
           return response;
         }
       } catch (e) {}

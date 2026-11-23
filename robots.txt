@@ -4,6 +4,7 @@ Disallow: /__stats__
 Disallow: /stats.html
 Disallow: /inbox
 Disallow: /inbox.html
+Disallow: /version.json
 Disallow: /api/
 
 Sitemap: https://imagec.xin/sitemap.xml

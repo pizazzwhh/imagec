@@ -4,7 +4,7 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const DATA_DIR = path.join(ROOT, "data");
+const DATA_DIR = process.env.IMAGEC_FEEDBACK_DATA_DIR || path.join(ROOT, "data");
 const STORE_FILE = path.join(DATA_DIR, "feedback.jsonl");
 const TOKEN_FILE = path.join(DATA_DIR, "feedback-token.txt");
 

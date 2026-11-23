@@ -38,8 +38,8 @@ npm run preview
 
 | 项 | 怎么验 |
 |---|---|
-| 压缩 · 目标体积 | `/compress` →「目标体积」→ 选 50/100/200KB → 看压缩后大小是否靠近目标 |
-| 裁剪 · 预设 | `/crop` → 缩放模式 → 点 Instagram / 电商主图 / 一寸等预设 |
+| 压缩 · 目标体积 | `/compress` →展开「调整参数」→「目标体积」→ 选 50/100/200KB → 看压缩后大小是否靠近目标 |
+| 裁剪 · 预设 | `/crop` → 在「预设尺寸」选择 Instagram / 电商主图 / 一寸，下载并核对像素 |
 | HEIC | `/heic` → 上传 `.heic`（需能访问 jsDelivr）→ 转 JPG/PNG 下载 |
 | 旋转翻转 | `/rotate` → 90°/翻转 → 下载 |
 | 清元数据 | `/exif` → 上传带 GPS 的 JPG → 下载后再看体积/定位信息 |
@@ -95,7 +95,7 @@ $env:BASE_URL="http://127.0.0.1:8080"; npm run smoke:p3
 | 查看 | 打开终端打印的 `/inbox?token=…`，或 `/inbox` 输入口令 |
 | 处理 | 收件箱可标已读 / 已处理 / 垃圾 / 删除；数据在 `data/feedback.jsonl` |
 
-上线到纯静态 CDN 时，需把 `/api/feedback` 反代到同一套 Node 预览服务，或配置 `feedback-config.js` 的 `web3formsAccessKey` 做邮件备份。
+生产环境由 ESA Routine 提供同源反馈接口并写入边缘 KV。手动发布和发版后验收步骤见 README 的 Local release verification。
 
 ## 8. 可选自动化冒烟
 
