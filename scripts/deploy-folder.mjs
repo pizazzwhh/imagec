@@ -123,9 +123,11 @@ async function main() {
   // Build zip: routine/index.js + assets/*
   console.log("\nPackaging...");
   const feedbackToken = dryRun ? "dry-run-placeholder" : resolveFeedbackToken(folderPath);
-  const routineCode = injectFeedbackToken(ROUTINE_CODE, feedbackToken);
   console.log(`Feedback admin token: injected (${feedbackToken.length} chars from env/data)`);
   const siteVersion = readSiteVersion(folderPath);
+  const routineCode = injectFeedbackToken(ROUTINE_CODE, feedbackToken).replace(
+    '"__IMAGEC_SITE_VERSION__"', () => JSON.stringify(siteVersion),
+  );
   console.log(`站点版本：${siteVersion.短号}　${siteVersion.时间}${siteVersion.有未提交改动 === "是" ? "　有未提交改动" : ""}　${siteVersion.说明}`);
   const zip = new JSZip();
   zip.folder("routine").file("index.js", routineCode);

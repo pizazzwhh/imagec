@@ -418,6 +418,10 @@ export default {
   async fetch(request, context) {
     const url = new URL(request.url);
     let pathname = url.pathname;
+    if (pathname === "/version.json") {
+      const version = "__IMAGEC_SITE_VERSION__";
+      if (typeof version === "object") return jsonResponse(200, version);
+    }
 
     var cleanPath = pathname.replace(/\/+$/, "") || "/";
     if (cleanPath === "/api/feedback" || cleanPath.indexOf("/api/feedback/") === 0) {
