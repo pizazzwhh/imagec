@@ -66,7 +66,7 @@
       <div class="privacyLine safeBadge">
         <span data-i18n="privacy">本地处理 · 不上传服务器</span>
       </div>
-      <p class="heroLinks"><a href="/img2pdf" data-i18n="linkPdf">图片转 PDF</a> <span aria-hidden="true">·</span> <a href="/compress" data-i18n="linkCompress">压缩图片</a></p>
+      <p class="heroLinks"><a href="/img2pdf" data-i18n="linkPdf">图片转 PDF</a> <a href="/compress" data-i18n="linkCompress">压缩图片</a></p>
     </div>
     <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
     <div class="workspace">
@@ -270,7 +270,14 @@ function syncScaleLabel(){
   $('#scaleV').textContent=s+' · '+Math.round(s*72)+' DPI';
 }
 function extOf(){return fmt==='jpeg'?'jpg':'png';}
-function pageFile(i){return 'page-'+String(i+1).padStart(2,'0')+'.'+extOf();}
+function pageFile(i){
+  const named=imagecDownloadName(baseName,extOf());
+  const dot=named.lastIndexOf('.');
+  const stem=dot>0?named.slice(0,dot):named;
+  const ext=dot>0?named.slice(dot):'.'+extOf();
+  if(pages.length<=1)return named;
+  return stem+'-'+String(i+1).padStart(2,'0')+ext;
+}
 function paintMeta(){
   const meta=$('#meta');
   if(!meta)return;
@@ -451,7 +458,7 @@ async function load(file){
   document.body.classList.add('computing');
   paintMeta();
   try{
-    baseName=(file.name||'document').replace(/\.[^.]+$/,'')||'document';
+    baseName=file.name||'document.pdf';
     sourceBytes=new Uint8Array(await file.arrayBuffer());
     if(id!==seq)return;
     await renderPdf(id);
@@ -511,7 +518,7 @@ async function downloadPage(i){
   const blob=await canvasBlob(canvas);
   if(!blob){showBanner('errExport');return;}
   showBanner('');
-  downloadBlob(blob,baseName+'-'+pageFile(i));
+  downloadBlob(blob,pageFile(i));
 }
 const CRC_TABLE=(()=>{
   const table=new Uint32Array(256);
@@ -596,7 +603,7 @@ async function downloadZip(){
       const data=new Uint8Array(await blob.arrayBuffer());
       files.push({name:pageFile(i),data,crc:crc32(data)});
     }
-    downloadBlob(new Blob([buildZip(files)],{type:'application/zip'}),baseName+'-pages.zip');
+    downloadBlob(new Blob([buildZip(files)],{type:'application/zip'}),imagecDownloadName(baseName,'zip'));
     showBanner('');
   }finally{
     $('#zipBtn').disabled=!pages.length;

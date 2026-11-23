@@ -66,7 +66,7 @@
       <div class="privacyLine safeBadge">
         <span data-i18n="privacy">本地处理 · 不上传服务器</span>
       </div>
-      <p class="heroLinks"><a href="/convert" data-i18n="linkConvert">转换格式</a> <span aria-hidden="true">·</span> <a href="/compress" data-i18n="linkCompress">压缩图片</a></p>
+      <p class="heroLinks"><a href="/convert" data-i18n="linkConvert">转换格式</a> <a href="/compress" data-i18n="linkCompress">压缩图片</a></p>
     </div>
     <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
     <div class="workspace">
@@ -304,12 +304,21 @@ function showEmpty(){
 let gifPromise=null;
 function ensureGif(){
   if(!gifPromise){
-    gifPromise=import(GIF_URL).then(mod=>{
-      const parseGIF=mod.parseGIF||(mod.default&&mod.default.parseGIF);
-      const decompressFrames=mod.decompressFrames||(mod.default&&mod.default.decompressFrames);
-      if(typeof parseGIF!=='function'||typeof decompressFrames!=='function')throw new Error('lib');
-      return {parseGIF,decompressFrames};
-    }).catch(err=>{gifPromise=null;throw err;});
+    gifPromise=(async()=>{
+      for(const url of GIF_FALLBACKS){
+        try{
+          const mod=await import(url);
+          const parseGIF=mod.parseGIF||mod.default?.parseGIF;
+          const decompressFrames=mod.decompressFrames||mod.default?.decompressFrames;
+          if(typeof parseGIF==='function'&&typeof decompressFrames==='function'){
+            return {parseGIF,decompressFrames};
+          }
+        }catch(e){
+          // Try the next mirror when this module cannot load.
+        }
+      }
+      throw new Error('lib');
+    })().catch(err=>{gifPromise=null;throw err;});
   }
   return gifPromise;
 }
@@ -378,7 +387,7 @@ async function load(file){
   document.body.classList.add('computing');
   paintMeta();
   try{
-    baseName=(file.name||'gif').replace(/\.[^.]+$/,'')||'gif';
+    baseName=file.name||'gif';
     const buf=await file.arrayBuffer();
     if(id!==seq)return;
     const lib=await ensureGif();
@@ -422,14 +431,20 @@ function canvasBlob(canvas){
     catch(e){resolve(null);}
   });
 }
-function frameFile(i){return 'frame-'+String(i+1).padStart(2,'0')+'.png';}
+function frameFile(i){
+  const named=imagecDownloadName(baseName,'png');
+  const dot=named.lastIndexOf('.');
+  const stem=dot>0?named.slice(0,dot):named;
+  if(frames.length<=1)return named;
+  return stem+'-'+String(i+1).padStart(2,'0')+'.png';
+}
 async function downloadFrame(i){
   const frame=frames[i];
   if(!frame)return;
   const blob=await canvasBlob(frame.canvas);
   if(!blob){showBanner('errExport');return;}
   showBanner('');
-  downloadBlob(blob,baseName+'-'+frameFile(i));
+  downloadBlob(blob,frameFile(i));
 }
 const CRC_TABLE=(()=>{
   const table=new Uint32Array(256);
@@ -514,7 +529,7 @@ async function downloadZip(){
       const data=new Uint8Array(await blob.arrayBuffer());
       files.push({name:frameFile(i),data,crc:crc32(data)});
     }
-    downloadBlob(new Blob([buildZip(files)],{type:'application/zip'}),baseName+'-frames.zip');
+    downloadBlob(new Blob([buildZip(files)],{type:'application/zip'}),imagecDownloadName(baseName,'zip'));
     showBanner('');
   }finally{
     $('#zipBtn').disabled=!frames.length;

@@ -76,7 +76,6 @@
 }
 </script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"证件照换底色","item":"https://imagec.xin/idphoto"}]}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"证件照会上传到服务器吗？","acceptedAnswer":{"@type":"Answer","text":"不会。换底色在浏览器本地完成。"}},{"@type":"Question","name":"能换哪些颜色？","acceptedAnswer":{"@type":"Answer","text":"白、蓝、红、浅蓝，以及自定义颜色。"}},{"@type":"Question","name":"边缘还有残留怎么办？","acceptedAnswer":{"@type":"Answer","text":"增加容差或加大边缘柔化。"}}]}</script>
 <link rel="stylesheet" href="/site.css" />
 </head>
 <body class="studio">
@@ -146,41 +145,6 @@
     </div>
   </section>
 
-  <section class="seoContent" id="guide" aria-labelledby="guide-title">
-    <h2 id="guide-title" data-i18n="g_fitTitle">适合这些情况</h2>
-    <ol>
-      <li data-i18n="g_fit1">蓝底改白底，用于简历或报名。</li>
-      <li data-i18n="g_fit2">红底或浅蓝底，用于材料打印。</li>
-      <li data-i18n="g_fit3">报名或打印前，统一证件照底色。</li>
-    </ol>
-    <h2 data-i18n="g_howTitle">怎么用</h2>
-    <ol>
-      <li data-i18n="g_how1">上传或粘贴证件照（建议纯色底）。</li>
-      <li data-i18n="g_how2">选预设颜色或自定义颜色，并调容差与柔化。</li>
-      <li data-i18n="g_how3">预览后下载。</li>
-    </ol>
-    <h2 data-i18n="g_whyTitle">为什么用 imagec</h2>
-    <ul>
-      <li data-i18n="g_why1">预设底色 + 自定义色，容差与柔化可调。</li>
-      <li data-i18n="g_why2">免费无水印；面向纯色证件底，不是通用 AI 抠图。</li>
-      <li data-i18n="g_why3">按页内尺寸预设导出（以控件为准）。</li>
-    </ul>
-    <h2 data-i18n="g_faqTitle">常见问题</h2>
-    <dl class="seoFaq">
-      <div>
-        <dt data-i18n="g_q1">证件照会上传到服务器吗？</dt>
-        <dd data-i18n="g_a1">不会。换底色在浏览器本地完成。</dd>
-      </div>
-      <div>
-        <dt data-i18n="g_q2">能换哪些颜色？</dt>
-        <dd data-i18n="g_a2">白、蓝、红、浅蓝，以及自定义颜色。</dd>
-      </div>
-      <div>
-        <dt data-i18n="g_q3">边缘还有残留怎么办？</dt>
-        <dd data-i18n="g_a3">增加容差或加大边缘柔化。</dd>
-      </div>
-    </dl>
-  </section>
 
 <section class="relatedTools">
     <h2 data-i18n="relatedTools">更多图片工具</h2>
@@ -368,6 +332,7 @@ setLanguage(language);
   const resetBtn = document.getElementById('resetBtn');
 
   let sourceImage = null;
+  let sourceName = 'image.png';
   let originalBg = null;
   let currentColor = '#FFFFFF';
   let outputSize = null;
@@ -390,6 +355,7 @@ setLanguage(language);
 
   function loadFile(file){
     if(!file || !file.type.startsWith('image/')){ if(file) imagecAlert('errType'); return; }
+    sourceName = file.name || 'image.png';
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -576,15 +542,14 @@ setLanguage(language);
     if(!sourceImage || !originalBg) return;
     if(!outputSize) renderAtSize(true);
     const link = document.createElement('a');
-    const sizeName = outputSize ? ('_' + outputSize.id + '_' + outputSize.w + 'x' + outputSize.h) : '';
-    link.download = 'idphoto_' + currentColor.replace('#','') + sizeName + '.png';
+    link.download = imagecDownloadName(sourceName, 'png');
     link.href = preview.toDataURL('image/png');
     link.click();
     if(!outputSize) render();
   });
 
   resetBtn.addEventListener('click', () => {
-    sourceImage = null; originalBg = null; outputSize = null;
+    sourceImage = null; originalBg = null; outputSize = null; sourceName = 'image.png';
     if(sizePresets) sizePresets.querySelectorAll('button').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
     workarea.style.display = 'none';
     dropzone.style.display = 'block';

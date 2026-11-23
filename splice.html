@@ -294,7 +294,7 @@ function loadFiles(files) {
     const url = URL.createObjectURL(f);
     img.onload = () => {
       // 不立即revokeObjectURL，保留URL用于缩略图显示，删除时统一清理
-      images.push({ img, url, name: f.name.replace(/\.[^.]+$/, ''), w: img.naturalWidth, h: img.naturalHeight });
+      images.push({ img, url, name: f.name.replace(/\.[^.]+$/, ''), fileName: f.name || 'image', w: img.naturalWidth, h: img.naturalHeight });
       renderList();
       renderPreview();
     };
@@ -459,7 +459,7 @@ $('#download').onclick = () => {
   canvas.toBlob(blob => {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'spliced-image.png';
+    a.download = imagecDownloadName((images[0] && images[0].fileName) || 'image', 'png');
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }, 'image/png');

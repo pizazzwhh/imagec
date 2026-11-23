@@ -1059,19 +1059,15 @@ body .siteFooter button.action.feedbackOpen:hover {
   }
 }
 
-/* Tool pages: keep the shell, then enter the panel, guide, related tools, and the
+/* Tool pages: keep the shell, then enter the panel, related tools, and the
    sponsor line together once chrome has folded params and applied copy.
    Opacity only — the drop target stays clickable during the enter. */
 body.tool:not(.tool-ready) .panel,
-body.tool:not(.tool-ready) .guideReads,
-body.tool:not(.tool-ready) .seoContent,
 body.tool:not(.tool-ready) .relatedTools,
 body.tool:not(.tool-ready) .toolsShowcase,
 body.tool:not(.tool-ready) main.shell > .quietLinks,
 body.studio:not(.tool-ready) .hero,
 body.studio:not(.tool-ready) > main > .toolCard,
-body.studio:not(.tool-ready) .guideReads,
-body.studio:not(.tool-ready) .seoContent,
 body.studio:not(.tool-ready) .relatedTools,
 body.studio:not(.tool-ready) main.shell > .quietLinks {
   opacity: 0;
@@ -1085,14 +1081,10 @@ body.studio:not(.tool-ready) main.shell > .quietLinks {
   body.studio.tool-ready .hero {
     animation: toolEnter var(--dur-slow) var(--ease-out) both;
   }
-  body.tool.tool-ready .guideReads,
-  body.tool.tool-ready .seoContent,
   body.tool.tool-ready .relatedTools,
   body.tool.tool-ready .toolsShowcase,
   body.tool.tool-ready main.shell > .quietLinks,
   body.studio.tool-ready > main > .toolCard,
-  body.studio.tool-ready .guideReads,
-  body.studio.tool-ready .seoContent,
   body.studio.tool-ready .relatedTools,
   body.studio.tool-ready main.shell > .quietLinks {
     animation: toolEnter var(--dur-slow) var(--ease-out) 70ms both;
@@ -1104,15 +1096,11 @@ body.studio:not(.tool-ready) main.shell > .quietLinks {
 }
 @media (prefers-reduced-motion: reduce) {
   body.tool .panel,
-  body.tool .guideReads,
-  body.tool .seoContent,
   body.tool .relatedTools,
   body.tool .toolsShowcase,
   body.tool main.shell > .quietLinks,
   body.studio .hero,
   body.studio > main > .toolCard,
-  body.studio .guideReads,
-  body.studio .seoContent,
   body.studio .relatedTools,
   body.studio main.shell > .quietLinks,
   body.tool.has-file .stage,
@@ -1126,7 +1114,14 @@ body.studio:not(.tool-ready) main.shell > .quietLinks {
 /* ===== Tool workspace (family A) ===== */
 /* Title sits 28px (topbar margin) + 8px under the bar, same rhythm as home. */
 body.tool .hero,
-body.studio .hero { padding: 8px 0 16px; text-align: start; }
+body.studio .hero {
+  padding: clamp(16px, 2.6vw, 24px);
+  margin-block-end: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--surface) 68%, #eff6ff);
+  text-align: start;
+}
 body.tool .panel.sponsorSheet .hero { padding: 20px 24px 16px; }
 body.tool .heroTitleRow,
 body.studio .heroTitleRow {
@@ -1498,7 +1493,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
 }
 .toggle input:checked { background: var(--accent); }
 .toggle input:checked:after { transform: translateX(18px); }
-body.tool button:not(.fav-btn):not(.searchFav):not(.heroFav),
+body.tool button:where(:not(.fav-btn, .searchFav, .heroFav)),
 body.studio .btn,
 body.studio .tabRow button,
 body.studio .formatBtns button,
@@ -1785,25 +1780,61 @@ body.tool .pin .seg button.active {
   background: var(--accent-soft);
   color: var(--accent);
 }
-.heroLinks {
+body:is(.tool, .studio) .hero .heroLinks {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0 4px;
-  margin: 10px 0 0;
-  font-size: var(--fs-sm);
-  color: #57534E;
+  align-items: center;
+  gap: 6px 8px;
+  margin-block-start: 12px;
 }
 .heroLinks-label {
-  color: #A8A29E;
-  font-weight: var(--fw-normal);
+  padding-inline-end: 4px;
+  color: #57534e;
 }
-.heroLinks-label::after {
-  content: " ·";
-  margin-inline-start: 2px;
+.heroLinks a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  max-width: 100%;
+  padding: 4px 10px;
+  border: 1px solid #dbeafe;
+  border-radius: var(--radius-sm);
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: var(--fw-bold);
+  text-decoration: none;
+  overflow-wrap: anywhere;
 }
-.heroLinks a { font-weight: var(--fw-bold); text-decoration: none; }
-.heroLinks a:hover { text-decoration: underline; }
+.heroLinks a:hover {
+  background: #dbeafe;
+  text-decoration: underline;
+}
+.heroLinks a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+body:is(.tool, .studio) .hero .toolSetupNotice,
+body:is(.tool, .studio) .hero .notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-block-start: 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+}
+body:is(.tool, .studio) .hero .toolSetupNotice {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1e3a8a;
+}
+.toolSetupNotice > svg {
+  flex: 0 0 16px;
+  margin-block-start: 3px;
+}
 .queue { display: flex; flex-direction: column; gap: 10px; max-height: min(70vh, 640px); overflow: auto; }
 .qItem {
   display: flex;
@@ -1951,74 +1982,7 @@ body.studio .checkboxRow { display: flex; align-items: center; gap: 8px; font-si
 body.studio .inline { display: flex; gap: 12px; }
 body.studio input[type=color] { width: 44px; height: 36px; padding: 0; border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius-sm); }
 
-/* Guide + FAQ sit between the workspace and related tools. */
-.seoContent {
-  margin: var(--space-6) 0 0;
-  color: #1C1917;
-}
-.seoContent h2 {
-  margin: var(--space-5) 0 var(--space-3);
-  text-align: start;
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-bold);
-  letter-spacing: -0.02em;
-  line-height: 1.35;
-  color: #1C1917;
-}
-.seoContent h2:first-child { margin-top: 0; }
-.seoContent ol,
-.seoContent ul {
-  margin: 0;
-  padding: 0;
-  padding-inline-start: 1.25em;
-  max-width: 42rem;
-  color: #57534E;
-  font-size: var(--fs-base);
-  line-height: 1.65;
-}
-.seoContent li + li { margin-top: 6px; }
-.seoContent a { font-weight: var(--fw-med); text-underline-offset: 2px; }
-.seoFaq {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 42rem;
-}
-.seoFaq > div {
-  margin: 0;
-  padding: 12px 14px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-}
-.seoFaq dt {
-  margin: 0;
-  font-size: var(--fs-base);
-  font-weight: var(--fw-bold);
-  line-height: 1.45;
-  color: #1C1917;
-}
-.seoFaq dd {
-  margin: 4px 0 0;
-  font-size: var(--fs-base);
-  line-height: 1.65;
-  color: #57534E;
-}
-@media (max-width: 800px) {
-  .seoContent { margin-top: var(--space-5); }
-  .seoFaq > div { padding: 12px; }
-}
-
 /* Related tools use the home .toolsGrid / a.toolCard rules. */
-.guideReads {
-  margin: var(--space-5) 0 0;
-  max-width: 42rem;
-  color: #57534E;
-  font-size: var(--fs-base);
-  line-height: 1.65;
-}
-.guideReads a { font-weight: var(--fw-med); text-underline-offset: 2px; }
 .relatedTools, .toolsShowcase { margin-top: var(--space-5); }
 .relatedTools h2, .toolsShowcase h2 {
   margin: 0 0 16px;
@@ -2046,7 +2010,7 @@ body.studio input[type=color] { width: 44px; height: 36px; padding: 0; border: 1
   body.tool.barcode:not(.has-file) .controls { border-right: 0; }
   body.tool.round:not(.has-file) .controls { border-right: 0; }
   body.tool.batch.has-file .actions:has(#zipBtn[hidden]) { grid-template-columns: 1fr; }
-  body.tool .hero, body.studio .hero { padding: 8px 0 16px; }
+  body.tool .hero, body.studio .hero { padding: 16px; margin-block-end: 12px; }
   body.tool.has-file .canvasWrap { height: min(320px, 48vh); }
   body.tool .stagebar { flex-wrap: wrap; gap: 6px; }
   body.tool.has-file .actions,

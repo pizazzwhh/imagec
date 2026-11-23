@@ -65,7 +65,7 @@
       <div class="privacyLine safeBadge">
         <span data-i18n="privacy">本地处理 · 不上传服务器</span>
       </div>
-      <p class="heroLinks"><a href="/crop" data-i18n="linkCrop">裁剪缩放</a> <span aria-hidden="true">·</span> <a href="/round" data-i18n="linkRound">圆角阴影</a></p>
+      <p class="heroLinks"><a href="/crop" data-i18n="linkCrop">裁剪缩放</a> <a href="/round" data-i18n="linkRound">圆角阴影</a></p>
     </div>
     <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
     <div class="workspace">
@@ -227,7 +227,11 @@ function kindOf(file){
   if(type.indexOf('image/')===0)return 'image';
   return '';
 }
-function fileName(size){return 'favicon-'+size+'x'+size+'.png';}
+function fileStem(){
+  const named=imagecDownloadName(baseName||'site','png');
+  return named.replace(/\.png$/i,'')||'site';
+}
+function fileName(size){return fileStem()+'-'+size+'x'+size+'.png';}
 function tagFor(size){
   if(size===180)return t('tagApple');
   if(size===192||size===512)return t('tagManifest');
@@ -356,7 +360,7 @@ async function load(file){
   showBanner('');
   try{
     const img=await loadImage(file);
-    baseName=(file.name||'site').replace(/\.[^.]+$/,'').replace(/[^\w\-]+/g,'_').slice(0,40)||'site';
+    baseName=file.name||'site.png';
     icons=SIZES.map(size=>({size,canvas:drawContain(img,size)}));
     selected=icons.findIndex(icon=>icon.size===512);
     if(selected<0)selected=0;
@@ -477,14 +481,14 @@ async function downloadZip(){
       const data=new Uint8Array(await blob.arrayBuffer());
       files.push({name:fileName(icon.size),data,crc:crc32(data)});
     }
-    downloadBlob(new Blob([buildZip(files)],{type:'application/zip'}),'favicons.zip');
+    downloadBlob(new Blob([buildZip(files)],{type:'application/zip'}),imagecDownloadName(baseName,'zip'));
     showBanner('');
   }finally{
     $('#zipBtn').disabled=!icons.length;
   }
 }
 function manifestText(){
-  const name=baseName||'site';
+  const name=fileStem();
   const iconsJson=[192,512].map(size=>({
     src:fileName(size),
     sizes:size+'x'+size,

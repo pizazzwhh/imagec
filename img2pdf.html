@@ -372,7 +372,7 @@ function loadFiles(files) {
     img.onload = () => {
       // 不立即revokeObjectURL，保留URL用于缩略图显示，删除时统一清理
       const hasAlpha = f.type === 'image/jpeg' ? false : imageHasAlpha(img);
-      images.push({ img, url, name: f.name.replace(/\.[^.]+$/, ''), w: img.naturalWidth, h: img.naturalHeight, hasAlpha });
+      images.push({ img, url, name: f.name.replace(/\.[^.]+$/, ''), fileName: f.name || 'image', w: img.naturalWidth, h: img.naturalHeight, hasAlpha });
       renderList();
     };
     img.onerror = () => { URL.revokeObjectURL(url); imagecAlert('errLoad'); };
@@ -516,7 +516,7 @@ function generatePDF() {
           pdf.addImage(img.data, img.format, p.ix, p.iy, p.iw, p.ih);
         }
 
-        pdf.save('images.pdf');
+        pdf.save(imagecDownloadName((images[0] && images[0].fileName) || 'image', 'pdf'));
         clearLibError();
       } catch (err) {
         alert(messages[language].errorMsg + (err && err.message ? err.message : err));

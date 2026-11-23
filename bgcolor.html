@@ -355,6 +355,7 @@ setLanguage(language);
 
   // ============ 状态变量 ============
   let sourceImage = null;
+  let sourceName = 'image.png';
   let bgType = 'solid';
   let solidColor = '#FFFFFF';
   let gradDir = 'horizontal';
@@ -365,6 +366,7 @@ setLanguage(language);
   // ============ 加载图片文件 ============
   function loadFile(file){
     if(!file || !file.type.startsWith('image/')){ if(file) imagecAlert('errType'); return; }
+    sourceName = file.name || 'image.png';
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
@@ -503,10 +505,10 @@ setLanguage(language);
       tmpCtx.fillStyle = '#FFFFFF';
       tmpCtx.fillRect(0, 0, origW, origH);
       tmpCtx.drawImage(preview, 0, 0);
-      link.download = '加背景_' + Date.now() + '.jpg';
+      link.download = imagecDownloadName(sourceName, 'jpg');
       link.href = tmpCanvas.toDataURL('image/jpeg', 0.92);
     } else {
-      link.download = '加背景_' + Date.now() + '.png';
+      link.download = imagecDownloadName(sourceName, 'png');
       link.href = preview.toDataURL('image/png');
     }
     link.click();
@@ -516,6 +518,7 @@ setLanguage(language);
   // ============ 事件：重新上传 ============
   resetBtn.addEventListener('click', () => {
     sourceImage = null;
+    sourceName = 'image.png';
     workarea.style.display = 'none';
     dropzone.style.display = 'block';
     fileInput.value = '';

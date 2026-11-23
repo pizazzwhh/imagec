@@ -67,7 +67,8 @@
       <div class="privacyLine safeBadge">
         <span data-i18n="privacy">本地处理 · 不上传服务器</span>
       </div>
-      <p class="heroLinks"><a href="/exif" data-i18n="linkExif">清除元数据</a> <span aria-hidden="true">·</span> <a href="/convert" data-i18n="linkConvert">转换格式</a></p>
+      <p class="heroLinks"><a href="/exif" data-i18n="linkExif">清除元数据</a> <a href="/convert" data-i18n="linkConvert">转换格式</a></p>
+      <p class="toolSetupNotice"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v8m-3-3 3 3 3-3M2.5 11v2.5h11V11"/></svg><span data-i18n="modelNote">第一次识别会下载语言模型（大约几 MB），并缓存在这个浏览器里。首次需要联网，之后的识别都在本机完成。</span></p>
     </div>
     <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
     <div class="workspace">
@@ -88,7 +89,6 @@
               <button type="button" class="active" data-lang="chi_sim+eng" data-i18n="langBoth" aria-pressed="true">中英</button>
             </div>
           </div>
-          <p class="notice" data-i18n="modelNote">第一次识别会下载语言模型（大约几 MB），并缓存在这个浏览器里。首次需要联网，之后的识别都在本机完成。</p>
         </div>
 
         <div class="actions">
@@ -302,10 +302,6 @@ function kindOf(file){
   if(type==='image/jpeg'||type==='image/jpg'||name.endsWith('.jpg')||name.endsWith('.jpeg'))return 'jpeg';
   if(type==='image/webp'||name.endsWith('.webp'))return 'webp';
   return '';
-}
-function safeName(name){
-  const clean=String(name||'image').replace(/[\\/:*?"<>|]+/g,'').trim();
-  return clean||'image';
 }
 function loadImage(blob){
   return new Promise((resolve,reject)=>{
@@ -554,7 +550,7 @@ async function load(file){
     if(id!==seq)return;
     sourceFile=file;
     sourceImg=img;
-    baseName=safeName((file.name||'image').replace(/\.[^.]+$/,''));
+    baseName=file.name||'image';
     lastSize.w=img.naturalWidth||0;
     lastSize.h=img.naturalHeight||0;
     drawPreview(img);
@@ -619,7 +615,7 @@ $('#copy').addEventListener('click',()=>{if(!$('#copy').disabled)copyText();});
 $('#download').addEventListener('click',()=>{
   const text=$('#output').value;
   if($('#download').disabled||!text)return;
-  downloadBlob(new Blob([text],{type:'text/plain;charset=utf-8'}),safeName(baseName)+'-ocr.txt');
+  downloadBlob(new Blob([text],{type:'text/plain;charset=utf-8'}),imagecDownloadName(baseName,'txt'));
 });
 $('#clear').addEventListener('click',()=>{
   seq++;

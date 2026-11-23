@@ -60,7 +60,7 @@
       <div class="privacyLine safeBadge">
         <span data-i18n="privacy">本地处理 · 不上传服务器</span>
       </div>
-      <p class="heroLinks"><a href="/crop" data-i18n="linkCrop">裁剪缩放</a> <span aria-hidden="true">·</span> <a href="/round" data-i18n="linkRound">圆角阴影</a></p>
+      <p class="heroLinks"><a href="/crop" data-i18n="linkCrop">裁剪缩放</a> <a href="/round" data-i18n="linkRound">圆角阴影</a></p>
     </div>
     <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
     <div class="workspace">
@@ -437,7 +437,7 @@ async function load(file){
     if(id!==seq)return;
     source=img;
     originalSize=file.size||0;
-    baseName=(file.name||'image').replace(/\.[^.]+$/,'')||'image';
+    baseName=file.name||'image';
     renderPreview();
     scheduleMeasure();
   }catch(e){
@@ -499,7 +499,7 @@ $('#clear').addEventListener('click',()=>{seq++;measureSeq++;showBanner('');show
 $('#download').addEventListener('click',()=>{
   if($('#download').disabled||!outputBlob)return;
   const ext=fmt==='png'?'png':'jpg';
-  downloadBlob(outputBlob,baseName+'-rotate.'+ext);
+  downloadBlob(outputBlob,imagecDownloadName(baseName,ext));
 });
 langSelect.addEventListener('change',()=>setLanguage(langSelect.value));
 syncFmt();

@@ -61,7 +61,7 @@
         <span data-i18n="privacy">本地处理 · 不上传服务器</span>
       </div>
       <p class="notice" data-i18n="note">重新编码会去掉 EXIF、GPS 和拍摄信息。JPG、WebP 会按所选质量重新压缩，体积可能变大或变小。</p>
-      <p class="heroLinks"><a href="/compress" data-i18n="linkCompress">图片压缩</a> <span aria-hidden="true">·</span> <a href="/convert" data-i18n="linkConvert">格式转换</a></p>
+      <p class="heroLinks"><a href="/compress" data-i18n="linkCompress">图片压缩</a> <a href="/convert" data-i18n="linkConvert">格式转换</a></p>
     </div>
     <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
     <div class="workspace">
@@ -408,7 +408,7 @@ async function load(file){
     if(id!==seq)return;
     source=img;
     originalSize=file.size||0;
-    baseName=(file.name||'image').replace(/\.[^.]+$/,'')||'image';
+    baseName=file.name||'image';
     renderPreview();
     scheduleMeasure();
   }catch(e){
@@ -455,7 +455,7 @@ $('#clear').addEventListener('click',()=>{seq++;measureSeq++;showBanner('');show
 $('#download').addEventListener('click',()=>{
   if($('#download').disabled||!outputBlob)return;
   const ext=fmt==='png'?'png':fmt==='webp'?'webp':'jpg';
-  downloadBlob(outputBlob,baseName+'-clean.'+ext);
+  downloadBlob(outputBlob,imagecDownloadName(baseName,ext));
 });
 langSelect.addEventListener('change',()=>setLanguage(langSelect.value));
 syncFmt();

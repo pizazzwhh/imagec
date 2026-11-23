@@ -60,8 +60,8 @@
       <div class="privacyLine safeBadge">
         <span data-i18n="privacy">本地处理 · 不上传服务器</span>
       </div>
-      <p class="notice" data-i18n="cdnNote">首次使用会从 jsDelivr 加载转换组件。图片只在本机处理，不会上传。</p>
-      <p class="heroLinks"><a href="/convert" data-i18n="linkConvert">格式转换</a> <span aria-hidden="true">·</span> <a href="/compress" data-i18n="linkCompress">图片压缩</a></p>
+      <p class="heroLinks"><a href="/convert" data-i18n="linkConvert">格式转换</a> <a href="/compress" data-i18n="linkCompress">图片压缩</a></p>
+      <p class="toolSetupNotice"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v8m-3-3 3 3 3-3M2.5 11v2.5h11V11"/></svg><span data-i18n="cdnNote">首次使用会从 jsDelivr 加载转换组件。图片只在本机处理，不会上传。</span></p>
     </div>
     <div id="libStatus" class="noticeBanner" role="alert" hidden></div>
     <div class="workspace">
@@ -505,7 +505,7 @@ async function load(file){
     if(id!==seq)return;
     source=img;
     originalSize=file.size||0;
-    baseName=(file.name||'image').replace(/\.[^.]+$/,'')||'image';
+    baseName=file.name||'image';
     multi=!!decoded.many;
     renderPreview();
     scheduleMeasure();
@@ -553,7 +553,7 @@ $('#clear').addEventListener('click',()=>{seq++;measureSeq++;showBanner('');show
 $('#download').addEventListener('click',()=>{
   if($('#download').disabled||!outputBlob)return;
   const ext=fmt==='png'?'png':'jpg';
-  downloadBlob(outputBlob,baseName+'-heic.'+ext);
+  downloadBlob(outputBlob,imagecDownloadName(baseName,ext));
 });
 langSelect.addEventListener('change',()=>setLanguage(langSelect.value));
 syncFmt();

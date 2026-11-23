@@ -58,7 +58,6 @@
   <meta name="apple-mobile-web-app-title" content="imagec" />
   <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"在线图片压缩","alternateName":"imagec","url":"https://imagec.xin/compress","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"在线图片压缩，支持 PNG、JPG、WebP 格式，多级压缩等级选择，PNG智能压缩，实时预览。所有处理在浏览器本地完成，图片不上传服务器。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["多级压缩等级选择","PNG/JPG/WebP 压缩","PNG智能压缩","智能格式推荐","实时压缩预览","浏览器本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"图片压缩","item":"https://imagec.xin/compress"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"在线图片压缩会上传我的图吗？","acceptedAnswer":{"@type":"Answer","text":"不会。压缩在浏览器本地完成。"}},{"@type":"Question","name":"压缩后画质会差很多吗？","acceptedAnswer":{"@type":"Answer","text":"多数用「标准」变化不大；要更小再用「强力/极致」，以预览为准。"}},{"@type":"Question","name":"可以只缩小宽度、少动质量吗？","acceptedAnswer":{"@type":"Answer","text":"可以。用宽度缩放；预览里看体积变化。"}}]}</script>
 <link rel="stylesheet" href="/site.css" />
 </head>
 <body class="tool">
@@ -200,41 +199,6 @@
     </div>
   </section>
 
-  <section class="seoContent" id="guide" aria-labelledby="guide-title">
-    <h2 id="guide-title" data-i18n="g_fitTitle">适合这些情况</h2>
-    <ol>
-      <li data-i18n="g_fit1">网页、博客配图太大，先压再上传。</li>
-      <li data-i18n="g_fit2">微信、邮件发图受限，在本机压缩后再发。</li>
-      <li data-i18n="g_fit3">想尽量保画质、减小体积，再上传网页或发送。</li>
-    </ol>
-    <h2 data-i18n="g_howTitle">怎么用</h2>
-    <ol>
-      <li data-i18n="g_how1">选择、拖入或粘贴图片。</li>
-      <li data-i18n="g_how2">选压缩等级（轻度到极致），按需再调质量与宽度。</li>
-      <li data-i18n="g_how3">对照预览后下载。</li>
-    </ol>
-    <h2 data-i18n="g_whyTitle">为什么用 imagec</h2>
-    <ul>
-      <li data-i18n="g_why1">对照预览看体积与画质再下载。</li>
-      <li data-i18n="g_why2">多级预设，可调质量，并可预览。</li>
-      <li data-i18n="g_why3">免费；多级预设，也可细调质量与宽度。</li>
-    </ul>
-    <h2 data-i18n="g_faqTitle">常见问题</h2>
-    <dl class="seoFaq">
-      <div>
-        <dt data-i18n="g_q1">在线图片压缩会上传我的图吗？</dt>
-        <dd data-i18n="g_a1">不会。压缩在浏览器本地完成。</dd>
-      </div>
-      <div>
-        <dt data-i18n="g_q2">压缩后画质会差很多吗？</dt>
-        <dd data-i18n="g_a2">多数用「标准」变化不大；要更小再用「强力/极致」，以预览为准。</dd>
-      </div>
-      <div>
-        <dt data-i18n="g_q3">可以只缩小宽度、少动质量吗？</dt>
-        <dd data-i18n="g_a3">可以。用宽度缩放；预览里看体积变化。</dd>
-      </div>
-    </dl>
-  </section>
 
 <section class="relatedTools">
     <h2 data-i18n="moreTools">更多图片工具</h2>
@@ -249,69 +213,69 @@ const $=s=>document.querySelector(s);
 const TIPS = {
   zh:{
     levelTip:'轻度几乎不损画质，标准最均衡，强力和极致会明显减小体积。',
-    qualityTip:'JPG / WebP 直接按这个质量编码。PNG 会映射成更少的颜色。',qualityPng:'色阶 / 细节',qualityJpg:'压缩质量',
+    qualityTip:'按这个质量做有损压缩，自动在 JPG 和 WebP 里留更小的一张，渐变保持连续。透明图会压成 WebP，透明还在。',
     scaleTip:'按宽度缩小，高度自动跟着变。50% 大约是原来体积的 1/4。',
     targetTip:'会自动试质量，尽量压到你设的 KB。极小目标可能达不到，以预览为准。',
   },
   en:{
     levelTip:'Light keeps quality, Standard is balanced, Strong and Extreme shrink the file further.',
-    qualityTip:'JPG and WebP use this quality directly. PNG maps it to fewer colors.',qualityPng:'Palette / detail',qualityJpg:'Quality',
+    qualityTip:'Lossy encode at this quality. The smaller of JPG and WebP is kept, so gradients stay smooth. Transparent images become WebP and keep their alpha.',
     scaleTip:'Width sets the size; height follows. 50% is about 1/4 of the file size.',
     targetTip:'We search for a quality that lands near your KB target. Tiny targets may be unreachable — check the preview.',
   },
   ja:{
     levelTip:'軽度は画質優先、標準はバランス、強力と極限はより小さくなります。',
-    qualityTip:'JPG / WebP はこの品質で符号化します。PNG は色数に置き換わります。',
+    qualityTip:'この品質で非可逆圧縮し、JPG と WebP のうち小さい方を残します。グラデーションは滑らかなままです。透明画像は WebP になり、透明は保持されます。',
     scaleTip:'幅に合わせて縮小し、高さは自動です。50% はおよそ 1/4 の容量です。',
   },
   ko:{
     levelTip:'가벼움은 화질 유지, 표준은 균형, 강력과 극한은 더 작아집니다.',
-    qualityTip:'JPG / WebP는 이 품질로 저장합니다. PNG는 색 수로 바꿉니다.',
+    qualityTip:'이 품질로 손실 압축하고 JPG와 WebP 중 더 작은 파일을 남깁니다. 그라데이션은 부드럽게 유지됩니다. 투명 이미지는 WebP로 저장되며 투명도가 유지됩니다.',
     scaleTip:'너비 기준으로 줄이고 높이는 자동입니다. 50%는 약 1/4 크기입니다.',
   },
   es:{
     levelTip:'Ligero conserva la calidad, Estándar equilibra, Fuerte y Extremo reducen más.',
-    qualityTip:'JPG y WebP usan esta calidad. PNG la convierte en menos colores.',
+    qualityTip:'Compresión con pérdida a esta calidad. Se guarda el más pequeño entre JPG y WebP, y el degradado sigue suave. Las imágenes con transparencia pasan a WebP.',
     scaleTip:'El ancho manda y la altura acompaña. 50% es cerca de 1/4 del tamaño.',
   },
   fr:{
     levelTip:'Léger garde la qualité, Standard équilibre, Fort et Extrême réduisent plus.',
-    qualityTip:'JPG et WebP utilisent cette qualité. Le PNG la traduit en moins de couleurs.',
+    qualityTip:'Compression avec perte à cette qualité. Le plus petit entre JPG et WebP est gardé, les dégradés restent lisses. Les images transparentes deviennent du WebP.',
     scaleTip:'La largeur fixe la taille, la hauteur suit. 50 % vaut environ 1/4 du fichier.',
   },
   de:{
     levelTip:'Leicht erhält die Qualität, Standard ist ausgewogen, Stark und Extrem verkleinern stärker.',
-    qualityTip:'JPG und WebP nutzen diese Qualität. PNG wird auf weniger Farben abgebildet.',
+    qualityTip:'Verlustbehaftet mit dieser Qualität. Die kleinere Datei von JPG und WebP bleibt, Verläufe bleiben weich. Transparente Bilder werden zu WebP.',
     scaleTip:'Die Breite bestimmt die Größe, die Höhe folgt. 50 % sind etwa 1/4 der Datei.',
   },
   ru:{
     levelTip:'Лёгкий бережёт качество, Стандарт сбалансирован, Сильный и Экстрим уменьшают сильнее.',
-    qualityTip:'JPG и WebP кодируются с этим качеством. PNG сводится к меньшему числу цветов.',
+    qualityTip:'Сжатие с потерями при этом качестве. Сохраняется меньший из JPG и WebP, градиенты остаются плавными. Прозрачные изображения становятся WebP.',
     scaleTip:'Ширина задаёт размер, высота следует за ней. 50% — примерно 1/4 файла.',
   },
   pt:{
     levelTip:'Leve mantém a qualidade, Padrão equilibra, Forte e Extremo reduzem mais.',
-    qualityTip:'JPG e WebP usam esta qualidade. PNG passa a ter menos cores.',
+    qualityTip:'Compressão com perdas nesta qualidade. Fica o menor entre JPG e WebP, e o degradê permanece suave. Imagens transparentes viram WebP.',
     scaleTip:'A largura define o tamanho e a altura acompanha. 50% é cerca de 1/4 do ficheiro.',
   },
   ar:{
     levelTip:'الخفيف يحافظ على الجودة، والقياسي متوازن، والقوي والأقصى يصغّران أكثر.',
-    qualityTip:'يستخدم JPG وWebP هذه الجودة. ويُحوَّل PNG إلى ألوان أقل.',
+    qualityTip:'ضغط بفقدان عند هذه الجودة. يُحفظ الأصغر بين JPG وWebP وتبقى التدرجات ناعمة. الصور الشفافة تصبح WebP.',
     scaleTip:'العرض يحدد القياس والارتفاع يتبعه. 50% حوالي ربع حجم الملف.',
   },
   vi:{
     levelTip:'Nhẹ giữ chất lượng, Tiêu chuẩn cân bằng, Mạnh và Cực hạn nhỏ hơn nữa.',
-    qualityTip:'JPG và WebP dùng chất lượng này. PNG được đổi thành ít màu hơn.',
+    qualityTip:'Nén có mất dữ liệu theo chất lượng này. Giữ bản nhỏ hơn giữa JPG và WebP, gradient vẫn mượt. Ảnh trong suốt thành WebP.',
     scaleTip:'Chiều rộng quyết định kích thước, chiều cao đi theo. 50% khoảng 1/4 dung lượng.',
   },
   id:{
     levelTip:'Ringan menjaga kualitas, Standar seimbang, Kuat dan Ekstrem lebih kecil.',
-    qualityTip:'JPG dan WebP memakai kualitas ini. PNG diubah menjadi lebih sedikit warna.',
+    qualityTip:'Kompresi lossy pada kualitas ini. File yang lebih kecil antara JPG dan WebP yang disimpan, gradasi tetap halus. Gambar transparan menjadi WebP.',
     scaleTip:'Lebar menentukan ukuran, tinggi mengikuti. 50% kira-kira 1/4 ukuran berkas.',
   },
   th:{
     levelTip:'เบาคงคุณภาพ มาตรฐานสมดุล แรงและสุดขีดจะเล็กลงอีก',
-    qualityTip:'JPG และ WebP ใช้คุณภาพนี้ PNG จะถูกแมปเป็นสีน้อยลง',
+    qualityTip:'บีบอัดแบบสูญเสียตามคุณภาพนี้ เก็บไฟล์ที่เล็กกว่าระหว่าง JPG กับ WebP ไล่สียังต่อเนื่อง รูปโปร่งใสจะเป็น WebP',
     scaleTip:'ความกว้างกำหนดขนาด ความสูงปรับตาม 50% ประมาณ 1/4 ของไฟล์',
   },
 };
@@ -349,8 +313,8 @@ const SEO={
 };
 
 const messages={
-zh:{brand:'imagec',toolWhitebg:'去白底',toolCompress:'压缩',toolConvert:'转换',toolCrop:'裁剪',toolIdphoto:'证件照',toolWatermark:'水印',toolBgcolor:'换底色',toolSplice:'拼接',toolImg2pdf:'转PDF',toolFilter:'滤镜',title:'在线图片压缩',subtitle:'压缩 PNG / JPG / WebP，尽量保住画质。',privacy:'本地处理 · 不上传服务器',upload:'点击选择或拖入图片',formats:'支持 PNG、JPG、WebP<br>也可直接粘贴图片',compressMode:'压缩方式',modeQuality:'质量档',modeTarget:'目标体积',targetKb:'目标大小',compareOrig:'原图',compareNew:'压缩后',level:'压缩等级',lvLight:'轻度',lvLightDesc:'画质几乎不变',lvStd:'标准',lvStdDesc:'推荐 · 平衡',lvStrong:'强力',lvStrongDesc:'体积大幅减小',lvExtreme:'极致',lvExtremeDesc:'最小体积',quality:'压缩质量',scale:'宽度缩放',byPercent:'按百分比',byPixel:'按像素',download:'下载压缩后图片',reset:'恢复默认',waiting:'等待图片',emptyTitle:'把图片放进来试试',origSize:'原始大小',compSize:'压缩后大小',saved:'压缩率',savedPrefix:'节省',increased:'体积增加',noChange:'体积无变化',methodPalette:'调色板压缩',methodWebp:'WebP 压缩',methodLossy:'有损压缩',methodLossless:'无损压缩',methodJpeg:'JPG 压缩',smartChoice:'智能选择',moreTools:'更多图片工具',rcCompress:'图片压缩',rcConvert:'格式转换',rcCrop:'裁剪缩放',rcIdphoto:'证件照换底色',rcWatermark:'加水印',rcBgcolor:'换背景色',rcSplice:'图片拼接',rcImg2pdf:'转PDF',rcFilter:'滤镜调色'},
-en:{brand:'imagec',toolWhitebg:'Remove White',toolCompress:'Compress',toolConvert:'Convert',toolCrop:'Crop',toolIdphoto:'ID Photo',toolWatermark:'Watermark',toolBgcolor:'BG Color',toolSplice:'Splice',toolImg2pdf:'to PDF',toolFilter:'Filters',title:'Image Compressor',subtitle:'Compress PNG, JPG, and WebP while keeping detail.',privacy:'Local · no upload',upload:'Choose or drop an image',formats:'PNG, JPG, and WebP supported<br>You can also paste an image',compressMode:'Mode',modeQuality:'Quality',modeTarget:'Target size',targetKb:'Target size',compareOrig:'Original',compareNew:'Compressed',level:'Compression level',lvLight:'Light',lvLightDesc:'Nearly identical quality',lvStd:'Standard',lvStdDesc:'Recommended · Balanced',lvStrong:'Strong',lvStrongDesc:'Much smaller size',lvExtreme:'Extreme',lvExtremeDesc:'Minimum size',quality:'Compression quality',scale:'Width scaling',byPercent:'By percent',byPixel:'By pixels',download:'Download compressed image',reset:'Reset defaults',waiting:'Waiting for image',emptyTitle:'Drop an image here',origSize:'Original size',compSize:'Compressed size',saved:'Saved',savedPrefix:'saved',increased:'Size increased by',noChange:'No change in size',methodPalette:'Palette compression',methodWebp:'WebP compression',methodLossy:'Lossy compression',methodLossless:'Lossless compression',methodJpeg:'JPEG compression',smartChoice:'Smart choice',moreTools:'More image tools',rcCompress:'Compress',rcConvert:'Convert Format',rcCrop:'Crop & Resize',rcIdphoto:'ID Photo BG',rcWatermark:'Watermark',rcBgcolor:'BG Color',rcSplice:'Splice',rcImg2pdf:'To PDF',rcFilter:'Filters'},
+zh:{targetMiss:'未达到目标体积，可缩小宽度后重试',brand:'imagec',toolWhitebg:'去白底',toolCompress:'压缩',toolConvert:'转换',toolCrop:'裁剪',toolIdphoto:'证件照',toolWatermark:'水印',toolBgcolor:'换底色',toolSplice:'拼接',toolImg2pdf:'转PDF',toolFilter:'滤镜',title:'在线图片压缩',subtitle:'压缩 PNG / JPG / WebP，尽量保住画质。',privacy:'本地处理 · 不上传服务器',upload:'点击选择或拖入图片',formats:'支持 PNG、JPG、WebP<br>也可直接粘贴图片',compressMode:'压缩方式',modeQuality:'质量档',modeTarget:'目标体积',targetKb:'目标大小',compareOrig:'原图',compareNew:'压缩后',level:'压缩等级',lvLight:'轻度',lvLightDesc:'画质几乎不变',lvStd:'标准',lvStdDesc:'推荐 · 平衡',lvStrong:'强力',lvStrongDesc:'体积大幅减小',lvExtreme:'极致',lvExtremeDesc:'最小体积',quality:'压缩质量',scale:'宽度缩放',byPercent:'按百分比',byPixel:'按像素',download:'下载压缩后图片',reset:'恢复默认',waiting:'等待图片',emptyTitle:'把图片放进来试试',origSize:'原始大小',compSize:'压缩后大小',saved:'压缩率',savedPrefix:'节省',increased:'体积增加',noChange:'体积无变化',methodPalette:'调色板压缩',methodWebp:'WebP 压缩',methodLossy:'有损压缩',methodLossless:'无损压缩',methodJpeg:'JPG 压缩',smartChoice:'智能选择',moreTools:'更多图片工具',rcCompress:'图片压缩',rcConvert:'格式转换',rcCrop:'裁剪缩放',rcIdphoto:'证件照换底色',rcWatermark:'加水印',rcBgcolor:'换背景色',rcSplice:'图片拼接',rcImg2pdf:'转PDF',rcFilter:'滤镜调色'},
+en:{targetMiss:'Target size not reached. Try reducing the image width.',brand:'imagec',toolWhitebg:'Remove White',toolCompress:'Compress',toolConvert:'Convert',toolCrop:'Crop',toolIdphoto:'ID Photo',toolWatermark:'Watermark',toolBgcolor:'BG Color',toolSplice:'Splice',toolImg2pdf:'to PDF',toolFilter:'Filters',title:'Image Compressor',subtitle:'Compress PNG, JPG, and WebP while keeping detail.',privacy:'Local · no upload',upload:'Choose or drop an image',formats:'PNG, JPG, and WebP supported<br>You can also paste an image',compressMode:'Mode',modeQuality:'Quality',modeTarget:'Target size',targetKb:'Target size',compareOrig:'Original',compareNew:'Compressed',level:'Compression level',lvLight:'Light',lvLightDesc:'Nearly identical quality',lvStd:'Standard',lvStdDesc:'Recommended · Balanced',lvStrong:'Strong',lvStrongDesc:'Much smaller size',lvExtreme:'Extreme',lvExtremeDesc:'Minimum size',quality:'Compression quality',scale:'Width scaling',byPercent:'By percent',byPixel:'By pixels',download:'Download compressed image',reset:'Reset defaults',waiting:'Waiting for image',emptyTitle:'Drop an image here',origSize:'Original size',compSize:'Compressed size',saved:'Saved',savedPrefix:'saved',increased:'Size increased by',noChange:'No change in size',methodPalette:'Palette compression',methodWebp:'WebP compression',methodLossy:'Lossy compression',methodLossless:'Lossless compression',methodJpeg:'JPEG compression',smartChoice:'Smart choice',moreTools:'More image tools',rcCompress:'Compress',rcConvert:'Convert Format',rcCrop:'Crop & Resize',rcIdphoto:'ID Photo BG',rcWatermark:'Watermark',rcBgcolor:'BG Color',rcSplice:'Splice',rcImg2pdf:'To PDF',rcFilter:'Filters'},
 ja:{brand:'imagec',toolWhitebg:'白抜き',toolCompress:'圧縮',toolConvert:'変換',toolCrop:'切り抜き',toolIdphoto:'証明写真',toolWatermark:'透かし',toolBgcolor:'背景色',toolSplice:'結合',toolImg2pdf:'PDF変換',toolFilter:'フィルタ',title:'画像圧縮ツール',subtitle:'PNG・JPG・WebP画像をオンラインで無料圧縮。複数レベルの圧縮、PNGスマート圧縮、リアルタイムプレビュー。ブラウザ内でローカル処理。',privacy:'端末内処理 · 送信しません',upload:'クリックして選択または画像をドロップ',formats:'PNG、JPG、WebP対応<br>画像の貼り付けも可能',level:'圧縮レベル',lvLight:'軽度',lvLightDesc:'画質ほぼそのまま',lvStd:'標準',lvStdDesc:'推奨 · バランス',lvStrong:'強力',lvStrongDesc:'大幅に軽量化',lvExtreme:'极致',lvExtremeDesc:'最小サイズ',quality:'圧縮品質',scale:'幅スケーリング',byPercent:'パーセントで',byPixel:'ピクセルで',download:'圧縮後の画像をダウンロード',reset:'デフォルトに戻す',waiting:'画像待ち',emptyTitle:'画像をドロップしてください',origSize:'元のサイズ',compSize:'圧縮後サイズ',saved:'圧縮率',savedPrefix:'削減',increased:'サイズ増加',noChange:'サイズ変化なし',methodPalette:'パレット圧縮',methodWebp:'WebP圧縮',methodLossy:'非可逆圧縮',methodLossless:'可逆圧縮',methodJpeg:'JPEG圧縮',smartChoice:'スマート選択',moreTools:'その他の画像ツール',rcCompress:'画像圧縮',rcConvert:'形式変換',rcCrop:'切り抜き・サイズ変更',rcIdphoto:'証明写真背景',rcWatermark:'透かし',rcBgcolor:'背景色',rcSplice:'画像結合',rcImg2pdf:'PDF変換',rcFilter:'フィルタ調整'},
 ko:{brand:'imagec',toolWhitebg:'흰배경제거',toolCompress:'압축',toolConvert:'변환',toolCrop:'자르기',toolIdphoto:'증명사진',toolWatermark:'워터마크',toolBgcolor:'배경색',toolSplice:'이어붙이기',toolImg2pdf:'PDF변환',toolFilter:'필터',title:'이미지 압축 도구',subtitle:'PNG/JPG/WebP 이미지를 온라인에서 무료 압축. 다중 레벨 압축, PNG 스마트 압축, 실시간 미리보기. 브라우저에서 로컬 처리.',privacy:'기기에서 처리 · 업로드 없음',upload:'클릭하여 선택하거나 이미지를 드롭',formats:'PNG, JPG, WebP 지원<br>이미지 붙여넣기도 가능',level:'압축 레벨',lvLight:'가벼움',lvLightDesc:'품질 거의 동일',lvStd:'표준',lvStdDesc:'추천 · 균형',lvStrong:'강력',lvStrongDesc:'훨씬 작은 크기',lvExtreme:'극한',lvExtremeDesc:'최소 크기',quality:'압축 품질',scale:'너비 크기 조절',byPercent:'비율로',byPixel:'픽셀로',download:'압축된 이미지 다운로드',reset:'기본값으로 재설정',waiting:'이미지 대기 중',emptyTitle:'이미지를 드롭하세요',origSize:'원본 크기',compSize:'압축 후 크기',saved:'압축률',savedPrefix:'절약',increased:'크기 증가',noChange:'크기 변화 없음',methodPalette:'팔레트 압축',methodWebp:'WebP 압축',methodLossy:'손실 압축',methodLossless:'무손실',methodJpeg:'JPEG 압축',smartChoice:'스마트 선택',moreTools:'더 많은 이미지 도구',rcCompress:'이미지 압축',rcConvert:'형식 변환',rcCrop:'자르기 및 크기 조절',rcIdphoto:'증명사진 배경',rcWatermark:'워터마크',rcBgcolor:'배경색',rcSplice:'이미지 이어붙이기',rcImg2pdf:'PDF 변환',rcFilter:'필터 보정'},
 es:{brand:'imagec',toolWhitebg:'Quitar Blanco',toolCompress:'Comprimir',toolConvert:'Convertir',toolCrop:'Recortar',toolIdphoto:'Foto ID',toolWatermark:'Marca',toolBgcolor:'Color Fondo',toolSplice:'Unir',toolImg2pdf:'a PDF',toolFilter:'Filtros',title:'Compresor de Imágenes',subtitle:'Compresión de imágenes online gratuita para PNG/JPG/WebP con compresión multinivel, compresión inteligente PNG y vista previa en tiempo real. Procesado local en el navegador.',privacy:'Local · sin subir',upload:'Elige o suelta una imagen',formats:'PNG, JPG y WebP soportados<br>También puedes pegar una imagen',level:'Nivel de compresión',lvLight:'Ligero',lvLightDesc:'Calidad casi idéntica',lvStd:'Estándar',lvStdDesc:'Recomendado · Equilibrado',lvStrong:'Fuerte',lvStrongDesc:'Mucho más pequeño',lvExtreme:'Extremo',lvExtremeDesc:'Tamaño mínimo',quality:'Calidad de compresión',scale:'Escalado de ancho',byPercent:'Por porcentaje',byPixel:'Por píxeles',download:'Descargar imagen comprimida',reset:'Restablecer valores',waiting:'Esperando imagen',emptyTitle:'Suelta una imagen aquí',origSize:'Tamaño original',compSize:'Tamaño comprimido',saved:'Ahorro',savedPrefix:'ahorrado',increased:'Tamaño aumentado en',noChange:'Sin cambio de tamaño',methodPalette:'Paleta',methodWebp:'Compresión WebP',methodLossy:'Compresión con pérdida',methodLossless:'Compresión sin pérdida',methodJpeg:'Compresión JPEG',smartChoice:'Elección inteligente',moreTools:'Más herramientas de imagen',rcCompress:'Comprimir',rcConvert:'Convertir Formato',rcCrop:'Recortar y Redimensionar',rcIdphoto:'Fondo Foto ID',rcWatermark:'Marca de agua',rcBgcolor:'Color Fondo',rcSplice:'Unir Imágenes',rcImg2pdf:'A PDF',rcFilter:'Filtros'},
@@ -372,18 +336,6 @@ function formatSize(bytes){
 
 function debounce(fn,ms){
   let t;return function(...args){clearTimeout(t);t=setTimeout(()=>fn.apply(this,args),ms);};
-}
-
-function qualityToLevels(quality){
-  if(quality>=100)return{rgb:8,a:8};
-  if(quality>=85)return{rgb:7,a:7};
-  if(quality>=75)return{rgb:6,a:6};
-  if(quality>=65)return{rgb:5,a:5};
-  if(quality>=50)return{rgb:4,a:4};
-  if(quality>=40)return{rgb:4,a:3};
-  if(quality>=25)return{rgb:3,a:3};
-  if(quality>=15)return{rgb:3,a:2};
-  return{rgb:2,a:2};
 }
 
 function levelToQuality(level){
@@ -495,7 +447,6 @@ function onFileSelected(file){
       $('#meta').textContent=img.width+'×'+img.height+' · '+formatSize(file.size);
       $('#stats').style.display='grid';
       $('#origSize').textContent=formatSize(file.size);
-      $('#download').disabled=false;
       $('#reset').disabled=false;
       applyScale();
       scheduleCompress();
@@ -539,118 +490,106 @@ function applyScale(){
   syncWorkingPreview();
 }
 
-async function quantizePngChunked(imageData,levels){
-  const{data,width,height}=imageData;
-  const out=new Uint8ClampedArray(data.length);
-  const rgbShift=8-levels.rgb;
-  const aShift=8-levels.a;
-  const rgbMask=(0xFF<<rgbShift)&0xFF;
-  const aMask=(0xFF<<aShift)&0xFF;
-  const rgbFill=rgbShift>0?((1<<rgbShift)>>>1):0;
-  const aFill=aShift>0?((1<<aShift)>>>1):0;
-  const totalPixels=data.length/4;
-  const chunkSize=Math.max(20000,Math.floor(totalPixels/8));
-  let offset=0;
+function encoderQuality(quality){
+  const q=Math.max(1,Math.min(100,Math.round(Number(quality)||75)))/100;
+  // Above ~0.92 the browser JPEG encoder switches to 4:4:4 and the file balloons.
+  return q>0.92?0.92:q;
+}
+
+function canvasToBlob(canvas,mime,quality){
   return new Promise(resolve=>{
-    function processChunk(){
-      const end=Math.min(offset+chunkSize,totalPixels);
-      for(let i=offset;i<end;i++){
-        const idx=i*4;
-        out[idx]=(data[idx]&rgbMask)|rgbFill;
-        out[idx+1]=(data[idx+1]&rgbMask)|rgbFill;
-        out[idx+2]=(data[idx+2]&rgbMask)|rgbFill;
-        out[idx+3]=(data[idx+3]&aMask)|aFill;
-      }
-      offset=end;
-      if(offset<totalPixels){
-        setTimeout(processChunk,0);
-      }else{
-        resolve(new ImageData(out,width,height));
-      }
-    }
-    processChunk();
+    canvas.toBlob(blob=>resolve(blob||null),mime,quality);
   });
 }
 
-async function compressPng(canvas,quality){
-  const ctx=canvas.getContext('2d');
-  const imageData=ctx.getImageData(0,0,canvas.width,canvas.height);
-  const levels=qualityToLevels(quality);
-  const reduced=await quantizePngChunked(imageData,levels);
-  const outCanvas=document.createElement('canvas');
-  outCanvas.width=canvas.width;outCanvas.height=canvas.height;
-  outCanvas.getContext('2d').putImageData(reduced,0,0);
-  return new Promise(resolve=>{
-    outCanvas.toBlob(blob=>{
-      if(blob)resolve({blob,method:'palette'});
-      else resolve(null);
-    },'image/png');
-  });
+async function imageHasAlpha(imageData){
+  const d=imageData.data;
+  const pixels=d.length/4;
+  const chunk=250000;
+  for(let p=0;p<pixels;p+=chunk){
+    const end=Math.min(p+chunk,pixels);
+    for(let i=p;i<end;i++){
+      if(d[i*4+3]<250)return true;
+    }
+    if(end<pixels)await new Promise(r=>setTimeout(r,0));
+  }
+  return false;
 }
 
 async function compressJpeg(canvas,quality){
-  return new Promise(resolve=>{
-    const bg=document.createElement('canvas');
-    bg.width=canvas.width;bg.height=canvas.height;
-    const ctx=bg.getContext('2d');
-    ctx.fillStyle='#ffffff';ctx.fillRect(0,0,bg.width,bg.height);
-    ctx.drawImage(canvas,0,0);
-    bg.toBlob(blob=>{
-      if(blob)resolve(blob);
-      else resolve(null);
-    },'image/jpeg',quality/100);
-  });
+  const bg=document.createElement('canvas');
+  bg.width=canvas.width;bg.height=canvas.height;
+  const ctx=bg.getContext('2d');
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(0,0,bg.width,bg.height);
+  ctx.drawImage(canvas,0,0);
+  return canvasToBlob(bg,'image/jpeg',encoderQuality(quality));
 }
 
-async function compressWebp(canvas,quality,lossless){
-  return new Promise(resolve=>{
-    canvas.toBlob(blob=>{
-      if(blob)resolve(blob);
-      else resolve(null);
-    },'image/webp',lossless?undefined:quality/100);
-  });
+async function compressWebp(canvas,quality){
+  return canvasToBlob(canvas,'image/webp',encoderQuality(quality));
 }
 
-async function encodeOnce(canvas,quality){
+function pickSmaller(jpg,webp){
+  if(jpg&&webp){
+    return webp.size<jpg.size
+      ?{blob:webp,method:'webp-lossy',ext:'webp'}
+      :{blob:jpg,method:'jpeg',ext:'jpg'};
+  }
+  if(webp)return{blob:webp,method:'webp-lossy',ext:'webp'};
+  if(jpg)return{blob:jpg,method:'jpeg',ext:'jpg'};
+  return null;
+}
+
+async function encodeLossy(canvas,quality,alpha){
+  if(alpha){
+    const webp=await compressWebp(canvas,quality);
+    if(webp)return{blob:webp,method:'webp-lossy',ext:'webp'};
+    const jpg=await compressJpeg(canvas,quality);
+    if(jpg)return{blob:jpg,method:'jpeg',ext:'jpg'};
+    return null;
+  }
+  const [jpg,webp]=await Promise.all([
+    compressJpeg(canvas,quality),
+    compressWebp(canvas,quality)
+  ]);
+  return pickSmaller(jpg,webp);
+}
+
+async function encodeOnce(canvas,quality,alpha){
   const isPng=state.imgType==='image/png';
   const isWebp=state.imgType==='image/webp';
-  if(isPng){
-    const cr=await compressPng(canvas,quality);
-    if(cr)return{blob:cr.blob,method:cr.method,ext:'png'};
-    return{blob:state.originalBlob,method:'original',ext:'png'};
+  const extFallback=isPng?'png':isWebp?'webp':'jpg';
+  if(alpha===undefined && (isPng||isWebp)){
+    const ctx=canvas.getContext('2d',{willReadFrequently:true});
+    alpha=await imageHasAlpha(ctx.getImageData(0,0,canvas.width,canvas.height));
   }
-  if(isWebp){
-    const blob=await compressWebp(canvas,quality,false);
-    if(blob)return{blob,method:'webp-lossy',ext:'webp'};
-    return{blob:state.originalBlob,method:'original',ext:'webp'};
-  }
-  const blob=await compressJpeg(canvas,quality);
-  if(blob)return{blob,method:'jpeg',ext:'jpg'};
-  return{blob:state.originalBlob,method:'original',ext:'jpg'};
+  const encoded=await encodeLossy(canvas,quality,alpha);
+  if(encoded)return encoded;
+  return{blob:state.originalBlob,method:'original',ext:extFallback};
 }
 
-async function compressToTarget(canvas,targetBytes){
-  let lo=1,hi=95,best=null;
-  for(let i=0;i<8;i++){
-    const mid=Math.round((lo+hi)/2);
-    const result=await encodeOnce(canvas,mid);
-    if(!result||!result.blob)break;
+let compressionRevision=0;
+
+async function compressToTarget(canvas,targetBytes,revision){
+  const ctx=canvas.getContext('2d');
+  const alpha=await imageHasAlpha(ctx.getImageData(0,0,canvas.width,canvas.height));
+  let lo=1,hi=95,best=null,smallest=null;
+  while(lo<=hi && revision===compressionRevision){
+    const quality=Math.floor((lo+hi)/2);
+    const result=await encodeOnce(canvas,quality,alpha);
+    if(!smallest || result.blob.size<smallest.blob.size)smallest=result;
     if(result.blob.size<=targetBytes){
       best=result;
-      state.quality=mid;
-      lo=mid+1;
+      lo=quality+1;
     }else{
-      hi=mid-1;
-      if(!best||result.blob.size<best.blob.size)best=result;
+      hi=quality-1;
     }
   }
-  if(!best)best=await encodeOnce(canvas,Math.max(1,hi));
-  const qEl=$('#quality');
-  if(qEl){qEl.value=state.quality;$('#qualityV').textContent=String(state.quality);}
-  return best;
+  return best||smallest;
 }
 
-async function doCompress(){
+async function doCompress(revision){
   if(!state.canvas)return;
   const canvas=state.canvas;
   $('#wrap').parentElement.classList.add('computing');
@@ -658,13 +597,15 @@ async function doCompress(){
   try{
     let result;
     if(state.compressMode==='target'){
-      result=await compressToTarget(canvas,state.targetKb*1024);
+      result=await compressToTarget(canvas,state.targetKb*1024,revision);
     }else{
       result=await encodeOnce(canvas,state.quality);
     }
+    if(revision!==compressionRevision)return;
     const isPng=state.imgType==='image/png';
     const isWebp=state.imgType==='image/webp';
-    if(result.blob.size>=state.originalSize && state.compressMode!=='target'){
+    const dimsSame=!state.originalCanvas||(canvas.width===state.originalCanvas.width&&canvas.height===state.originalCanvas.height);
+    if(dimsSame&&result.blob.size>=state.originalSize&&state.compressMode!=='target'){
       result={blob:state.originalBlob,method:'original',ext:isPng?'png':isWebp?'webp':'jpg'};
     }
     state.compressedBlob=result.blob;
@@ -692,20 +633,25 @@ async function doCompress(){
     let strategy=t(methodKey);
     if(state.compressMode==='target'){
       strategy+=' · '+state.targetKb+' KB';
+      if(result.blob.size>state.targetKb*1024)strategy+=' · '+t('targetMiss');
     }
     strategyEl.textContent=strategy;
     strategyEl.style.display='block';
+    $('#download').disabled=false;
   }catch(err){
     console.error(err);
   }finally{
-    $('#wrap').parentElement.classList.remove('computing');
+    if(revision===compressionRevision)$('#wrap').parentElement.classList.remove('computing');
   }
 }
 
-const scheduleCompress=debounce(()=>{
+const queueCompress=debounce(doCompress,300);
+function scheduleCompress(){
   if(!state.canvas)return;
-  doCompress();
-},300);
+  $('#download').disabled=true;
+  $('#wrap').parentElement.classList.add('computing');
+  queueCompress(++compressionRevision);
+}
 
 function setupEvents(){
   const drop=$('#drop');
@@ -821,10 +767,9 @@ function setupEvents(){
     if(!state.compressedBlob)return;
     const ext=state.outputExt||'png';
     const origName=state.originalBlob?.name||'image';
-    const baseName=origName.replace(/\.[^.]+$/,'');
     const a=document.createElement('a');
     a.href=URL.createObjectURL(state.compressedBlob);
-    a.download=baseName+'_compressed.'+ext;
+    a.download=imagecDownloadName(origName,ext);
     a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   });
@@ -914,21 +859,6 @@ init();
     <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
   </div>
 </footer>
-<script>
-function syncQualityLabel(){
-  const lab=document.getElementById('qualityLabel');
-  if(!lab)return;
-  const isPng=typeof state!=='undefined'&&state&&state.imgType==='image/png';
-  const key=isPng?'qualityPng':'qualityJpg';
-  const lang=typeof language!=='undefined'?language:'zh';
-  const pack=(typeof messages!=='undefined'&&(messages[lang]||messages.zh))||{};
-  lab.textContent=pack[key]||(isPng?'色阶 / 细节':'压缩质量');
-  lab.setAttribute('data-i18n', key);
-}
-document.addEventListener('change',function(e){if(e.target&&e.target.id==='file')setTimeout(syncQualityLabel,80);});
-setTimeout(syncQualityLabel,0);
-setInterval(syncQualityLabel,1000);
-</script>
 <script src="/tool-cards.js"></script>
 <script src="/chrome.js"></script>
 </body>

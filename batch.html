@@ -47,7 +47,6 @@
   <meta name="apple-mobile-web-app-title" content="imagec" />
   <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"批量压缩图片","alternateName":"imagec","url":"https://imagec.xin/batch","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"批量压缩图片，一次压缩或转换多张 PNG、JPG、WebP。失败的可以单独重试，成功的可以逐张下载或打包成一个 ZIP。所有处理在浏览器本地完成。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["多图队列","批量压缩","批量格式转换","失败单独重试","逐张下载","打包 ZIP","浏览器本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"批量压缩与格式转换","item":"https://imagec.xin/batch"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"批量处理会上传图片吗？","acceptedAnswer":{"@type":"Answer","text":"不会。多张图都在浏览器本地处理。"}},{"@type":"Question","name":"一次能处理多少张？","acceptedAnswer":{"@type":"Answer","text":"受这台设备的内存限制。"}},{"@type":"Question","name":"和 /compress 怎么选？","acceptedAnswer":{"@type":"Answer","text":"单张用 /compress；多张、要 ZIP 用本页。"}}]}</script>
 <link rel="stylesheet" href="/site.css" />
 </head>
 <body class="tool batch">
@@ -61,7 +60,7 @@
       <div class="privacyLine safeBadge">
         <span data-i18n="privacy">本地处理 · 不上传服务器</span>
       </div>
-      <p class="heroLinks"><a href="/compress" data-i18n="linkCompress">单张压缩</a> <span aria-hidden="true">·</span> <a href="/convert" data-i18n="linkConvert">单张格式转换</a></p>
+      <p class="heroLinks"><a href="/compress" data-i18n="linkCompress">单张压缩</a> <a href="/convert" data-i18n="linkConvert">单张格式转换</a></p>
     </div>
     <div class="workspace">
       <aside class="controls">
@@ -173,41 +172,6 @@
     </div>
   </section>
 
-  <section class="seoContent" id="guide" aria-labelledby="guide-title">
-    <h2 id="guide-title" data-i18n="g_fitTitle">适合这些情况</h2>
-    <ol>
-      <li data-i18n="g_fit1">多张图统一压小。</li>
-      <li data-i18n="g_fit2">批量转成同一种格式。</li>
-      <li data-i18n="g_fit3">打包成 ZIP，失败的可以重试。</li>
-    </ol>
-    <h2 data-i18n="g_howTitle">怎么用</h2>
-    <ol>
-      <li data-i18n="g_how1">一次拖入多张图片。</li>
-      <li data-i18n="g_how2">选择压缩或转换，并设置质量或格式。</li>
-      <li data-i18n="g_how3">单张下载或打包 ZIP；失败的可以重试。</li>
-    </ol>
-    <h2 data-i18n="g_whyTitle">为什么用 imagec</h2>
-    <ul>
-      <li data-i18n="g_why1">压缩与转换同一页完成，可打包 ZIP。</li>
-      <li data-i18n="g_why2">失败可以重试，也可以打包 ZIP。</li>
-      <li data-i18n="g_why3">单张精细调整请用 /compress。</li>
-    </ul>
-    <h2 data-i18n="g_faqTitle">常见问题</h2>
-    <dl class="seoFaq">
-      <div>
-        <dt data-i18n="g_q1">批量处理会上传图片吗？</dt>
-        <dd data-i18n="g_a1">不会。多张图都在浏览器本地处理。</dd>
-      </div>
-      <div>
-        <dt data-i18n="g_q2">一次能处理多少张？</dt>
-        <dd data-i18n="g_a2">受这台设备的内存限制。</dd>
-      </div>
-      <div>
-        <dt data-i18n="g_q3">和 /compress 怎么选？</dt>
-        <dd data-i18n="g_a3">单张用 /compress；多张、要 ZIP 用本页。</dd>
-      </div>
-    </dl>
-  </section>
 
 <section class="relatedTools">
     <h2 data-i18n="moreTools">更多图片工具</h2>
@@ -352,17 +316,6 @@ function levelToQuality(level){
   if(level==='extreme')return 25;
   return 75;
 }
-function qualityToLevels(quality){
-  if(quality>=100)return {rgb:8,a:8};
-  if(quality>=85)return {rgb:7,a:7};
-  if(quality>=75)return {rgb:6,a:6};
-  if(quality>=65)return {rgb:5,a:5};
-  if(quality>=50)return {rgb:4,a:4};
-  if(quality>=40)return {rgb:4,a:3};
-  if(quality>=25)return {rgb:3,a:3};
-  if(quality>=15)return {rgb:3,a:2};
-  return {rgb:2,a:2};
-}
 function scaleValue(){
   if(scaleMode==='percent'){
     const n=parseInt($('#scalePercent').value,10);
@@ -494,8 +447,8 @@ function metaText(){
   return parts.join(' · ');
 }
 function syncButtons(){
-  const running=items.some(i=>i.status==='queued'||i.status==='running')||zipping;
-  const done=items.some(i=>i.status==='done'&&i.outBlob);
+  const running=items.some(needsRun)||zipping;
+  const done=items.some(i=>i.status==='done'&&i.outBlob&&i.key===settingsKey());
   const zipBtn=$('#zipBtn');
   zipBtn.hidden=!done;
   zipBtn.disabled=!done||running;
@@ -531,40 +484,49 @@ function makeThumb(img){
 function canvasToBlob(canvas,mime,quality){
   return new Promise(resolve=>{canvas.toBlob(blob=>resolve(blob),mime,quality);});
 }
-async function quantizePng(imageData,levels){
-  const data=imageData.data,width=imageData.width,height=imageData.height;
-  const out=new Uint8ClampedArray(data.length);
-  const rgbShift=8-levels.rgb,aShift=8-levels.a;
-  const rgbMask=(0xFF<<rgbShift)&0xFF,aMask=(0xFF<<aShift)&0xFF;
-  const rgbFill=rgbShift>0?((1<<rgbShift)>>>1):0;
-  const aFill=aShift>0?((1<<aShift)>>>1):0;
-  const total=data.length/4;
-  const chunk=Math.max(20000,Math.floor(total/8));
-  let offset=0;
-  return new Promise(resolve=>{
-    function step(){
-      const end=Math.min(offset+chunk,total);
-      for(let i=offset;i<end;i++){
-        const idx=i*4;
-        out[idx]=(data[idx]&rgbMask)|rgbFill;
-        out[idx+1]=(data[idx+1]&rgbMask)|rgbFill;
-        out[idx+2]=(data[idx+2]&rgbMask)|rgbFill;
-        out[idx+3]=(data[idx+3]&aMask)|aFill;
-      }
-      offset=end;
-      if(offset<total)setTimeout(step,0);
-      else resolve(new ImageData(out,width,height));
-    }
-    step();
-  });
+function encoderQuality(quality){
+  const q=Math.max(1,Math.min(100,Math.round(Number(quality)||75)))/100;
+  return q>0.92?0.92:q;
 }
-async function compressPng(canvas,quality){
-  const ctx=canvas.getContext('2d',{willReadFrequently:true});
-  const reduced=await quantizePng(ctx.getImageData(0,0,canvas.width,canvas.height),qualityToLevels(quality));
-  const out=document.createElement('canvas');
-  out.width=canvas.width;out.height=canvas.height;
-  out.getContext('2d').putImageData(reduced,0,0);
-  return canvasToBlob(out,'image/png');
+async function imageHasAlpha(imageData){
+  const d=imageData.data;
+  const pixels=d.length/4;
+  const chunk=250000;
+  for(let p=0;p<pixels;p+=chunk){
+    const end=Math.min(p+chunk,pixels);
+    for(let i=p;i<end;i++){
+      if(d[i*4+3]<250)return true;
+    }
+    if(end<pixels)await new Promise(r=>setTimeout(r,0));
+  }
+  return false;
+}
+async function compressJpeg(canvas,quality){
+  const bg=document.createElement('canvas');
+  bg.width=canvas.width;bg.height=canvas.height;
+  const ctx=bg.getContext('2d');
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(0,0,bg.width,bg.height);
+  ctx.drawImage(canvas,0,0);
+  return canvasToBlob(bg,'image/jpeg',encoderQuality(quality));
+}
+async function encodeLossy(canvas,quality,alpha){
+  const q=encoderQuality(quality);
+  if(alpha){
+    const webp=await canvasToBlob(canvas,'image/webp',q);
+    if(webp)return {blob:webp,ext:'webp'};
+    const jpg=await compressJpeg(canvas,quality);
+    if(jpg)return {blob:jpg,ext:'jpg'};
+    return null;
+  }
+  const [jpg,webp]=await Promise.all([
+    compressJpeg(canvas,quality),
+    canvasToBlob(canvas,'image/webp',q)
+  ]);
+  if(jpg&&webp)return webp.size<jpg.size?{blob:webp,ext:'webp'}:{blob:jpg,ext:'jpg'};
+  if(jpg)return {blob:jpg,ext:'jpg'};
+  if(webp)return {blob:webp,ext:'webp'};
+  return null;
 }
 function encodeBMP(canvas){
   const ctx=canvas.getContext('2d');
@@ -632,14 +594,12 @@ async function encode(item){
     if(!blob){const err=new Error('load');err.code='load';throw err;}
     return {blob,ext:kind.ext};
   }
-  let blob,ext;
-  if(item.kind==='png'){blob=await compressPng(canvas,compressQuality);ext='png';}
-  else if(item.kind==='webp'){blob=await canvasToBlob(canvas,'image/webp',compressQuality/100);ext='webp';}
-  else{blob=await canvasToBlob(canvas,'image/jpeg',compressQuality/100);ext='jpg';}
-  if(!blob){const err=new Error('load');err.code='load';throw err;}
+  const alpha=item.kind==='jpg'||item.kind==='bmp'?false:await imageHasAlpha(ctx.getImageData(0,0,tw,th));
+  const encoded=await encodeLossy(canvas,compressQuality,alpha);
+  if(!encoded){const err=new Error('load');err.code='load';throw err;}
+  const blob=encoded.blob,ext=encoded.ext;
   const samePixels=tw===fullW&&th===fullH;
-  const sameType=(ext==='png'&&item.kind==='png')||(ext==='webp'&&item.kind==='webp')||(ext==='jpg'&&item.kind==='jpg');
-  if(samePixels&&sameType&&blob.size>=item.file.size)return {blob:item.file,ext:item.kind==='jpeg'?'jpg':item.kind};
+  if(samePixels&&blob.size>=item.file.size)return {blob:item.file,ext:item.kind==='jpeg'?'jpg':item.kind};
   return {blob,ext};
 }
 async function processItem(item,id){
@@ -654,7 +614,7 @@ async function processItem(item,id){
     if(item.token!==token||id!==runId)return;
     item.outBlob=result.blob;
     item.outExt=result.ext;
-    item.outName=fileBase(item.name)+'.'+result.ext;
+    item.outName=imagecDownloadName(item.name,result.ext);
     item.status='done';
     item.key=settingsKey();
   }catch(err){
@@ -677,11 +637,11 @@ async function runQueue(){
   }
   if(id===runId)syncButtons();
 }
-function schedule(){clearTimeout(timer);timer=setTimeout(runQueue,280);}
-function fileBase(name){
-  const clean=String(name||'image').replace(/[\\/:*?"<>|]/g,'_');
-  const cut=clean.replace(/\.[^.]+$/,'');
-  return (cut||'image').slice(0,120);
+function schedule(){
+  runId++;
+  clearTimeout(timer);
+  timer=setTimeout(runQueue,280);
+  syncButtons();
 }
 function addFiles(list){
   const arr=[...list];
@@ -806,8 +766,10 @@ function uniqueName(name,used){
   return next;
 }
 async function downloadZip(){
-  const ready=items.filter(item=>item.status==='done'&&item.outBlob);
-  if(!ready.length||zipping)return;
+  if(zipping||items.some(needsRun))return;
+  const ready=items.filter(item=>item.status==='done'&&item.outBlob)
+    .map(({outBlob,outName,name})=>({outBlob,outName,name}));
+  if(!ready.length)return;
   zipping=true;
   syncButtons();
   try{
@@ -818,7 +780,7 @@ async function downloadZip(){
       const data=new Uint8Array(await item.outBlob.arrayBuffer());
       files.push({name:uniqueName(item.outName||'image.png',used),data,crc:crc32(data)});
     }
-    saveBlob(new Blob([buildZip(files)],{type:'application/zip'}),'imagec-batch.zip');
+    saveBlob(new Blob([buildZip(files)],{type:'application/zip'}),imagecDownloadName(ready[0].name,'zip'));
   }finally{
     zipping=false;
     syncButtons();

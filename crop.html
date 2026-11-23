@@ -58,8 +58,103 @@
   <meta name="apple-mobile-web-app-title" content="imagec" />
   <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"图片裁剪缩放工具","alternateName":"imagec","url":"https://imagec.xin/crop","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"在线免费图片裁剪缩放工具，支持拖拽选择裁剪区域、输入目标宽高缩放、预设尺寸快捷选择。所有处理在浏览器本地完成，图片不上传服务器。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["画布拖拽选择裁剪区域","输入目标宽高缩放","锁定宽高比","预设尺寸快捷按钮","1920x1080/1280x720/800x800/500x500","浏览器本地处理不上传"],"aggregateRating":{"@type":"AggregateRating","ratingValue":"4.8","ratingCount":"1"},"screenshot":"https://imagec.xin/og-image.jpg"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"裁剪缩放","item":"https://imagec.xin/crop"}]}</script>
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"裁剪缩放会上传图片吗？","acceptedAnswer":{"@type":"Answer","text":"不会。选区和缩放都在浏览器本地处理。"}},{"@type":"Question","name":"裁剪和缩放有什么区别？","acceptedAnswer":{"@type":"Answer","text":"裁剪切掉多余部分；缩放改变尺寸。"}},{"@type":"Question","name":"怎样避免拉变形？","acceptedAnswer":{"@type":"Answer","text":"锁定宽高比。"}}]}</script>
 <link rel="stylesheet" href="/site.css" />
+<style>
+  #wrap.canvasWrap { padding: 22px; }
+  body:not(.has-file) #cropPanel { display: none !important; }
+  #cropPanel .cropTextBtn {
+    min-height: 0;
+    padding: 2px 0;
+    border: 0;
+    background: transparent;
+    color: var(--accent);
+    font-size: var(--fs-xs);
+  }
+  .pxGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pxGrid label {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    min-width: 0;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    color: var(--ink-2);
+  }
+  .pxGrid input { min-width: 0; }
+  #ratioSeg button { flex: 1 1 30%; min-height: 34px; padding: 6px 4px; }
+  #cropFrame {
+    --crop-pad: 14px;
+    position: relative;
+    display: none;
+    flex: none;
+    line-height: 0;
+    max-width: 100%;
+    max-height: 100%;
+    user-select: none;
+    touch-action: none;
+  }
+  #cropFrame.on { display: block; }
+  #cropFrame canvas { display: block; }
+  #cropOverlay {
+    position: absolute;
+    left: calc(-1 * var(--crop-pad));
+    top: calc(-1 * var(--crop-pad));
+    right: calc(-1 * var(--crop-pad));
+    bottom: calc(-1 * var(--crop-pad));
+    touch-action: none;
+  }
+  #cropBox {
+    position: absolute;
+    box-sizing: border-box;
+    border: 1.5px solid #fff;
+    box-shadow: 0 0 0 9999px rgba(28, 25, 23, .48);
+  }
+  #cropBox::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(to right, transparent calc(33.333% - .5px), rgba(255,255,255,.7) calc(33.333% - .5px), rgba(255,255,255,.7) calc(33.333% + .5px), transparent calc(33.333% + .5px), transparent calc(66.666% - .5px), rgba(255,255,255,.7) calc(66.666% - .5px), rgba(255,255,255,.7) calc(66.666% + .5px), transparent calc(66.666% + .5px)),
+      linear-gradient(to bottom, transparent calc(33.333% - .5px), rgba(255,255,255,.7) calc(33.333% - .5px), rgba(255,255,255,.7) calc(33.333% + .5px), transparent calc(33.333% + .5px), transparent calc(66.666% - .5px), rgba(255,255,255,.7) calc(66.666% - .5px), rgba(255,255,255,.7) calc(66.666% + .5px), transparent calc(66.666% + .5px));
+  }
+  #cropBox.circle { border-radius: 50%; }
+  #cropBox.circle::before { display: none; }
+  #cropBox b {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    box-sizing: border-box;
+    background: #fff;
+    border: 2px solid #2563EB;
+    border-radius: 2px;
+    pointer-events: none;
+  }
+  #cropBox b[data-h="nw"] { left: -7px; top: -7px; }
+  #cropBox b[data-h="ne"] { right: -7px; top: -7px; }
+  #cropBox b[data-h="sw"] { left: -7px; bottom: -7px; }
+  #cropBox b[data-h="se"] { right: -7px; bottom: -7px; }
+  #cropBox b[data-h="n"] { left: 50%; top: -7px; margin-left: -6px; }
+  #cropBox b[data-h="s"] { left: 50%; bottom: -7px; margin-left: -6px; }
+  #cropBox b[data-h="w"] { top: 50%; left: -7px; margin-top: -6px; }
+  #cropBox b[data-h="e"] { top: 50%; right: -7px; margin-top: -6px; }
+  #cropTag {
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: #2563EB;
+    color: #fff;
+    font-size: 11px;
+    font-style: normal;
+    line-height: 1.5;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  #cropBox.tagAbove #cropTag { top: auto; bottom: calc(100% + 6px); left: 0; }
+</style>
 </head>
 <body class="tool">
 <main class="shell">
@@ -70,7 +165,7 @@
   <section class="panel">
     <div class="hero">
       <h1 data-i18n="heroTitle">图片裁剪缩放工具</h1>
-      <p data-i18n="heroDesc">裁剪选区、圆形头像，或缩放到指定尺寸。</p>
+      <p data-i18n="heroDesc">拖动边框，或直接填写像素。</p>
       <div class="privacyLine safeBadge">
         <span data-i18n="safeBadge">本地处理 · 不上传服务器</span>
       </div>
@@ -87,53 +182,48 @@
         </label>
         <input id="file" type="file" accept="image/png,image/jpeg,image/webp" />
 
-        <!-- 模式切换 -->
-        <div class="group">
-          <div class="labelrow"><label data-i18n="labelMode">操作模式</label></div>
-          <div class="seg" id="modeSeg">
-            <button type="button" class="active" data-mode="crop" data-i18n="btnCropMode">裁剪</button>
-            <button type="button" data-mode="circle" data-i18n="btnCircleMode">圆形</button>
-            <button type="button" data-mode="resize" data-i18n="btnResizeMode">缩放</button>
+        <div class="pin" id="cropPanel">
+          <div class="group">
+            <div class="labelrow">
+              <label data-i18n="labelPixels">选区像素</label>
+              <button type="button" class="cropTextBtn" id="selectAll" data-i18n="btnFull">全图</button>
+            </div>
+            <div class="pxGrid">
+              <label><span>X</span><input id="px" type="number" min="0" step="1" inputmode="numeric" autocomplete="off"></label>
+              <label><span>Y</span><input id="py" type="number" min="0" step="1" inputmode="numeric" autocomplete="off"></label>
+              <label><span data-i18n="phWidth">宽</span><input id="pw" type="number" min="1" step="1" inputmode="numeric" autocomplete="off"></label>
+              <label><span data-i18n="phHeight">高</span><input id="ph" type="number" min="1" step="1" inputmode="numeric" autocomplete="off"></label>
+            </div>
+          </div>
+
+          <div class="group">
+            <div class="labelrow"><label data-i18n="labelRatio">比例</label></div>
+            <div class="seg" id="ratioSeg">
+              <button type="button" class="active" data-ratio="free" data-i18n="ratioFree">自由</button>
+              <button type="button" data-ratio="1/1">1:1</button>
+              <button type="button" data-ratio="4/3">4:3</button>
+              <button type="button" data-ratio="16/9">16:9</button>
+              <button type="button" data-ratio="9/16">9:16</button>
+              <button type="button" data-ratio="circle" data-i18n="btnCircleMode">圆形</button>
+            </div>
           </div>
         </div>
 
-        <!-- 裁剪模式控件 -->
-        <div id="cropControls">
-          <div class="group">
-            <div class="labelrow"><label data-i18n="labelCropArea">裁剪区域</label><span class="value" id="cropInfo" data-i18n="infoNoCrop">未选择</span></div>
-          </div>
-          <p class="notice" id="circleHint" hidden data-i18n="circleHint">拖出正方形选区，导出透明圆形 PNG（适合头像）。</p>
-          <button class="secondary" id="clearCrop" style="width:100%;margin-top:8px" disabled data-i18n="btnClearCrop">清除选区</button>
-        </div>
-
-        <!-- 缩放模式控件 -->
-        <div id="resizeControls" style="display:none">
-          <div class="group">
-            <div class="labelrow"><label data-i18n="labelTargetSize">目标尺寸</label></div>
-            <div class="dimRow">
-              <input id="rw" type="number" min="1" data-i18n-ph="phWidth" placeholder="宽" value="1920">
-              <div class="link locked" id="lockBtn" title="锁定宽高比">⬌</div>
-              <input id="rh" type="number" min="1" data-i18n-ph="phHeight" placeholder="高" value="1080">
-            </div>
-            <label class="toggle" style="margin-top:14px"><span data-i18n="labelLockRatio">锁定宽高比</span><input type="checkbox" id="lockRatio" checked></label>
-          </div>
-
-          <!-- 预设尺寸 -->
-          <div class="group">
-            <div class="labelrow"><label data-i18n="labelPresets">预设尺寸</label></div>
-            <div class="presetGrid" id="presetGrid">
-              <div class="presetBtn" data-w="1920" data-h="1080">1920 × 1080<small style="display:block;color:var(--muted);font-weight:500;font-size:11px" data-i18n="presetFullHD">Full HD</small></div>
-              <div class="presetBtn" data-w="1280" data-h="720">1280 × 720<small style="display:block;color:var(--muted);font-weight:500;font-size:11px" data-i18n="presetHD">HD</small></div>
-              <div class="presetBtn" data-w="1080" data-h="1080">1080 × 1080<small style="display:block;color:var(--muted);font-weight:500;font-size:11px" data-i18n="presetIg">Instagram</small></div>
-              <div class="presetBtn" data-w="1080" data-h="1920">1080 × 1920<small style="display:block;color:var(--muted);font-weight:500;font-size:11px" data-i18n="presetStory">竖版 Story</small></div>
-              <div class="presetBtn" data-w="1200" data-h="1200">1200 × 1200<small style="display:block;color:var(--muted);font-weight:500;font-size:11px" data-i18n="presetShop">电商主图</small></div>
-              <div class="presetBtn" data-w="800" data-h="800">800 × 800<small style="display:block;color:var(--muted);font-weight:500;font-size:11px" data-i18n="presetSquare">正方形</small></div>
-              <div class="presetBtn" data-w="295" data-h="413">295 × 413<small style="display:block;color:var(--muted);font-weight:500;font-size:11px" data-i18n="presetId1">一寸</small></div>
-              <div class="presetBtn" data-w="413" data-h="579">413 × 579<small style="display:block;color:var(--muted);font-weight:500;font-size:11px" data-i18n="presetId2">二寸</small></div>
-              <div class="presetBtn" data-w="500" data-h="500">500 × 500<small style="display:block;color:var(--muted);font-weight:500;font-size:11px" data-i18n="presetThumb">缩略图</small></div>
-              <div class="presetBtn" data-w="1200" data-h="630">1200 × 630<small style="display:block;color:var(--muted);font-weight:500;font-size:11px" data-i18n="presetOg">社媒封面</small></div>
-            </div>
-          </div>
+        <div class="group pin">
+          <label for="sizePreset" data-i18n="labelPresets">预设尺寸</label>
+          <select id="sizePreset" disabled>
+            <option value="" data-i18n="btnMatch">跟随选区</option>
+              <option value="1920x1080" data-i18n="presetFullHD">Full HD</option>
+              <option value="1280x720" data-i18n="presetHD">HD</option>
+              <option value="1080x1080" data-i18n="presetIg">Instagram</option>
+              <option value="1080x1920" data-i18n="presetStory">竖版 Story</option>
+              <option value="1200x1200" data-i18n="presetShop">电商主图</option>
+              <option value="800x800" data-i18n="presetSquare">正方形</option>
+              <option value="295x413" data-i18n="presetId1">一寸</option>
+              <option value="413x579" data-i18n="presetId2">二寸</option>
+              <option value="500x500" data-i18n="presetThumb">缩略图</option>
+              <option value="1200x630" data-i18n="presetOg">社媒封面</option>
+          </select>
         </div>
 
         <div class="actions">
@@ -147,52 +237,27 @@
           <div class="meta" id="meta" data-i18n="metaWaiting">等待图片</div>
         </div>
         <div class="canvasWrap" id="wrap">
-          <canvas id="canvas"></canvas>
+          <div id="cropFrame">
+            <canvas id="canvas" draggable="false"></canvas>
+            <div id="cropOverlay">
+              <div id="cropBox">
+                <em id="cropTag"></em>
+                <b data-h="nw"></b><b data-h="n"></b><b data-h="ne"></b>
+                <b data-h="w"></b><b data-h="e"></b>
+                <b data-h="sw"></b><b data-h="s"></b><b data-h="se"></b>
+              </div>
+            </div>
+          </div>
           <div class="empty" id="empty">
             <div class="bubble"></div>
             <strong data-i18n="emptyHint">把图片放进来试试</strong>
           </div>
         </div>
-        <div class="cropHint" id="cropHint" data-i18n="cropHint">在图上拖拽选择区域</div>
+        <div class="cropHint" id="cropHint" data-i18n="cropHint">拖边框调整，靠近边缘会吸住。</div>
       </section>
     </div>
   </section>
 
-  <section class="seoContent" id="guide" aria-labelledby="guide-title">
-    <h2 id="guide-title" data-i18n="g_fitTitle">适合这些情况</h2>
-    <ol>
-      <li data-i18n="g_fit1">拖选，只要画面里的一块。</li>
-      <li data-i18n="g_fit2">封面或头像要固定像素。</li>
-      <li data-i18n="g_fit3">用 16:9 预设做封面。</li>
-    </ol>
-    <h2 data-i18n="g_howTitle">怎么用</h2>
-    <ol>
-      <li data-i18n="g_how1">上传或粘贴图片。</li>
-      <li data-i18n="g_how2">裁剪时拖选区域，或缩放时输入宽高（可锁定比例，也可用预设）。</li>
-      <li data-i18n="g_how3">预览后下载。</li>
-    </ol>
-    <h2 data-i18n="g_whyTitle">为什么用 imagec</h2>
-    <ul>
-      <li data-i18n="g_why1">裁剪与缩放同一页完成。</li>
-      <li data-i18n="g_why2">可以拖选、输入数值，也可以用预设。</li>
-      <li data-i18n="g_why3">免费。去白底请用 /whitebg。</li>
-    </ul>
-    <h2 data-i18n="g_faqTitle">常见问题</h2>
-    <dl class="seoFaq">
-      <div>
-        <dt data-i18n="g_q1">裁剪缩放会上传图片吗？</dt>
-        <dd data-i18n="g_a1">不会。选区和缩放都在浏览器本地处理。</dd>
-      </div>
-      <div>
-        <dt data-i18n="g_q2">裁剪和缩放有什么区别？</dt>
-        <dd data-i18n="g_a2">裁剪切掉多余部分；缩放改变尺寸。</dd>
-      </div>
-      <div>
-        <dt data-i18n="g_q3">怎样避免拉变形？</dt>
-        <dd data-i18n="g_a3">锁定宽高比。</dd>
-      </div>
-    </dl>
-  </section>
 
 <!-- ===== 相关工具 ===== -->
   <section class="relatedTools">
@@ -203,299 +268,429 @@
 </main>
 
 <script>
-/* ===== 工具函数 ===== */
 const $=s=>document.querySelector(s);
 const file=$('#file'),drop=$('#drop'),canvas=$('#canvas'),ctx=canvas.getContext('2d'),empty=$('#empty');
+const overlay=$('#cropOverlay'),box=$('#cropBox');
+const PAD=14;
 
-/* ===== 状态变量 ===== */
-let sourceImg=null;       // 原始图片对象
-let origName='image';     // 原始文件名（不含扩展名）
-let mode='crop';          // 当前模式：crop / resize
-let lockRatio=true;       // 是否锁定宽高比
+let sourceImg=null;
+let origName='image';
+let sel={x:0,y:0,w:0,h:0};
+let ratioNum=null;
+let circle=false;
+const sizePreset=$('#sizePreset');
+let drag=null;
 
-/* ===== 裁剪选区状态 ===== */
-let selRect=null;         // 选区 {x,y,w,h}（基于画布坐标）
-let isDragging=false;     // 是否正在拖拽
-let dragStart=null;       // 拖拽起点 {x,y}
-
-/* ===== 显示缩放比例（画布显示尺寸 vs 实际像素） ===== */
-let dispScale=1;
-
-/* ===== 加载图片 ===== */
+function num(el,fallback){
+  if(!el||String(el.value).trim()==='')return fallback;
+  const n=Number(el.value);
+  return Number.isFinite(n)?n:fallback;
+}
+function parseRatio(key){
+  if(!key||key==='free')return null;
+  const parts=String(key).split('/');
+  const a=Number(parts[0]),b=Number(parts[1]||1);
+  if(!a||!b)return null;
+  return a/b;
+}
+function currentAR(){
+  if(circle)return 1;
+  return ratioNum;
+}
+function clampSel(s){
+  const iw=canvas.width||1,ih=canvas.height||1;
+  let w=Math.round(Number(s.w)||1),h=Math.round(Number(s.h)||1);
+  let x=Math.round(Number(s.x)||0),y=Math.round(Number(s.y)||0);
+  w=Math.max(1,Math.min(iw,w));
+  h=Math.max(1,Math.min(ih,h));
+  x=Math.max(0,Math.min(iw-w,x));
+  y=Math.max(0,Math.min(ih-h,y));
+  return {x,y,w,h};
+}
+function fitLargest(ar){
+  const iw=canvas.width,ih=canvas.height;
+  let w,h;
+  if(iw/ih>ar){h=ih;w=h*ar;}
+  else{w=iw;h=w/ar;}
+  w=Math.max(1,Math.round(w));
+  h=Math.max(1,Math.round(h));
+  if(w>iw){w=iw;h=Math.max(1,Math.round(w/ar));}
+  if(h>ih){h=ih;w=Math.max(1,Math.round(h*ar));}
+  if(w>iw)w=iw;
+  sel=clampSel({x:(iw-w)/2,y:(ih-h)/2,w,h});
+}
+function selectAll(){
+  if(!sourceImg)return;
+  circle=false;
+  sizePreset.value='';
+  ratioNum=null;
+  sel={x:0,y:0,w:canvas.width,h:canvas.height};
+  render();
+}
+function markRatio(){
+  document.querySelectorAll('#ratioSeg button').forEach(btn=>{
+    const key=btn.dataset.ratio;
+    if(key==='circle'){btn.classList.toggle('active',circle);return;}
+    const r=parseRatio(key);
+    const ar=circle?null:ratioNum;
+    const on=(r==null&&ar==null)||(r&&ar&&Math.abs(r-ar)<0.02);
+    btn.classList.toggle('active',!!on);
+  });
+}
+function setField(el,value){
+  if(document.activeElement!==el)el.value=String(value);
+}
+function render(){
+  if(!sourceImg)return;
+  sel=clampSel(sel);
+  layoutBox();
+  setField($('#px'),sel.x);
+  setField($('#py'),sel.y);
+  setField($('#pw'),sel.w);
+  setField($('#ph'),sel.h);
+  markRatio();
+  box.classList.toggle('circle',circle);
+  $('#cropTag').textContent=sel.w+' × '+sel.h;
+  $('#meta').textContent=canvas.width+' × '+canvas.height+' px';
+  $('#download').disabled=false;
+  $('#cropHint').classList.add('show');
+}
+function layoutBox(){
+  const viewW=canvas.clientWidth||canvas.width;
+  const viewH=canvas.clientHeight||canvas.height;
+  const sx=canvas.width?viewW/canvas.width:1;
+  const sy=canvas.height?viewH/canvas.height:1;
+  box.style.left=(PAD+sel.x*sx)+'px';
+  box.style.top=(PAD+sel.y*sy)+'px';
+  box.style.width=Math.max(1,sel.w*sx)+'px';
+  box.style.height=Math.max(1,sel.h*sy)+'px';
+  box.classList.toggle('tagAbove',sel.y*sy>28);
+}
+function fitCanvasDisplay(attempt){
+  if(!sourceImg)return;
+  const wrap=$('#wrap');
+  const cs=getComputedStyle(wrap);
+  const padX=(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.paddingRight)||0);
+  const padY=(parseFloat(cs.paddingTop)||0)+(parseFloat(cs.paddingBottom)||0);
+  const maxW=wrap.clientWidth-padX;
+  const maxH=wrap.clientHeight-padY;
+  if(maxW<8||maxH<8){
+    if((attempt||0)<30)requestAnimationFrame(()=>fitCanvasDisplay((attempt||0)+1));
+    return;
+  }
+  const ow=sourceImg.naturalWidth,oh=sourceImg.naturalHeight;
+  const s=Math.min(maxW/ow,maxH/oh,1);
+  const scale=s>0?s:1;
+  canvas.style.width=Math.round(ow*scale)+'px';
+  canvas.style.height=Math.round(oh*scale)+'px';
+  layoutBox();
+}
 function load(blob,filename){
   if(!blob||!blob.type.startsWith('image/')){if(blob)imagecAlert('errType');return;}
-  origName=(filename||'image').replace(/\.[^.]+$/,'');
+  origName=filename||'image';
   const img=new Image();
   const url=URL.createObjectURL(blob);
   img.onload=()=>{
     URL.revokeObjectURL(url);
     sourceImg=img;
-    $('#cropHint').classList.toggle('show',mode==='crop');
-    empty.style.display='none';
-    canvas.style.display='block';
-    syncDownload();
-    // 设置画布为图片原始尺寸
     canvas.width=img.naturalWidth;
     canvas.height=img.naturalHeight;
-    // 计算显示缩放比例（适配预览容器）
+    ctx.drawImage(img,0,0);
+    sel={x:0,y:0,w:img.naturalWidth,h:img.naturalHeight};
+    ratioNum=null;
+    circle=false;
+    sizePreset.value='';
+    sizePreset.disabled=false;
+    empty.style.display='none';
+    document.body.classList.add('has-file');
+    $('#cropFrame').classList.add('on');
     fitCanvasDisplay();
-    $('#meta').textContent=`${img.naturalWidth} × ${img.naturalHeight}px`;
-    // 重置选区
-    selRect=null;
-    $('#cropInfo').textContent=messages[language].infoNoCrop;
-    $('#clearCrop').disabled=true;
-    drawCanvas();
+    render();
   };
   img.onerror=()=>{URL.revokeObjectURL(url);imagecAlert('errLoad');};
   img.src=url;
 }
 
-/* ===== 适配画布显示尺寸 ===== */
-function fitCanvasDisplay(attempt){
-  if(!sourceImg)return;
-  const wrap=$('#wrap');
-  const maxW=wrap.clientWidth-4;
-  const maxH=wrap.clientHeight-4;
-  // 预览区在标记已选文件前是隐藏的，第一次测量可能是 0。等它有尺寸再算缩放，避免拖拽选区失效。
-  if(maxW<8||maxH<8){
-    if((attempt||0)<30) requestAnimationFrame(()=>fitCanvasDisplay((attempt||0)+1));
-    return;
-  }
-  const ow=sourceImg.naturalWidth,oh=sourceImg.naturalHeight;
-  const s=Math.min(maxW/ow,maxH/oh,1);
-  dispScale=s>0?s:1;
-  canvas.style.width=(ow*dispScale)+'px';
-  canvas.style.height=(oh*dispScale)+'px';
-}
-
-/* ===== 绘制画布（图片 + 选区叠加） ===== */
-function drawCanvas(){
-  if(!sourceImg)return;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.drawImage(sourceImg,0,0);
-  // 绘制裁剪选区
-  if((mode==='crop'||mode==='circle')&&selRect){
-    if(mode==='circle'){
-      ctx.fillStyle='rgba(0,0,0,0.5)';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.save();
-      ctx.beginPath();
-      const r=Math.min(selRect.w,selRect.h)/2;
-      const cx=selRect.x+selRect.w/2,cy=selRect.y+selRect.h/2;
-      ctx.arc(cx,cy,r,0,Math.PI*2);
-      ctx.clip();
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      ctx.drawImage(sourceImg,0,0);
-      ctx.restore();
-      ctx.strokeStyle='#087f5b';
-      ctx.lineWidth=Math.max(2,canvas.width/400);
-      ctx.beginPath();
-      ctx.arc(cx,cy,r,0,Math.PI*2);
-      ctx.stroke();
-    }else{
-      // 选区外区域变暗
-      ctx.fillStyle='rgba(0,0,0,0.5)';
-      ctx.fillRect(0,0,canvas.width,selRect.y);
-      ctx.fillRect(0,selRect.y+selRect.h,canvas.width,canvas.height-selRect.y-selRect.h);
-      ctx.fillRect(0,selRect.y,selRect.x,selRect.h);
-      ctx.fillRect(selRect.x+selRect.w,selRect.y,canvas.width-selRect.x-selRect.w,selRect.h);
-      ctx.strokeStyle='#087f5b';
-      ctx.lineWidth=Math.max(2,canvas.width/400);
-      ctx.strokeRect(selRect.x,selRect.y,selRect.w,selRect.h);
-      ctx.strokeStyle='rgba(255,255,255,0.4)';
-      ctx.lineWidth=1;
-      for(let i=1;i<3;i++){
-        ctx.beginPath();ctx.moveTo(selRect.x+selRect.w*i/3,selRect.y);ctx.lineTo(selRect.x+selRect.w*i/3,selRect.y+selRect.h);ctx.stroke();
-        ctx.beginPath();ctx.moveTo(selRect.x,selRect.y+selRect.h*i/3);ctx.lineTo(selRect.x+selRect.w,selRect.y+selRect.h*i/3);ctx.stroke();
-      }
-    }
-  }
-}
-
-/* ===== 将鼠标事件坐标转换为画布像素坐标 ===== */
-function getCanvasPos(e){
+function pointerImage(e,snap){
   const rect=canvas.getBoundingClientRect();
-  const cx=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
-  const cy=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
-  return {x:cx/dispScale,y:cy/dispScale};
-}
-
-/* ===== 裁剪选区鼠标事件 ===== */
-function onDown(e){
-  if((mode!=='crop'&&mode!=='circle')||!sourceImg)return;
-  e.preventDefault();
-  isDragging=true;
-  dragStart=getCanvasPos(e);
-  selRect={x:dragStart.x,y:dragStart.y,w:0,h:0};
-}
-function onMove(e){
-  if(!isDragging)return;
-  e.preventDefault();
-  const p=getCanvasPos(e);
-  // 计算选区，使用双端钳制确保坐标在画布范围内
-  let x1=Math.max(0,Math.min(dragStart.x,p.x));
-  let x2=Math.min(canvas.width,Math.max(dragStart.x,p.x));
-  let y1=Math.max(0,Math.min(dragStart.y,p.y));
-  let y2=Math.min(canvas.height,Math.max(dragStart.y,p.y));
-  let w=Math.max(0,x2-x1),h=Math.max(0,y2-y1);
-  if(mode==='circle'){
-    const side=Math.min(w,h);
-    if(p.x>=dragStart.x)x2=x1+side; else x1=x2-side;
-    if(p.y>=dragStart.y)y2=y1+side; else y1=y2-side;
-    x1=Math.max(0,x1);y1=Math.max(0,y1);
-    w=side;h=side;
+  let sx=e.clientX-rect.left;
+  let sy=e.clientY-rect.top;
+  if(snap){
+    if(sx<=6)sx=0;
+    else if(rect.width-sx<=6)sx=rect.width;
+    if(sy<=6)sy=0;
+    else if(rect.height-sy<=6)sy=rect.height;
   }
-  selRect={x:x1,y:y1,w:w,h:h};
-  drawCanvas();
-  $('#cropInfo').textContent=`${Math.round(selRect.w)} × ${Math.round(selRect.h)}`;
+  sx=Math.max(0,Math.min(rect.width||0,sx));
+  sy=Math.max(0,Math.min(rect.height||0,sy));
+  return {
+    x:rect.width?(sx/rect.width)*canvas.width:0,
+    y:rect.height?(sy/rect.height)*canvas.height:0
+  };
 }
-function onUp(){
-  if(!isDragging)return;
-  isDragging=false;
-  if(selRect&&selRect.w>5&&selRect.h>5){
-    $('#cropInfo').textContent=`${Math.round(selRect.w)} × ${Math.round(selRect.h)}`;
-    $('#clearCrop').disabled=false;
-  }else{
-    selRect=null;
-    $('#cropInfo').textContent=messages[language].infoNoCrop;
-    $('#clearCrop').disabled=true;
-    drawCanvas();
+function pointerRaw(e){
+  const rect=canvas.getBoundingClientRect();
+  return {
+    x:rect.width?(e.clientX-rect.left)/rect.width*canvas.width:0,
+    y:rect.height?(e.clientY-rect.top)/rect.height*canvas.height:0
+  };
+}
+function hitTest(e){
+  const r=box.getBoundingClientRect();
+  const m=e.pointerType==='touch'?24:14;
+  const x=e.clientX,y=e.clientY;
+  const nearL=Math.abs(x-r.left)<=m;
+  const nearR=Math.abs(x-r.right)<=m;
+  const nearT=Math.abs(y-r.top)<=m;
+  const nearB=Math.abs(y-r.bottom)<=m;
+  const inX=x>=r.left-m&&x<=r.right+m;
+  const inY=y>=r.top-m&&y<=r.bottom+m;
+  if(nearL&&nearT)return 'nw';
+  if(nearR&&nearT)return 'ne';
+  if(nearL&&nearB)return 'sw';
+  if(nearR&&nearB)return 'se';
+  if(nearT&&inX)return 'n';
+  if(nearB&&inX)return 's';
+  if(nearL&&inY)return 'w';
+  if(nearR&&inY)return 'e';
+  if(x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom)return 'move';
+  return 'new';
+}
+function cursorFor(kind){
+  if(kind==='nw'||kind==='se')return 'nwse-resize';
+  if(kind==='ne'||kind==='sw')return 'nesw-resize';
+  if(kind==='n'||kind==='s')return 'ns-resize';
+  if(kind==='e'||kind==='w')return 'ew-resize';
+  if(kind==='move')return 'move';
+  return 'crosshair';
+}
+function magnet(s){
+  if(currentAR())return clampSel(s);
+  const rect=canvas.getBoundingClientRect();
+  const mx=rect.width?6/rect.width*canvas.width:0;
+  const my=rect.height?6/rect.height*canvas.height:0;
+  let x=s.x,y=s.y,r=s.x+s.w,b=s.y+s.h;
+  if(x<mx)x=0;
+  if(y<my)y=0;
+  if(canvas.width-r<mx)r=canvas.width;
+  if(canvas.height-b<my)b=canvas.height;
+  return clampSel({x,y,w:r-x,h:b-y});
+}
+function fromAnchor(ax,ay,px,py,ar){
+  const iw=canvas.width,ih=canvas.height;
+  let dx=px-ax,dy=py-ay;
+  let sx=dx<0?-1:1,sy=dy<0?-1:1;
+  let w=Math.abs(dx),h=Math.abs(dy);
+  if(ar){
+    if(h<1)h=1;
+    if(w/h>ar)w=h*ar;
+    else h=w/ar;
   }
-  syncDownload();
+  const maxW=sx<0?ax:iw-ax;
+  const maxH=sy<0?ay:ih-ay;
+  if(w>maxW){w=maxW;if(ar)h=w/ar;}
+  if(h>maxH){h=maxH;if(ar)w=h*ar;}
+  if(w>maxW)w=maxW;
+  if(h>maxH)h=maxH;
+  w=Math.max(1,w);h=Math.max(1,h);
+  const x=sx<0?ax-w:ax;
+  const y=sy<0?ay-h:ay;
+  return clampSel({x,y,w,h});
+}
+function edgeRatio(handle,p,origin,ar){
+  const iw=canvas.width,ih=canvas.height;
+  if(handle==='e'||handle==='w'){
+    const ax=handle==='e'?origin.x:origin.x+origin.w;
+    let w=Math.max(1,Math.abs(p.x-ax));
+    let h=w/ar;
+    let cy=origin.y+origin.h/2;
+    let y=cy-h/2;
+    let x=handle==='w'?ax-w:ax;
+    if(y<0){h=Math.max(1,cy*2);y=0;w=h*ar;x=handle==='w'?ax-w:ax;}
+    if(y+h>ih){h=Math.max(1,(ih-cy)*2);y=cy-h/2;w=h*ar;x=handle==='w'?ax-w:ax;}
+    const maxW=handle==='w'?ax:iw-ax;
+    if(w>maxW){w=maxW;h=w/ar;y=cy-h/2;x=handle==='w'?ax-w:ax;}
+    return clampSel({x,y,w,h});
+  }
+  const ay=handle==='s'?origin.y:origin.y+origin.h;
+  let h=Math.max(1,Math.abs(p.y-ay));
+  let w=h*ar;
+  let cx=origin.x+origin.w/2;
+  let x=cx-w/2;
+  let y=handle==='n'?ay-h:ay;
+  if(x<0){w=Math.max(1,cx*2);x=0;h=w/ar;y=handle==='n'?ay-h:ay;}
+  if(x+w>iw){w=Math.max(1,(iw-cx)*2);x=cx-w/2;h=w/ar;y=handle==='n'?ay-h:ay;}
+  const maxH=handle==='n'?ay:ih-ay;
+  if(h>maxH){h=maxH;w=h*ar;x=cx-w/2;y=handle==='n'?ay-h:ay;}
+  return clampSel({x,y,w,h});
+}
+function resized(kind,p){
+  const origin=drag.origin;
+  const ar=currentAR();
+  if(kind==='move'){
+    return magnet({x:origin.x+(p.x-drag.ax),y:origin.y+(p.y-drag.ay),w:origin.w,h:origin.h});
+  }
+  if(kind==='new'){
+    if(!ar)return magnet({x:Math.min(drag.anchor.x,p.x),y:Math.min(drag.anchor.y,p.y),w:Math.abs(p.x-drag.anchor.x),h:Math.abs(p.y-drag.anchor.y)});
+    return fromAnchor(drag.anchor.x,drag.anchor.y,p.x,p.y,ar);
+  }
+  if(ar&&(kind==='n'||kind==='s'||kind==='e'||kind==='w'))return edgeRatio(kind,p,origin,ar);
+  if(ar){
+    const r=origin.x+origin.w,b=origin.y+origin.h;
+    const anchor=kind==='se'?{x:origin.x,y:origin.y}:kind==='nw'?{x:r,y:b}:kind==='ne'?{x:origin.x,y:b}:{x:r,y:origin.y};
+    return fromAnchor(anchor.x,anchor.y,p.x,p.y,ar);
+  }
+  let L=origin.x,T=origin.y,R=origin.x+origin.w,B=origin.y+origin.h;
+  if(kind.includes('w'))L=p.x;
+  if(kind.includes('e'))R=p.x;
+  if(kind.includes('n'))T=p.y;
+  if(kind.includes('s'))B=p.y;
+  if(R<L){const t=L;L=R;R=t;}
+  if(B<T){const t=T;T=B;B=t;}
+  return magnet({x:L,y:T,w:R-L,h:B-T});
 }
 
-function syncDownload(){
-  const ready=mode==='resize'?!sourceImg?false:true:!!(sourceImg&&selRect&&selRect.w>5&&selRect.h>5);
-  $('#download').disabled=!ready;
+overlay.addEventListener('pointerdown',e=>{
+  if(!sourceImg)return;
+  e.preventDefault();
+  overlay.setPointerCapture(e.pointerId);
+  const kind=hitTest(e);
+  const p=kind==='move'?pointerRaw(e):pointerImage(e,true);
+  drag={kind,origin:{...sel},ax:p.x,ay:p.y,anchor:{...p},cx:e.clientX,cy:e.clientY};
+  overlay.style.cursor=cursorFor(kind);
+});
+overlay.addEventListener('pointermove',e=>{
+  if(!sourceImg)return;
+  if(!drag){overlay.style.cursor=cursorFor(hitTest(e));return;}
+  e.preventDefault();
+  const p=drag.kind==='move'?pointerRaw(e):pointerImage(e,true);
+  sel=resized(drag.kind,p);
+  render();
+});
+function endDrag(e){
+  if(!drag)return;
+  if(drag.kind==='new'&&Math.hypot(e.clientX-drag.cx,e.clientY-drag.cy)<4)sel=drag.origin;
+  drag=null;
+  render();
 }
-
-/* ===== 事件绑定：鼠标 ===== */
-canvas.addEventListener('mousedown',onDown);
-canvas.addEventListener('mousemove',onMove);
-window.addEventListener('mouseup',onUp);
-/* ===== 事件绑定：触摸 ===== */
-canvas.addEventListener('touchstart',onDown,{passive:false});
-canvas.addEventListener('touchmove',onMove,{passive:false});
-window.addEventListener('touchend',onUp);
-
-/* ===== 文件上传事件 ===== */
-file.onchange=e=>{if(e.target.files[0])load(e.target.files[0],e.target.files[0].name);};
-['dragenter','dragover'].forEach(x=>drop.addEventListener(x,e=>{e.preventDefault();drop.classList.add('over');}));
-['dragleave','drop'].forEach(x=>drop.addEventListener(x,e=>{e.preventDefault();drop.classList.remove('over');}));
-drop.addEventListener('drop',e=>{if(e.dataTransfer.files[0])load(e.dataTransfer.files[0],e.dataTransfer.files[0].name);});
-// 粘贴支持
-document.addEventListener('paste',e=>{
-  if(!e.clipboardData)return;
-  const item=[...e.clipboardData.items].find(x=>x.type.startsWith('image/'));
-  if(item)load(item.getAsFile(),'pasted-image.png');
+overlay.addEventListener('pointerup',endDrag);
+overlay.addEventListener('pointercancel',endDrag);
+overlay.addEventListener('dblclick',e=>{
+  if(!sourceImg)return;
+  e.preventDefault();
+  selectAll();
 });
 
-/* ===== 模式切换 ===== */
-document.querySelectorAll('#modeSeg button').forEach(btn=>{
-  btn.onclick=()=>{
-    mode=btn.dataset.mode;
-    document.querySelectorAll('#modeSeg button').forEach(b=>b.classList.toggle('active',b===btn));
-    $('#cropControls').style.display=(mode==='crop'||mode==='circle')?'block':'none';
-    $('#resizeControls').style.display=mode==='resize'?'block':'none';
-    const circleHint=$('#circleHint');
-    if(circleHint)circleHint.hidden=mode!=='circle';
-    $('#cropHint').classList.toggle('show',(mode==='crop'||mode==='circle')&&sourceImg);
-    // 切换到缩放模式时清除选区
-    if(mode==='resize'){selRect=null;}
-    drawCanvas();
-    // 缩放模式初始化宽高为原图尺寸
-    if(mode==='resize'&&sourceImg){
-      $('#rw').value=sourceImg.naturalWidth;
-      $('#rh').value=sourceImg.naturalHeight;
+function onSelInput(src){
+  if(!sourceImg)return;
+  let x=num($('#px'),sel.x),y=num($('#py'),sel.y),w=num($('#pw'),sel.w),h=num($('#ph'),sel.h);
+  const ar=currentAR();
+  const iw=canvas.width,ih=canvas.height;
+  if(ar&&src==='w')h=w/ar;
+  if(ar&&src==='h')w=h*ar;
+  if(src==='x'||src==='y'){
+    x=Math.max(0,Math.min(iw-1,x));
+    y=Math.max(0,Math.min(ih-1,y));
+    if(x+w>iw)w=iw-x;
+    if(y+h>ih)h=ih-y;
+    if(ar){
+      h=w/ar;
+      if(y+h>ih){h=Math.max(1,ih-y);w=h*ar;}
+      if(x+w>iw){w=Math.max(1,iw-x);h=w/ar;}
     }
-    syncDownload();
+  }
+  sel=clampSel({x,y,w,h});
+  render();
+}
+[['px','x'],['py','y'],['pw','w'],['ph','h']].forEach(([id,src])=>{
+  const el=$('#'+id);
+  el.addEventListener('input',()=>onSelInput(src));
+  el.addEventListener('blur',()=>render());
+  el.addEventListener('keydown',e=>{if(e.key==='Enter')el.blur();});
+});
+document.querySelectorAll('#cropPanel input[type=number]').forEach(el=>{
+  el.addEventListener('wheel',e=>{if(document.activeElement===el)e.preventDefault();},{passive:false});
+});
+
+$('#selectAll').onclick=selectAll;
+document.querySelectorAll('#ratioSeg button').forEach(btn=>{
+  btn.onclick=()=>{
+    if(!sourceImg)return;
+    const key=btn.dataset.ratio;
+    sizePreset.value='';
+    circle=key==='circle';
+    ratioNum=circle?1:parseRatio(key);
+    if(ratioNum)fitLargest(ratioNum);
+    render();
   };
 });
 
-/* ===== 清除选区 ===== */
-$('#clearCrop').onclick=()=>{
-  selRect=null;
-  $('#cropInfo').textContent=messages[language].infoNoCrop;
-  $('#clearCrop').disabled=true;
-  drawCanvas();
-  syncDownload();
+sizePreset.onchange=()=>{
+  if(!sourceImg || !sizePreset.value)return;
+  const [width,height]=sizePreset.value.split('x').map(Number);
+  circle=false;
+  ratioNum=width/height;
+  fitLargest(ratioNum);
+  render();
 };
 
-/* ===== 缩放模式：宽高联动 ===== */
-function onResizeInput(which){
-  if(!lockRatio||!sourceImg)return;
-  const ow=sourceImg.naturalWidth,oh=sourceImg.naturalHeight;
-  const ratio=ow/oh;
-  if(which==='w'){
-    const w=Math.max(1,+$('#rw').value||1);
-    $('#rh').value=Math.round(w/ratio);
-  }else{
-    const h=Math.max(1,+$('#rh').value||1);
-    $('#rw').value=Math.round(h*ratio);
-  }
-}
-$('#rw').addEventListener('input',()=>onResizeInput('w'));
-$('#rh').addEventListener('input',()=>onResizeInput('h'));
-
-/* ===== 锁定宽高比开关 ===== */
-function updateLockUI(){
-  $('#lockBtn').classList.toggle('locked',lockRatio);
-  $('#lockRatio').checked=lockRatio;
-}
-$('#lockBtn').onclick=()=>{lockRatio=!lockRatio;updateLockUI();};
-$('#lockRatio').onchange=()=>{lockRatio=$('#lockRatio').checked;updateLockUI();};
-
-/* ===== 预设尺寸 ===== */
-document.querySelectorAll('#presetGrid .presetBtn').forEach(btn=>{
-  btn.onclick=()=>{
-    $('#rw').value=btn.dataset.w;
-    $('#rh').value=btn.dataset.h;
-    // 预设尺寸不强制锁比，但更新显示
-  };
-});
-
-/* ===== 下载 ===== */
 $('#download').onclick=()=>{
   if(!sourceImg)return;
-  let outW,outH,sx,sy,sw,sh;
-  if(mode==='crop'||mode==='circle'){
-    if(!selRect||selRect.w<1||selRect.h<1){imagecAlert('errCrop');return;}
-    sx=selRect.x;sy=selRect.y;sw=selRect.w;sh=selRect.h;
-    outW=Math.round(sw);outH=Math.round(sh);
-  }else{
-    sx=0;sy=0;sw=sourceImg.naturalWidth;sh=sourceImg.naturalHeight;
-    outW=Math.max(1,+$('#rw').value||sw);
-    outH=Math.max(1,+$('#rh').value||sh);
-  }
+  const sx=sel.x,sy=sel.y,sw=sel.w,sh=sel.h;
+  let [dw,dh]=sizePreset.value ? sizePreset.value.split('x').map(Number) : [sw,sh];
   const cv=document.createElement('canvas');
-  cv.width=outW;cv.height=outH;
   const cx=cv.getContext('2d');
   cx.imageSmoothingEnabled=true;
   cx.imageSmoothingQuality='high';
-  if(mode==='circle'){
-    const side=Math.min(outW,outH);
+  if(circle){
+    const side=Math.min(sw,sh);
+    const ssx=sx+(sw-side)/2,ssy=sy+(sh-side)/2;
+    dw=side;dh=side;
     cv.width=side;cv.height=side;
     cx.beginPath();
     cx.arc(side/2,side/2,side/2,0,Math.PI*2);
     cx.closePath();
     cx.clip();
-    cx.drawImage(sourceImg,sx,sy,sw,sh,0,0,side,side);
+    cx.drawImage(sourceImg,ssx,ssy,side,side,0,0,side,side);
   }else{
-    cx.drawImage(sourceImg,sx,sy,sw,sh,0,0,outW,outH);
+    cv.width=dw;cv.height=dh;
+    cx.drawImage(sourceImg,sx,sy,sw,sh,0,0,dw,dh);
   }
   cv.toBlob(blob=>{
+    if(!blob)return;
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    const tag=mode==='circle'?'circle':mode==='crop'?'cropped':'resized';
-    a.download=`${origName}-${tag}.png`;
+    a.download=imagecDownloadName(origName,'png');
     a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   },'image/png');
 };
 
-/* ===== 窗口尺寸变化时重新适配画布显示 ===== */
-window.addEventListener('resize',()=>{
-  if(sourceImg){fitCanvasDisplay();}
+window.addEventListener('keydown',e=>{
+  if(!sourceImg||drag)return;
+  if(e.target&&e.target.matches&&e.target.matches('input,textarea,select,button,summary'))return;
+  const step=e.shiftKey?10:1;
+  let x=sel.x,y=sel.y;
+  if(e.key==='ArrowLeft')x-=step;
+  else if(e.key==='ArrowRight')x+=step;
+  else if(e.key==='ArrowUp')y-=step;
+  else if(e.key==='ArrowDown')y+=step;
+  else if(e.key==='Escape'){selectAll();return;}
+  else return;
+  e.preventDefault();
+  sel=clampSel({x,y,w:sel.w,h:sel.h});
+  render();
+});
+window.addEventListener('resize',()=>{if(sourceImg)fitCanvasDisplay();});
+
+file.onchange=e=>{if(e.target.files[0])load(e.target.files[0],e.target.files[0].name);};
+['dragenter','dragover'].forEach(x=>drop.addEventListener(x,e=>{e.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(x=>drop.addEventListener(x,e=>{e.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',e=>{if(e.dataTransfer.files[0])load(e.dataTransfer.files[0],e.dataTransfer.files[0].name);});
+document.addEventListener('paste',e=>{
+  if(!e.clipboardData)return;
+  const item=[...e.clipboardData.items].find(x=>x.type.startsWith('image/'));
+  if(item)load(item.getAsFile(),'pasted-image.png');
 });
 </script>
 <script>
@@ -516,19 +711,19 @@ const SEO={
   th:{title:'เครื่องมือครอปและปรับขนาดภาพ - ครอป/เปลี่ยนขนาดออนไลน์ | imagec',desc:'เครื่องมือครอปและปรับขนาดภาพออนไลน์ฟรี ลากเพื่อเลือกพื้นที่ครอบบนแคนวาส ป้อนความกว้าง/ความสูงเป้าหมายเพื่อปรับขนาด หรือเลือกจากขนาดพร้อมตั้ง (1920x1080/1280x720/800x800 ฯลฯ) ประมวลผลทั้งหมดในเบราว์เซอร์ ไม่อัปโหลดรูปภาพไปยังเซิร์ฟเวอร์',ogTitle:'เครื่องมือครอปและปรับขนาดภาพ',ogDesc:'เครื่องมือฟรีครอปและปรับขนาดภาพออนไลน์ ลากเพื่อครอป ป้อนขนาดหรือใช้ขนาดพร้อมตั้ง ไม่อัปโหลดไปเซิร์ฟเวอร์',siteName:'imagec',jsonLdDesc:'เครื่องมือฟรีครอปและปรับขนาดภาพออนไลน์ ด้วยการเลือกพื้นที่ลาก ปรับขนาดตามเป้าหมาย และขนาดพร้อมตั้ง ประมวลผลในเครื่องผ่านเบราว์เซอร์',locale:'th_TH'}
 };
 const messages={
-  zh:{brand:'imagec',toolWhitebg:'去白底',toolCompress:'压缩',toolConvert:'转换',toolCrop:'裁剪',toolIdphoto:'证件照',toolWatermark:'水印',toolBgcolor:'换底色',toolSplice:'拼接',toolImg2pdf:'转PDF',toolFilter:'滤镜',heroTitle:'图片裁剪缩放工具',heroDesc:'裁剪选区、圆形头像，或缩放到指定尺寸。',safeBadge:'本地处理 · 不上传服务器',dropHint:'点击选择或拖入图片',dropDesc:'支持 PNG、JPG、WebP<br>也可直接粘贴图片',labelMode:'操作模式',btnCropMode:'裁剪',btnCircleMode:'圆形',btnResizeMode:'缩放',circleHint:'拖出正方形选区，导出透明圆形 PNG（适合头像）。',labelCropArea:'裁剪区域',infoNoCrop:'未选择',btnClearCrop:'清除选区',labelTargetSize:'目标尺寸',phWidth:'宽',phHeight:'高',labelLockRatio:'锁定宽高比',labelPresets:'预设尺寸',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'正方形',presetThumb:'缩略图',btnDownload:'下载结果图片',metaWaiting:'等待图片',emptyHint:'把图片放进来试试',cropHint:'在图上拖拽选择区域',relatedTitle:'更多图片工具',relatedCompress:'图片压缩',relatedConvert:'格式转换',relatedCrop:'裁剪缩放',relatedIdphoto:'证件照换底色',relatedWatermark:'加水印',relatedBgcolor:'换背景色',relatedSplice:'图片拼接',relatedImg2pdf:'转PDF',relatedFilter:'滤镜调色'},
-  en:{brand:'imagec',toolWhitebg:'Remove White',toolCompress:'Compress',toolConvert:'Convert',toolCrop:'Crop',toolIdphoto:'ID Photo',toolWatermark:'Watermark',toolBgcolor:'BG Color',toolSplice:'Splice',toolImg2pdf:'To PDF',toolFilter:'Filters',heroTitle:'Image Crop & Resize Tool',heroDesc:'Crop a region, circle-crop for avatars, or resize to exact dimensions.',safeBadge:'Local · no upload',dropHint:'Click to select or drop an image',dropDesc:'Supports PNG, JPG, WebP<br>or paste directly',labelMode:'Operation Mode',btnCropMode:'Crop',btnCircleMode:'Circle',btnResizeMode:'Resize',circleHint:'Drag a square selection and export a transparent circular PNG for avatars.',labelCropArea:'Crop Area',infoNoCrop:'Not selected',btnClearCrop:'Clear Selection',labelTargetSize:'Target Size',phWidth:'Width',phHeight:'Height',labelLockRatio:'Lock Aspect Ratio',labelPresets:'Preset Sizes',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Square',presetThumb:'Thumbnail',btnDownload:'Download Result',metaWaiting:'Waiting for image',emptyHint:'Drop an image here to try',cropHint:'Drag on the image to select an area',relatedTitle:'More Image Tools',relatedCompress:'Image Compress',relatedConvert:'Format Convert',relatedCrop:'Crop & Resize',relatedIdphoto:'ID Photo BG',relatedWatermark:'Add Watermark',relatedBgcolor:'Change BG Color',relatedSplice:'Image Splice',relatedImg2pdf:'To PDF',relatedFilter:'Filters & Color'},
-  ja:{brand:'imagec',toolWhitebg:'白抜き',toolCompress:'圧縮',toolConvert:'変換',toolCrop:'トリミング',toolIdphoto:'証明写真',toolWatermark:'ウォーターマーク',toolBgcolor:'背景色変更',toolSplice:'結合',toolImg2pdf:'PDF変換',toolFilter:'フィルター',heroTitle:'画像トリミング・リサイズツール',heroDesc:'オンラインで画像をトリミングまたはリサイズ。キャンバス上でドラッグして範囲選択、目標サイズ入力で拡大縮小、ワンクリックでプリセットサイズを適用。',safeBadge:'端末内処理 · 送信しません',dropHint:'クリックで選ぶ or ドラッグ&ドロップ',dropDesc:'PNG、JPG、WebP対応<br>直接貼り付けも可',labelMode:'操作モード',btnCropMode:'トリミング',btnCircleMode:'円形',btnResizeMode:'リサイズ',circleHint:'正方形の選択範囲をドラッグし、透明な円形 PNG（アイコン向け）を書き出します。',labelCropArea:'トリミング範囲',infoNoCrop:'未選択',btnClearCrop:'選択解除',labelTargetSize:'目標サイズ',phWidth:'幅',phHeight:'高さ',labelLockRatio:'縦横比を固定',labelPresets:'プリセットサイズ',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'正方形',presetThumb:'サムネイル',btnDownload:'結果画像をダウンロード',metaWaiting:'画像待ち',emptyHint:'画像をドロップして試す',cropHint:'画像上をドラッグして範囲を選択',relatedTitle:'その他の画像ツール',relatedCompress:'画像圧縮',relatedConvert:'フォーマット変換',relatedCrop:'トリミング・リサイズ',relatedIdphoto:'証明写真背景',relatedWatermark:'ウォーターマーク',relatedBgcolor:'背景色変更',relatedSplice:'画像結合',relatedImg2pdf:'PDF変換',relatedFilter:'フィルター調整'},
-  ko:{brand:'imagec',toolWhitebg:'흰배경제거',toolCompress:'압축',toolConvert:'변환',toolCrop:'자르기',toolIdphoto:'증명사진',toolWatermark:'워터마크',toolBgcolor:'배경색변경',toolSplice:'이어붙이기',toolImg2pdf:'PDF변환',toolFilter:'필터',heroTitle:'이미지 자르기 및 리사이즈 도구',heroDesc:'온라인에서 이미지를 자르거나 크기 조절. 캔버스에서 드래그로 영역 선택, 목표 크기 입력으로 확대/축소, 원클릭으로 프리셋 사이즈 적용.',safeBadge:'기기에서 처리 · 업로드 없음',dropHint:'클릭으로 선택하거나 이미지 드롭',dropDesc:'PNG, JPG, WebP 지원<br>직접 붙여넣기도 가능',labelMode:'작업 모드',btnCropMode:'자르기',btnCircleMode:'원형',btnResizeMode:'리사이즈',circleHint:'정사각 선택 영역을 드래그해 투명 원형 PNG(아바타용)로 내보냅니다.',labelCropArea:'자르기 영역',infoNoCrop:'선택 안됨',btnClearCrop:'선택 지우기',labelTargetSize:'목표 크기',phWidth:'너비',phHeight:'높이',labelLockRatio:'가로세로 비율 고정',labelPresets:'프리셋 사이즈',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'정사각형',presetThumb:'썸네일',btnDownload:'결과 이미지 다운로드',metaWaiting:'이미지 대기',emptyHint:'이미지를 여기에 넣어보세요',cropHint:'이미지 위를 드래그해 영역을 선택',relatedTitle:'더 많은 이미지 도구',relatedCompress:'이미지 압축',relatedConvert:'형식 변환',relatedCrop:'자르기 및 리사이즈',relatedIdphoto:'증명사진 배경',relatedWatermark:'워터마크 추가',relatedBgcolor:'배경색 변경',relatedSplice:'이미지 이어붙이기',relatedImg2pdf:'PDF 변환',relatedFilter:'필터 보정'},
-  es:{brand:'imagec',toolWhitebg:'Quitar Blanco',toolCompress:'Comprimir',toolConvert:'Convertir',toolCrop:'Recortar',toolIdphoto:'Foto ID',toolWatermark:'Marca',toolBgcolor:'Color Fondo',toolSplice:'Unir',toolImg2pdf:'A PDF',toolFilter:'Filtros',heroTitle:'Herramienta de Recorte y Redimensionado',heroDesc:'Recorta o redimensiona imágenes online. Arrastra para seleccionar el área en el lienzo, introduce las dimensiones objetivo para escalar, o aplica tamaños predefinidos comunes con un clic.',safeBadge:'Local · sin subir',dropHint:'Haz clic para seleccionar o arrastra una imagen',dropDesc:'Soporta PNG, JPG, WebP<br>o pega directamente',labelMode:'Modo de Operación',btnCropMode:'Recortar',btnCircleMode:'Círculo',btnResizeMode:'Redimensionar',circleHint:'Arrastra una selección cuadrada y exporta un PNG circular transparente (ideal para avatar).',labelCropArea:'Área de Recorte',infoNoCrop:'No seleccionado',btnClearCrop:'Limpiar Selección',labelTargetSize:'Tamaño Objetivo',phWidth:'Ancho',phHeight:'Alto',labelLockRatio:'Bloquear Relación Aspecto',labelPresets:'Tamaños Predefinidos',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Cuadrado',presetThumb:'Miniatura',btnDownload:'Descargar Resultado',metaWaiting:'Esperando imagen',emptyHint:'Suelta una imagen aquí para probar',cropHint:'Arrastra sobre la imagen para elegir el área',relatedTitle:'Más Herramientas de Imagen',relatedCompress:'Comprimir Imagen',relatedConvert:'Convertir Formato',relatedCrop:'Recortar y Redimensionar',relatedIdphoto:'Fondo Foto ID',relatedWatermark:'Añadir Marca',relatedBgcolor:'Cambiar Color Fondo',relatedSplice:'Unir Imágenes',relatedImg2pdf:'A PDF',relatedFilter:'Filtros y Color'},
-  fr:{brand:'imagec',toolWhitebg:'Supprimer Blanc',toolCompress:'Compresser',toolConvert:'Convertir',toolCrop:'Recadrer',toolIdphoto:'Photo ID',toolWatermark:'Filigrane',toolBgcolor:'Couleur Fond',toolSplice:'Assembler',toolImg2pdf:'Vers PDF',toolFilter:'Filtres',heroTitle:"Outil de Recadrage et Redimensionnement d'Image",heroDesc:"Recadrez ou redimensionnez des images en ligne. Glissez pour sélectionner la zone sur le canevas, saisissez les dimensions cibles ou appliquez des formats prédéfinis courants en un clic.",safeBadge:'Local · rien n’est envoyé',dropHint:'Cliquez pour sélectionner ou déposez une image',dropDesc:'Prend en charge PNG, JPG, WebP<br>ou collage direct',labelMode:'Mode Opératoire',btnCropMode:'Recadrer',btnCircleMode:'Cercle',btnResizeMode:'Redimensionner',circleHint:'Tracez une sélection carrée et exportez un PNG circulaire transparent (idéal pour un avatar).',labelCropArea:"Zone de Recadrage",infoNoCrop:'Non sélectionné',btnClearCrop:'Effacer la Sélection',labelTargetSize:'Taille Cible',phWidth:'Largeur',phHeight:'Hauteur',labelLockRatio:'Verrouiller le Ratio',labelPresets:'Tailles Prédéfinies',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Carré',presetThumb:'Vignette',btnDownload:'Télécharger le Résultat',metaWaiting:'En attente d\'image',emptyHint:'Déposez une image ici pour essayer',cropHint:'Glissez sur l\'image pour choisir la zone',relatedTitle:'Plus d\'Outils Image',relatedCompress:'Compression Image',relatedConvert:'Conversion Format',relatedCrop:'Recadrage/Redimensionnement',relatedIdphoto:'Fond Photo ID',relatedWatermark:'Ajouter Filigrane',relatedBgcolor:'Changer Couleur Fond',relatedSplice:'Assemblage Images',relatedImg2pdf:'Vers PDF',relatedFilter:'Filtres et Couleurs'},
-  de:{brand:'imagec',toolWhitebg:'Weiß entfernen',toolCompress:'Komprimieren',toolConvert:'Konvertieren',toolCrop:'Zuschneiden',toolIdphoto:'Ausweisfoto',toolWatermark:'Wasserzeichen',toolBgcolor:'Hintergrundfarbe',toolSplice:'Zusammenfügen',toolImg2pdf:'Zu PDF',toolFilter:'Filter',heroTitle:'Bild Zuschneide- und Größenänderungswerkzeug',heroDesc:'Bilder online zuschneiden oder größenändern. Ziehen Sie zur Auswahl auf der Leinwand, geben Sie Zielmaße ein oder wenden Sie gängige vordefinierte Größen mit einem Klick an.',safeBadge:'Lokal · kein Upload',dropHint:'Klicken zum Auswählen oder Bild ziehen',dropDesc:'Unterstützt PNG, JPG, WebP<br>oder direkt einfügen',labelMode:'Betriebsmodus',btnCropMode:'Zuschneiden',btnCircleMode:'Kreis',btnResizeMode:'Größe ändern',circleHint:'Ziehen Sie eine quadratische Auswahl und exportieren Sie ein transparentes rundes PNG (für Avatare).',labelCropArea:'Zuschneidebereich',infoNoCrop:'Nicht ausgewählt',btnClearCrop:'Auswahl aufheben',labelTargetSize:'Zielgröße',phWidth:'Breite',phHeight:'Höhe',labelLockRatio:'Seitenverhältnis sperren',labelPresets:'Vordefinierte Größen',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Quadratisch',presetThumb:'Miniatur',btnDownload:'Ergebnis herunterladen',metaWaiting:'Warte auf Bild',emptyHint:'Legen Sie ein Bild hier ab zum Testen',cropHint:'Auf dem Bild ziehen, um den Bereich zu wählen',relatedTitle:'Mehr Bildwerkzeuge',relatedCompress:'Bildkomprimierung',relatedConvert:'Formatkonvertierung',relatedCrop:'Zuschneiden/Größe ändern',relatedIdphoto:'Ausweisfoto Hintergrund',relatedWatermark:'Wasserzeichen hinzufügen',relatedBgcolor:'Hintergrundfarbe ändern',relatedSplice:'Bilder zusammenfügen',relatedImg2pdf:'Zu PDF',relatedFilter:'Filter & Farbe'},
-  ru:{brand:'imagec',toolWhitebg:'Удалить белый',toolCompress:'Сжатие',toolConvert:'Конвертация',toolCrop:'Обрезка',toolIdphoto:'Фото на документы',toolWatermark:'Водяной знак',toolBgcolor:'Цвет фона',toolSplice:'Склейка',toolImg2pdf:'В PDF',toolFilter:'Фильтры',heroTitle:'Инструмент Обрезки и Изменения Размера Изображения',heroDesc:'Обрезайте или изменяйте размер изображений онлайн. Перетащите мышью для выбора области на холсте, введите целевые размеры для масштабирования или примените стандартные размеры в один клик.',safeBadge:'Локально · без загрузки',dropHint:'Нажмите для выбора или перетащите изображение',dropDesc:'Поддерживает PNG, JPG, WebP<br>или вставьте напрямую',labelMode:'Режим работы',btnCropMode:'Обрезка',btnCircleMode:'Круг',btnResizeMode:'Масштабирование',circleHint:'Выделите квадрат и экспортируйте прозрачный круглый PNG (для аватара).',labelCropArea:'Область обрезки',infoNoCrop:'Не выбрано',btnClearCrop:'Очистить выбор',labelTargetSize:'Целевой размер',phWidth:'Ширина',phHeight:'Высота',labelLockRatio:'Блокировать соотношение сторон',labelPresets:'Предустановленные размеры',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Квадрат',presetThumb:'Миниатюра',btnDownload:'Скачать результат',metaWaiting:'Ожидание изображения',emptyHint:'Перетащите изображение сюда для пробы',cropHint:'Потяните по изображению, чтобы выбрать область',relatedTitle:'Еще инструменты для изображений',relatedCompress:'Сжатие изображений',relatedConvert:'Конвертация форматов',relatedCrop:'Обрезка/Масштабирование',relatedIdphoto:'Фото на документы фон',relatedWatermark:'Добавить водяной знак',relatedBgcolor:'Изменить цвет фона',relatedSplice:'Склейка изображений',relatedImg2pdf:'В PDF',relatedFilter:'Фильтры и цвет'},
-  pt:{brand:'imagec',toolWhitebg:'Remover Branco',toolCompress:'Comprimir',toolConvert:'Converter',toolCrop:'Cortar',toolIdphoto:'Foto ID',toolWatermark:'Marca',toolBgcolor:'Cor Fundo',toolSplice:'Unir',toolImg2pdf:'Para PDF',toolFilter:'Filtros',heroTitle:'Ferramenta de Corte e Redimensionamento',heroDesc:'Corte ou redimensione imagens online. Arraste para selecionar a área na tela, insira as dimensões alvo para escala, ou aplique tamanhos predefinidos comuns com um clique.',safeBadge:'Local · sem envio',dropHint:'Clique para selecionar ou arraste uma imagem',dropDesc:'Suporta PNG, JPG, WebP<br>ou cole diretamente',labelMode:'Modo de Operação',btnCropMode:'Cortar',btnCircleMode:'Círculo',btnResizeMode:'Redimensionar',circleHint:'Arraste uma seleção quadrada e exporte um PNG circular transparente (ideal para avatar).',labelCropArea:'Área de Corte',infoNoCrop:'Não selecionado',btnClearCrop:'Limpar Seleção',labelTargetSize:'Tamanho Alvo',phWidth:'Largura',phHeight:'Altura',labelLockRatio:'Travar Proporção',labelPresets:'Tamanhos Predefinidos',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Quadrado',presetThumb:'Miniatura',btnDownload:'Baixar Resultado',metaWaiting:'Aguardando imagem',emptyHint:'Solte uma imagem aqui para testar',cropHint:'Arraste na imagem para escolher a área',relatedTitle:'Mais Ferramentas de Imagem',relatedCompress:'Compressão de Imagem',relatedConvert:'Conversão de Formato',relatedCrop:'Corte/Redimensionamento',relatedIdphoto:'Fundo Foto ID',relatedWatermark:'Adicionar Marca',relatedBgcolor:'Mudar Cor Fundo',relatedSplice:'União de Imagens',relatedImg2pdf:'Para PDF',relatedFilter:'Filtros e Cor'},
-  ar:{brand:'imagec',toolWhitebg:'إزالة الأبيض',toolCompress:'ضغط',toolConvert:'تحويل',toolCrop:'قص',toolIdphoto:'صورة هوية',toolWatermark:'علامة مائية',toolBgcolor:'لون الخلفية',toolSplice:'دمج',toolImg2pdf:'إلى PDF',toolFilter:'مرشحات',heroTitle:'أداة قص وتغيير حجم الصور',heroDesc:'قص أو تغيير حجم الصور عبر الإنترنت. اسحب لتحديد المنطقة على لوحة الرسم، أدخل الأبعاد المستهدفة للقياس، أو تطبيق أحجام شائعة محددة مسبقًا بنقرة واحدة.',safeBadge:'محلي · بلا رفع',dropHint:'انقر للاختيار أو اسحب الصورة',dropDesc:'يدعم PNG, JPG, WebP<br>أو اللصق المباشر',labelMode:'وضع التشغيل',btnCropMode:'قص',btnCircleMode:'دائري',btnResizeMode:'تغيير الحجم',circleHint:'اسحب تحديداً مربعاً وصدّر PNG دائرياً شفافاً (مناسب للصورة الشخصية).',labelCropArea:'منطقة القص',infoNoCrop:'لم يتم الاختيار',btnClearCrop:'مسح التحديد',labelTargetSize:'الحجم المستهدف',phWidth:'العرض',phHeight:'الارتفاع',labelLockRatio:'قفل نسبة العرض إلى الارتفاع',labelPresets:'الأحجام المحددة مسبقًا',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'مربع',presetThumb:'صورة مصغرة',btnDownload:'تنزيل النتيجة',metaWaiting:'في انتظار الصورة',emptyHint:'اسحب صورة هنا لتجربتها',cropHint:'اسحب على الصورة لاختيار المنطقة',relatedTitle:'المزيد من أدوات الصور',relatedCompress:'ضغط الصور',relatedConvert:'تحويل التنسيق',relatedCrop:'قص وتغيير الحجم',relatedIdphoto:'خلفية صورة هوية',relatedWatermark:'إضافة علامة مائية',relatedBgcolor:'تغيير لون الخلفية',relatedSplice:'دمج الصور',relatedImg2pdf:'إلى PDF',relatedFilter:'مرشحات ولون'},
-  vi:{brand:'imagec',toolWhitebg:'Xóa trắng',toolCompress:'Nén',toolConvert:'Chuyển đổi',toolCrop:'Cắt',toolIdphoto:'Ảnh CMND',toolWatermark:'Watermark',toolBgcolor:'Màu nền',toolSplice:'Ghép',toolImg2pdf:'Sang PDF',toolFilter:'Bộ lọc',heroTitle:'Công cụ Cắt và Thay đổi Kích thước Ảnh',heroDesc:'Cắt hoặc thay đổi kích thước ảnh trực tuyến. Kéo để chọn vùng trên canvas, nhập kích thước mục tiêu để thu nhỏ/phóng to, hoặc áp dụng các kích thước thông dụng cài sẵn chỉ với một nhấp chuột.',safeBadge:'Tại máy · không tải lên',dropHint:'Nhấp để chọn hoặc kéo ảnh vào',dropDesc:'Hỗ trợ PNG, JPG, WebP<br>hoặc dán trực tiếp',labelMode:'Chế độ hoạt động',btnCropMode:'Cắt',btnCircleMode:'Tròn',btnResizeMode:'Thay đổi kích thước',circleHint:'Kéo chọn vùng vuông và xuất PNG tròn trong suốt (phù hợp ảnh đại diện).',labelCropArea:'Vùng cắt',infoNoCrop:'Chưa chọn',btnClearCrop:'Xóa lựa chọn',labelTargetSize:'Kích thước mục tiêu',phWidth:'Rộng',phHeight:'Cao',labelLockRatio:'Khóa tỷ lệ khung hình',labelPresets:'Kích thước cài sẵn',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Vuông',presetThumb:'Ảnh thu nhỏ',btnDownload:'Tải xuống kết quả',metaWaiting:'Chờ ảnh',emptyHint:'Kéo ảnh vào đây để thử',cropHint:'Kéo trên ảnh để chọn vùng',relatedTitle:'Nhiều công cụ ảnh hơn',relatedCompress:'Nén ảnh',relatedConvert:'Chuyển định dạng',relatedCrop:'Cắt/Thay đổi kích thước',relatedIdphoto:'Nền ảnh CMND',relatedWatermark:'Thêm watermark',relatedBgcolor:'Đổi màu nền',relatedSplice:'Ghép ảnh',relatedImg2pdf:'Sang PDF',relatedFilter:'Bộ lọc và màu'},
-  id:{brand:'imagec',toolWhitebg:'Hapus Putih',toolCompress:'Kompres',toolConvert:'Konversi',toolCrop:'Potong',toolIdphoto:'Foto ID',toolWatermark:'Watermark',toolBgcolor:'Warna Latar',toolSplice:'Gabung',toolImg2pdf:'Ke PDF',toolFilter:'Filter',heroTitle:'Alat Pemotong dan Pengubah Ukuran Gambar',heroDesc:'Potong atau ubah ukuran gambar secara online. Seret untuk memilih area di kanvas, masukkan dimensi target untuk penskalaan, atau terapkan ukuran preset umum dengan satu klik.',safeBadge:'Lokal · tidak diunggah',dropHint:'Klik untuk memilih atau seret gambar',dropDesc:'Mendukung PNG, JPG, WebP<br>atau tempel langsung',labelMode:'Mode Operasi',btnCropMode:'Potong',btnCircleMode:'Lingkaran',btnResizeMode:'Ubah Ukuran',circleHint:'Seret seleksi persegi dan ekspor PNG lingkaran transparan (cocok untuk avatar).',labelCropArea:'Area Potong',infoNoCrop:'Belum dipilih',btnClearCrop:'Hapus Pilihan',labelTargetSize:'Ukuran Target',phWidth:'Lebar',phHeight:'Tinggi',labelLockRatio:'Kunci Rasio Aspek',labelPresets:'Ukuran Preset',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Persegi',presetThumb:'Thumbnail',btnDownload:'Unduh Hasil',metaWaiting:'Menunggu gambar',emptyHint:'Seret gambar ke sini untuk mencoba',cropHint:'Seret pada gambar untuk memilih area',relatedTitle:'Lebih Banyak Alat Gambar',relatedCompress:'Kompresi Gambar',relatedConvert:'Konversi Format',relatedCrop:'Potong/Ubah Ukuran',relatedIdphoto:'Latar Foto ID',relatedWatermark:'Tambah Watermark',relatedBgcolor:'Ubah Warna Latar',relatedSplice:'Penggabungan Gambar',relatedImg2pdf:'Ke PDF',relatedFilter:'Filter dan Warna'},
-  th:{brand:'imagec',toolWhitebg:'ลบพื้นขาว',toolCompress:'บีบอัด',toolConvert:'แปลง',toolCrop:'ครอป',toolIdphoto:'รูปบัตรประชาชน',toolWatermark:'ลายน้ำ',toolBgcolor:'สีพื้นหลัง',toolSplice:'เชื่อม',toolImg2pdf:'เป็น PDF',toolFilter:'ฟิลเตอร์',heroTitle:'เครื่องมือครอปและปรับขนาดภาพ',heroDesc:'ครอปหรือปรับขนาดภาพออนไลน์ ลากเพื่อเลือกพื้นที่บนแคนวาส ป้อนขนาดเป้าหมายเพื่อปรับขนาด หรือใช้ขนาดที่ตั้งไว้ทั่วไปด้วยคลิกเดียว',safeBadge:'ในเครื่อง · ไม่อัปโหลด',dropHint:'คลิกเพื่อเลือกหรือลากภาพเข้ามา',dropDesc:'รองรับ PNG, JPG, WebP<br>หรือวางโดยตรง',labelMode:'โหมดการทำงาน',btnCropMode:'ครอป',btnCircleMode:'วงกลม',btnResizeMode:'ปรับขนาด',circleHint:'ลากเลือกพื้นที่สี่เหลี่ยมจัตุรัส แล้วส่งออก PNG วงกลมโปร่งใส (เหมาะกับรูปโปรไฟล์)',labelCropArea:'พื้นที่ครอป',infoNoCrop:'ยังไม่ได้เลือก',btnClearCrop:'ล้างการเลือก',labelTargetSize:'ขนาดเป้าหมาย',phWidth:'กว้าง',phHeight:'สูง',labelLockRatio:'ล็อคอัตราส่วนภาพ',labelPresets:'ขนาดพร้อมตั้ง',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'สี่เหลี่ยมจัตุรัส',presetThumb:'ภาพขนาดย่อ',btnDownload:'ดาวน์โหลดผลลัพธ์',metaWaiting:'รอภาพ',emptyHint:'ลากภาพมาที่นี่เพื่อลอง',cropHint:'ลากบนรูปเพื่อเลือกพื้นที่',relatedTitle:'เครื่องมือรูปภาพเพิ่มเติม',relatedCompress:'บีบอัดภาพ',relatedConvert:'แปลงรูปแบบ',relatedCrop:'ครอป/ปรับขนาด',relatedIdphoto:'พื้นหลังรูปบัตร',relatedWatermark:'ใส่ลายน้ำ',relatedBgcolor:'เปลี่ยนสีพื้นหลัง',relatedSplice:'เชื่อมภาพ',relatedImg2pdf:'เป็น PDF',relatedFilter:'ฟิลเตอร์และสี'}
+  zh:{presetIg:"Instagram",presetStory:"竖版 Story",presetShop:"电商主图",presetId1:"一寸",presetId2:"二寸",presetOg:"社媒封面",brand:'imagec',toolWhitebg:'去白底',toolCompress:'压缩',toolConvert:'转换',toolCrop:'裁剪',toolIdphoto:'证件照',toolWatermark:'水印',toolBgcolor:'换底色',toolSplice:'拼接',toolImg2pdf:'转PDF',toolFilter:'滤镜',heroTitle:'图片裁剪缩放工具',heroDesc:'拖动边框，或直接填写像素。',safeBadge:'本地处理 · 不上传服务器',dropHint:'点击选择或拖入图片',dropDesc:'支持 PNG、JPG、WebP<br>也可直接粘贴图片',labelMode:'操作模式',btnCropMode:'裁剪',btnCircleMode:'圆形',btnResizeMode:'缩放',circleHint:'按正方形裁成透明圆形 PNG，适合头像。',labelPixels:'选区像素',btnFull:'全图',labelRatio:'比例',ratioFree:'自由',labelCircle:'圆形导出',labelExport:'导出像素',btnMatch:'与选区相同',exportHint:'和选区像素不同时会缩放。',stretchHint:'导出宽高比和选区不同，画面会被拉伸。',labelCropArea:'裁剪区域',infoNoCrop:'未选择',btnClearCrop:'清除选区',labelTargetSize:'目标尺寸',phWidth:'宽',phHeight:'高',labelLockRatio:'锁定宽高比',labelPresets:'预设尺寸',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'正方形',presetThumb:'缩略图',btnDownload:'下载结果图片',metaWaiting:'等待图片',emptyHint:'把图片放进来试试',cropHint:'拖边框调整，靠近边缘会吸住。',relatedTitle:'更多图片工具',relatedCompress:'图片压缩',relatedConvert:'格式转换',relatedCrop:'裁剪缩放',relatedIdphoto:'证件照换底色',relatedWatermark:'加水印',relatedBgcolor:'换背景色',relatedSplice:'图片拼接',relatedImg2pdf:'转PDF',relatedFilter:'滤镜调色'},
+  en:{presetIg:"Instagram",presetStory:"Story",presetShop:"Product image",presetId1:"1-inch ID photo",presetId2:"2-inch ID photo",presetOg:"Social cover",brand:'imagec',toolWhitebg:'Remove White',toolCompress:'Compress',toolConvert:'Convert',toolCrop:'Crop',toolIdphoto:'ID Photo',toolWatermark:'Watermark',toolBgcolor:'BG Color',toolSplice:'Splice',toolImg2pdf:'To PDF',toolFilter:'Filters',heroTitle:'Image Crop & Resize Tool',heroDesc:'Drag the frame, or type the pixels.',safeBadge:'Local · no upload',dropHint:'Click to select or drop an image',dropDesc:'Supports PNG, JPG, WebP<br>or paste directly',labelMode:'Operation Mode',btnCropMode:'Crop',btnCircleMode:'Circle',btnResizeMode:'Resize',circleHint:'Crops a square and exports a transparent circular PNG for avatars.',labelPixels:'Crop pixels',btnFull:'Full image',labelRatio:'Ratio',ratioFree:'Free',labelCircle:'Circle export',labelExport:'Export pixels',btnMatch:'Match crop',exportHint:'A different size scales the crop.',stretchHint:'Export ratio differs from the crop, so the image will be stretched.',labelCropArea:'Crop Area',infoNoCrop:'Not selected',btnClearCrop:'Clear Selection',labelTargetSize:'Target Size',phWidth:'Width',phHeight:'Height',labelLockRatio:'Lock Aspect Ratio',labelPresets:'Preset Sizes',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Square',presetThumb:'Thumbnail',btnDownload:'Download Result',metaWaiting:'Waiting for image',emptyHint:'Drop an image here to try',cropHint:'Drag an edge. It snaps to the image border.',relatedTitle:'More Image Tools',relatedCompress:'Image Compress',relatedConvert:'Format Convert',relatedCrop:'Crop & Resize',relatedIdphoto:'ID Photo BG',relatedWatermark:'Add Watermark',relatedBgcolor:'Change BG Color',relatedSplice:'Image Splice',relatedImg2pdf:'To PDF',relatedFilter:'Filters & Color'},
+  ja:{brand:'imagec',toolWhitebg:'白抜き',toolCompress:'圧縮',toolConvert:'変換',toolCrop:'トリミング',toolIdphoto:'証明写真',toolWatermark:'ウォーターマーク',toolBgcolor:'背景色変更',toolSplice:'結合',toolImg2pdf:'PDF変換',toolFilter:'フィルター',heroTitle:'画像トリミング・リサイズツール',heroDesc:'枠をドラッグするか、ピクセルを入力。',safeBadge:'端末内処理 · 送信しません',dropHint:'クリックで選ぶ or ドラッグ&ドロップ',dropDesc:'PNG、JPG、WebP対応<br>直接貼り付けも可',labelMode:'操作モード',btnCropMode:'トリミング',btnCircleMode:'円形',btnResizeMode:'リサイズ',circleHint:'正方形で切り抜き、透明な円形 PNG（アイコン向け）にします。',labelPixels:'範囲（px）',btnFull:'全体',labelRatio:'比率',ratioFree:'自由',labelCircle:'円形で書き出し',labelExport:'書き出し（px）',btnMatch:'範囲に合わせる',exportHint:'範囲と違うサイズにすると拡大縮小されます。',stretchHint:'書き出し比率が範囲と違うため、画像が伸びます。',labelCropArea:'トリミング範囲',infoNoCrop:'未選択',btnClearCrop:'選択解除',labelTargetSize:'目標サイズ',phWidth:'幅',phHeight:'高さ',labelLockRatio:'縦横比を固定',labelPresets:'プリセットサイズ',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'正方形',presetThumb:'サムネイル',btnDownload:'結果画像をダウンロード',metaWaiting:'画像待ち',emptyHint:'画像をドロップして試す',cropHint:'辺や角をドラッグ。画像の端に吸い付きます。左でピクセルも指定できます。',relatedTitle:'その他の画像ツール',relatedCompress:'画像圧縮',relatedConvert:'フォーマット変換',relatedCrop:'トリミング・リサイズ',relatedIdphoto:'証明写真背景',relatedWatermark:'ウォーターマーク',relatedBgcolor:'背景色変更',relatedSplice:'画像結合',relatedImg2pdf:'PDF変換',relatedFilter:'フィルター調整'},
+  ko:{brand:'imagec',toolWhitebg:'흰배경제거',toolCompress:'압축',toolConvert:'변환',toolCrop:'자르기',toolIdphoto:'증명사진',toolWatermark:'워터마크',toolBgcolor:'배경색변경',toolSplice:'이어붙이기',toolImg2pdf:'PDF변환',toolFilter:'필터',heroTitle:'이미지 자르기 및 리사이즈 도구',heroDesc:'테두리를 끌거나 픽셀을 입력하세요.',safeBadge:'기기에서 처리 · 업로드 없음',dropHint:'클릭으로 선택하거나 이미지 드롭',dropDesc:'PNG, JPG, WebP 지원<br>직접 붙여넣기도 가능',labelMode:'작업 모드',btnCropMode:'자르기',btnCircleMode:'원형',btnResizeMode:'리사이즈',circleHint:'정사각형으로 잘라 투명한 원형 PNG(아바타용)로 내보냅니다.',labelPixels:'선택 픽셀',btnFull:'전체',labelRatio:'비율',ratioFree:'자유',labelCircle:'원형으로 내보내기',labelExport:'내보낼 픽셀',btnMatch:'선택과 같게',exportHint:'선택 영역과 크기가 다르면 확대·축소됩니다.',stretchHint:'내보내기 비율이 선택과 달라 늘어납니다.',labelCropArea:'자르기 영역',infoNoCrop:'선택 안됨',btnClearCrop:'선택 지우기',labelTargetSize:'목표 크기',phWidth:'너비',phHeight:'높이',labelLockRatio:'가로세로 비율 고정',labelPresets:'프리셋 사이즈',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'정사각형',presetThumb:'썸네일',btnDownload:'결과 이미지 다운로드',metaWaiting:'이미지 대기',emptyHint:'이미지를 여기에 넣어보세요',cropHint:'변이나 모서리를 드래그하세요. 이미지 가장자리에 붙습니다. 왼쪽에서 픽셀을 입력할 수도 있습니다.',relatedTitle:'더 많은 이미지 도구',relatedCompress:'이미지 압축',relatedConvert:'형식 변환',relatedCrop:'자르기 및 리사이즈',relatedIdphoto:'증명사진 배경',relatedWatermark:'워터마크 추가',relatedBgcolor:'배경색 변경',relatedSplice:'이미지 이어붙이기',relatedImg2pdf:'PDF 변환',relatedFilter:'필터 보정'},
+  es:{brand:'imagec',toolWhitebg:'Quitar Blanco',toolCompress:'Comprimir',toolConvert:'Convertir',toolCrop:'Recortar',toolIdphoto:'Foto ID',toolWatermark:'Marca',toolBgcolor:'Color Fondo',toolSplice:'Unir',toolImg2pdf:'A PDF',toolFilter:'Filtros',heroTitle:'Herramienta de Recorte y Redimensionado',heroDesc:'Arrastra el marco o escribe los píxeles.',safeBadge:'Local · sin subir',dropHint:'Haz clic para seleccionar o arrastra una imagen',dropDesc:'Soporta PNG, JPG, WebP<br>o pega directamente',labelMode:'Modo de Operación',btnCropMode:'Recortar',btnCircleMode:'Círculo',btnResizeMode:'Redimensionar',circleHint:'Recorta un cuadrado y exporta un PNG circular transparente para avatares.',labelPixels:'Píxeles del recorte',btnFull:'Imagen completa',labelRatio:'Proporción',ratioFree:'Libre',labelCircle:'Exportar círculo',labelExport:'Píxeles de salida',btnMatch:'Igual al recorte',exportHint:'Si el tamaño es distinto, el recorte se escala.',stretchHint:'La proporción de salida no coincide: la imagen se estirará.',labelCropArea:'Área de Recorte',infoNoCrop:'No seleccionado',btnClearCrop:'Limpiar Selección',labelTargetSize:'Tamaño Objetivo',phWidth:'Ancho',phHeight:'Alto',labelLockRatio:'Bloquear Relación Aspecto',labelPresets:'Tamaños Predefinidos',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Cuadrado',presetThumb:'Miniatura',btnDownload:'Descargar Resultado',metaWaiting:'Esperando imagen',emptyHint:'Suelta una imagen aquí para probar',cropHint:'Arrastra un borde o una esquina. El marco se pega al borde. También puedes escribir los píxeles.',relatedTitle:'Más Herramientas de Imagen',relatedCompress:'Comprimir Imagen',relatedConvert:'Convertir Formato',relatedCrop:'Recortar y Redimensionar',relatedIdphoto:'Fondo Foto ID',relatedWatermark:'Añadir Marca',relatedBgcolor:'Cambiar Color Fondo',relatedSplice:'Unir Imágenes',relatedImg2pdf:'A PDF',relatedFilter:'Filtros y Color'},
+  fr:{brand:'imagec',toolWhitebg:'Supprimer Blanc',toolCompress:'Compresser',toolConvert:'Convertir',toolCrop:'Recadrer',toolIdphoto:'Photo ID',toolWatermark:'Filigrane',toolBgcolor:'Couleur Fond',toolSplice:'Assembler',toolImg2pdf:'Vers PDF',toolFilter:'Filtres',heroTitle:"Outil de Recadrage et Redimensionnement d'Image",heroDesc:'Glissez le cadre, ou saisissez les pixels.',safeBadge:'Local · rien n’est envoyé',dropHint:'Cliquez pour sélectionner ou déposez une image',dropDesc:'Prend en charge PNG, JPG, WebP<br>ou collage direct',labelMode:'Mode Opératoire',btnCropMode:'Recadrer',btnCircleMode:'Cercle',btnResizeMode:'Redimensionner',circleHint:'Recadre un carré et exporte un PNG circulaire transparent, pour les avatars.',labelPixels:'Pixels du cadre',btnFull:'Image entière',labelRatio:'Ratio',ratioFree:'Libre',labelCircle:'Export circulaire',labelExport:'Pixels exportés',btnMatch:'Comme le cadre',exportHint:'Une taille différente met le recadrage à l’échelle.',stretchHint:'Le ratio d’export diffère : l’image sera étirée.',labelCropArea:"Zone de Recadrage",infoNoCrop:'Non sélectionné',btnClearCrop:'Effacer la Sélection',labelTargetSize:'Taille Cible',phWidth:'Largeur',phHeight:'Hauteur',labelLockRatio:'Verrouiller le Ratio',labelPresets:'Tailles Prédéfinies',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Carré',presetThumb:'Vignette',btnDownload:'Télécharger le Résultat',metaWaiting:'En attente d\'image',emptyHint:'Déposez une image ici pour essayer',cropHint:'Glissez un bord ou un coin. Le cadre s’aimante au bord. Vous pouvez aussi saisir les pixels.',relatedTitle:'Plus d\'Outils Image',relatedCompress:'Compression Image',relatedConvert:'Conversion Format',relatedCrop:'Recadrage/Redimensionnement',relatedIdphoto:'Fond Photo ID',relatedWatermark:'Ajouter Filigrane',relatedBgcolor:'Changer Couleur Fond',relatedSplice:'Assemblage Images',relatedImg2pdf:'Vers PDF',relatedFilter:'Filtres et Couleurs'},
+  de:{brand:'imagec',toolWhitebg:'Weiß entfernen',toolCompress:'Komprimieren',toolConvert:'Konvertieren',toolCrop:'Zuschneiden',toolIdphoto:'Ausweisfoto',toolWatermark:'Wasserzeichen',toolBgcolor:'Hintergrundfarbe',toolSplice:'Zusammenfügen',toolImg2pdf:'Zu PDF',toolFilter:'Filter',heroTitle:'Bild Zuschneide- und Größenänderungswerkzeug',heroDesc:'Rahmen ziehen oder Pixel eingeben.',safeBadge:'Lokal · kein Upload',dropHint:'Klicken zum Auswählen oder Bild ziehen',dropDesc:'Unterstützt PNG, JPG, WebP<br>oder direkt einfügen',labelMode:'Betriebsmodus',btnCropMode:'Zuschneiden',btnCircleMode:'Kreis',btnResizeMode:'Größe ändern',circleHint:'Schneidet ein Quadrat zu und exportiert ein transparentes rundes PNG für Avatare.',labelPixels:'Ausschnitt in Pixel',btnFull:'Ganzes Bild',labelRatio:'Verhältnis',ratioFree:'Frei',labelCircle:'Kreis exportieren',labelExport:'Exportpixel',btnMatch:'Wie Ausschnitt',exportHint:'Eine andere Größe skaliert den Ausschnitt.',stretchHint:'Das Exportverhältnis weicht ab, das Bild wird gestreckt.',labelCropArea:'Zuschneidebereich',infoNoCrop:'Nicht ausgewählt',btnClearCrop:'Auswahl aufheben',labelTargetSize:'Zielgröße',phWidth:'Breite',phHeight:'Höhe',labelLockRatio:'Seitenverhältnis sperren',labelPresets:'Vordefinierte Größen',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Quadratisch',presetThumb:'Miniatur',btnDownload:'Ergebnis herunterladen',metaWaiting:'Warte auf Bild',emptyHint:'Legen Sie ein Bild hier ab zum Testen',cropHint:'Kante oder Ecke ziehen. Der Rahmen rastet am Bildrand ein. Pixel links eintragen.',relatedTitle:'Mehr Bildwerkzeuge',relatedCompress:'Bildkomprimierung',relatedConvert:'Formatkonvertierung',relatedCrop:'Zuschneiden/Größe ändern',relatedIdphoto:'Ausweisfoto Hintergrund',relatedWatermark:'Wasserzeichen hinzufügen',relatedBgcolor:'Hintergrundfarbe ändern',relatedSplice:'Bilder zusammenfügen',relatedImg2pdf:'Zu PDF',relatedFilter:'Filter & Farbe'},
+  ru:{brand:'imagec',toolWhitebg:'Удалить белый',toolCompress:'Сжатие',toolConvert:'Конвертация',toolCrop:'Обрезка',toolIdphoto:'Фото на документы',toolWatermark:'Водяной знак',toolBgcolor:'Цвет фона',toolSplice:'Склейка',toolImg2pdf:'В PDF',toolFilter:'Фильтры',heroTitle:'Инструмент Обрезки и Изменения Размера Изображения',heroDesc:'Тяните рамку или введите пиксели.',safeBadge:'Локально · без загрузки',dropHint:'Нажмите для выбора или перетащите изображение',dropDesc:'Поддерживает PNG, JPG, WebP<br>или вставьте напрямую',labelMode:'Режим работы',btnCropMode:'Обрезка',btnCircleMode:'Круг',btnResizeMode:'Масштабирование',circleHint:'Вырезает квадрат и сохраняет прозрачный круглый PNG для аватара.',labelPixels:'Пиксели области',btnFull:'Всё изображение',labelRatio:'Пропорция',ratioFree:'Свободно',labelCircle:'Круглый экспорт',labelExport:'Пиксели экспорта',btnMatch:'Как область',exportHint:'Другой размер масштабирует область.',stretchHint:'Пропорция экспорта отличается, изображение растянется.',labelCropArea:'Область обрезки',infoNoCrop:'Не выбрано',btnClearCrop:'Очистить выбор',labelTargetSize:'Целевой размер',phWidth:'Ширина',phHeight:'Высота',labelLockRatio:'Блокировать соотношение сторон',labelPresets:'Предустановленные размеры',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Квадрат',presetThumb:'Миниатюра',btnDownload:'Скачать результат',metaWaiting:'Ожидание изображения',emptyHint:'Перетащите изображение сюда для пробы',cropHint:'Тяните край или угол. Рамка прилипает к краю. Пиксели можно ввести слева.',relatedTitle:'Еще инструменты для изображений',relatedCompress:'Сжатие изображений',relatedConvert:'Конвертация форматов',relatedCrop:'Обрезка/Масштабирование',relatedIdphoto:'Фото на документы фон',relatedWatermark:'Добавить водяной знак',relatedBgcolor:'Изменить цвет фона',relatedSplice:'Склейка изображений',relatedImg2pdf:'В PDF',relatedFilter:'Фильтры и цвет'},
+  pt:{brand:'imagec',toolWhitebg:'Remover Branco',toolCompress:'Comprimir',toolConvert:'Converter',toolCrop:'Cortar',toolIdphoto:'Foto ID',toolWatermark:'Marca',toolBgcolor:'Cor Fundo',toolSplice:'Unir',toolImg2pdf:'Para PDF',toolFilter:'Filtros',heroTitle:'Ferramenta de Corte e Redimensionamento',heroDesc:'Arraste a moldura ou digite os pixels.',safeBadge:'Local · sem envio',dropHint:'Clique para selecionar ou arraste uma imagem',dropDesc:'Suporta PNG, JPG, WebP<br>ou cole diretamente',labelMode:'Modo de Operação',btnCropMode:'Cortar',btnCircleMode:'Círculo',btnResizeMode:'Redimensionar',circleHint:'Corta um quadrado e exporta um PNG circular transparente para avatar.',labelPixels:'Pixels do corte',btnFull:'Imagem inteira',labelRatio:'Proporção',ratioFree:'Livre',labelCircle:'Exportar círculo',labelExport:'Pixels de saída',btnMatch:'Igual ao corte',exportHint:'Um tamanho diferente redimensiona o corte.',stretchHint:'A proporção de saída é diferente: a imagem será esticada.',labelCropArea:'Área de Corte',infoNoCrop:'Não selecionado',btnClearCrop:'Limpar Seleção',labelTargetSize:'Tamanho Alvo',phWidth:'Largura',phHeight:'Altura',labelLockRatio:'Travar Proporção',labelPresets:'Tamanhos Predefinidos',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Quadrado',presetThumb:'Miniatura',btnDownload:'Baixar Resultado',metaWaiting:'Aguardando imagem',emptyHint:'Solte uma imagem aqui para testar',cropHint:'Arraste uma borda ou um canto. A moldura gruda na borda. Também dá para digitar os pixels.',relatedTitle:'Mais Ferramentas de Imagem',relatedCompress:'Compressão de Imagem',relatedConvert:'Conversão de Formato',relatedCrop:'Corte/Redimensionamento',relatedIdphoto:'Fundo Foto ID',relatedWatermark:'Adicionar Marca',relatedBgcolor:'Mudar Cor Fundo',relatedSplice:'União de Imagens',relatedImg2pdf:'Para PDF',relatedFilter:'Filtros e Cor'},
+  ar:{brand:'imagec',toolWhitebg:'إزالة الأبيض',toolCompress:'ضغط',toolConvert:'تحويل',toolCrop:'قص',toolIdphoto:'صورة هوية',toolWatermark:'علامة مائية',toolBgcolor:'لون الخلفية',toolSplice:'دمج',toolImg2pdf:'إلى PDF',toolFilter:'مرشحات',heroTitle:'أداة قص وتغيير حجم الصور',heroDesc:'اسحب الإطار أو اكتب البكسل.',safeBadge:'محلي · بلا رفع',dropHint:'انقر للاختيار أو اسحب الصورة',dropDesc:'يدعم PNG, JPG, WebP<br>أو اللصق المباشر',labelMode:'وضع التشغيل',btnCropMode:'قص',btnCircleMode:'دائري',btnResizeMode:'تغيير الحجم',circleHint:'يقص مربعًا ويصدّر PNG دائريًا شفافًا مناسبًا للصورة الشخصية.',labelPixels:'بكسل القص',btnFull:'الصورة كاملة',labelRatio:'النسبة',ratioFree:'حر',labelCircle:'تصدير دائري',labelExport:'بكسل التصدير',btnMatch:'مثل القص',exportHint:'الحجم المختلف يغيّر مقياس القص.',stretchHint:'نسبة التصدير مختلفة، ستُمط الصورة.',labelCropArea:'منطقة القص',infoNoCrop:'لم يتم الاختيار',btnClearCrop:'مسح التحديد',labelTargetSize:'الحجم المستهدف',phWidth:'العرض',phHeight:'الارتفاع',labelLockRatio:'قفل نسبة العرض إلى الارتفاع',labelPresets:'الأحجام المحددة مسبقًا',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'مربع',presetThumb:'صورة مصغرة',btnDownload:'تنزيل النتيجة',metaWaiting:'في انتظار الصورة',emptyHint:'اسحب صورة هنا لتجربتها',cropHint:'اسحب حافة أو زاوية. يلتصق الإطار بحافة الصورة. يمكنك أيضًا كتابة البكسل.',relatedTitle:'المزيد من أدوات الصور',relatedCompress:'ضغط الصور',relatedConvert:'تحويل التنسيق',relatedCrop:'قص وتغيير الحجم',relatedIdphoto:'خلفية صورة هوية',relatedWatermark:'إضافة علامة مائية',relatedBgcolor:'تغيير لون الخلفية',relatedSplice:'دمج الصور',relatedImg2pdf:'إلى PDF',relatedFilter:'مرشحات ولون'},
+  vi:{brand:'imagec',toolWhitebg:'Xóa trắng',toolCompress:'Nén',toolConvert:'Chuyển đổi',toolCrop:'Cắt',toolIdphoto:'Ảnh CMND',toolWatermark:'Watermark',toolBgcolor:'Màu nền',toolSplice:'Ghép',toolImg2pdf:'Sang PDF',toolFilter:'Bộ lọc',heroTitle:'Công cụ Cắt và Thay đổi Kích thước Ảnh',heroDesc:'Kéo khung hoặc nhập pixel.',safeBadge:'Tại máy · không tải lên',dropHint:'Nhấp để chọn hoặc kéo ảnh vào',dropDesc:'Hỗ trợ PNG, JPG, WebP<br>hoặc dán trực tiếp',labelMode:'Chế độ hoạt động',btnCropMode:'Cắt',btnCircleMode:'Tròn',btnResizeMode:'Thay đổi kích thước',circleHint:'Cắt hình vuông và xuất PNG tròn trong suốt, hợp ảnh đại diện.',labelPixels:'Pixel vùng cắt',btnFull:'Cả ảnh',labelRatio:'Tỷ lệ',ratioFree:'Tự do',labelCircle:'Xuất hình tròn',labelExport:'Pixel xuất',btnMatch:'Theo vùng cắt',exportHint:'Kích thước khác sẽ thu phóng vùng cắt.',stretchHint:'Tỷ lệ xuất khác vùng cắt nên ảnh sẽ bị kéo dãn.',labelCropArea:'Vùng cắt',infoNoCrop:'Chưa chọn',btnClearCrop:'Xóa lựa chọn',labelTargetSize:'Kích thước mục tiêu',phWidth:'Rộng',phHeight:'Cao',labelLockRatio:'Khóa tỷ lệ khung hình',labelPresets:'Kích thước cài sẵn',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Vuông',presetThumb:'Ảnh thu nhỏ',btnDownload:'Tải xuống kết quả',metaWaiting:'Chờ ảnh',emptyHint:'Kéo ảnh vào đây để thử',cropHint:'Kéo cạnh hoặc góc. Khung hút vào mép ảnh. Bạn cũng có thể nhập pixel ở bên trái.',relatedTitle:'Nhiều công cụ ảnh hơn',relatedCompress:'Nén ảnh',relatedConvert:'Chuyển định dạng',relatedCrop:'Cắt/Thay đổi kích thước',relatedIdphoto:'Nền ảnh CMND',relatedWatermark:'Thêm watermark',relatedBgcolor:'Đổi màu nền',relatedSplice:'Ghép ảnh',relatedImg2pdf:'Sang PDF',relatedFilter:'Bộ lọc và màu'},
+  id:{brand:'imagec',toolWhitebg:'Hapus Putih',toolCompress:'Kompres',toolConvert:'Konversi',toolCrop:'Potong',toolIdphoto:'Foto ID',toolWatermark:'Watermark',toolBgcolor:'Warna Latar',toolSplice:'Gabung',toolImg2pdf:'Ke PDF',toolFilter:'Filter',heroTitle:'Alat Pemotong dan Pengubah Ukuran Gambar',heroDesc:'Seret bingkai atau isi piksel.',safeBadge:'Lokal · tidak diunggah',dropHint:'Klik untuk memilih atau seret gambar',dropDesc:'Mendukung PNG, JPG, WebP<br>atau tempel langsung',labelMode:'Mode Operasi',btnCropMode:'Potong',btnCircleMode:'Lingkaran',btnResizeMode:'Ubah Ukuran',circleHint:'Memotong persegi dan mengekspor PNG lingkaran transparan untuk avatar.',labelPixels:'Piksel potongan',btnFull:'Seluruh gambar',labelRatio:'Rasio',ratioFree:'Bebas',labelCircle:'Ekspor lingkaran',labelExport:'Piksel ekspor',btnMatch:'Sama dengan potongan',exportHint:'Ukuran yang berbeda akan mengubah skala potongan.',stretchHint:'Rasio ekspor berbeda, gambar akan tertarik.',labelCropArea:'Area Potong',infoNoCrop:'Belum dipilih',btnClearCrop:'Hapus Pilihan',labelTargetSize:'Ukuran Target',phWidth:'Lebar',phHeight:'Tinggi',labelLockRatio:'Kunci Rasio Aspek',labelPresets:'Ukuran Preset',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'Persegi',presetThumb:'Thumbnail',btnDownload:'Unduh Hasil',metaWaiting:'Menunggu gambar',emptyHint:'Seret gambar ke sini untuk mencoba',cropHint:'Seret tepi atau sudut. Bingkai menempel ke tepi gambar. Piksel juga bisa diisi di kiri.',relatedTitle:'Lebih Banyak Alat Gambar',relatedCompress:'Kompresi Gambar',relatedConvert:'Konversi Format',relatedCrop:'Potong/Ubah Ukuran',relatedIdphoto:'Latar Foto ID',relatedWatermark:'Tambah Watermark',relatedBgcolor:'Ubah Warna Latar',relatedSplice:'Penggabungan Gambar',relatedImg2pdf:'Ke PDF',relatedFilter:'Filter dan Warna'},
+  th:{brand:'imagec',toolWhitebg:'ลบพื้นขาว',toolCompress:'บีบอัด',toolConvert:'แปลง',toolCrop:'ครอป',toolIdphoto:'รูปบัตรประชาชน',toolWatermark:'ลายน้ำ',toolBgcolor:'สีพื้นหลัง',toolSplice:'เชื่อม',toolImg2pdf:'เป็น PDF',toolFilter:'ฟิลเตอร์',heroTitle:'เครื่องมือครอปและปรับขนาดภาพ',heroDesc:'ลากกรอบหรือใส่พิกเซล',safeBadge:'ในเครื่อง · ไม่อัปโหลด',dropHint:'คลิกเพื่อเลือกหรือลากภาพเข้ามา',dropDesc:'รองรับ PNG, JPG, WebP<br>หรือวางโดยตรง',labelMode:'โหมดการทำงาน',btnCropMode:'ครอป',btnCircleMode:'วงกลม',btnResizeMode:'ปรับขนาด',circleHint:'ครอปสี่เหลี่ยมจัตุรัส แล้วส่งออก PNG วงกลมโปร่งใส สำหรับรูปโปรไฟล์',labelPixels:'พิกเซลที่เลือก',btnFull:'ทั้งรูป',labelRatio:'สัดส่วน',ratioFree:'อิสระ',labelCircle:'ส่งออกแบบวงกลม',labelExport:'พิกเซลส่งออก',btnMatch:'เท่ากับที่เลือก',exportHint:'ขนาดต่างจากที่เลือกจะเป็นการย่อขยาย',stretchHint:'สัดส่วนส่งออกไม่ตรงกับที่เลือก ภาพจะถูกยืด',labelCropArea:'พื้นที่ครอป',infoNoCrop:'ยังไม่ได้เลือก',btnClearCrop:'ล้างการเลือก',labelTargetSize:'ขนาดเป้าหมาย',phWidth:'กว้าง',phHeight:'สูง',labelLockRatio:'ล็อคอัตราส่วนภาพ',labelPresets:'ขนาดพร้อมตั้ง',presetFullHD:'Full HD',presetHD:'HD',presetSquare:'สี่เหลี่ยมจัตุรัส',presetThumb:'ภาพขนาดย่อ',btnDownload:'ดาวน์โหลดผลลัพธ์',metaWaiting:'รอภาพ',emptyHint:'ลากภาพมาที่นี่เพื่อลอง',cropHint:'ลากขอบหรือมุม กรอบจะดูดติดขอบรูป หรือใส่พิกเซลทางซ้ายได้',relatedTitle:'เครื่องมือรูปภาพเพิ่มเติม',relatedCompress:'บีบอัดภาพ',relatedConvert:'แปลงรูปแบบ',relatedCrop:'ครอป/ปรับขนาด',relatedIdphoto:'พื้นหลังรูปบัตร',relatedWatermark:'ใส่ลายน้ำ',relatedBgcolor:'เปลี่ยนสีพื้นหลัง',relatedSplice:'เชื่อมภาพ',relatedImg2pdf:'เป็น PDF',relatedFilter:'ฟิลเตอร์และสี'}
 };
 function detectLang(){
   const params=new URLSearchParams(location.search);const url=params.get('lang');

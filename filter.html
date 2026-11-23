@@ -317,7 +317,7 @@ function load(blob, filename = 'image.png') {
   img.onload = () => {
     URL.revokeObjectURL(url);
     source = img;
-    name = filename.replace(/\.[^.]+$/, '');
+    name = filename || 'image.png';
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
     empty.style.display = 'none';
@@ -421,7 +421,7 @@ $('#download').onclick = () => {
   canvas.toBlob(blob => {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = name + '-filtered.png';
+    a.download = imagecDownloadName(name, 'png');
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }, 'image/png');
