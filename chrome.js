@@ -922,7 +922,20 @@
     setPrivacyBadgeCopy(badge);
   }
 
+  function enableKeyboardUploads() {
+    document.querySelectorAll('label.drop[for], #dropzone, #wmUpload').forEach(function (trigger) {
+      trigger.tabIndex = 0;
+      trigger.setAttribute("role", "button");
+      trigger.addEventListener("keydown", function (event) {
+        if (event.target !== trigger || (event.key !== "Enter" && event.key !== " ")) return;
+        event.preventDefault();
+        if (!event.repeat) (trigger.control || trigger).click();
+      });
+    });
+  }
+
   function boot() {
+    enableKeyboardUploads();
     if (window.imagecToolCards) window.imagecToolCards.mountAll();
     document.querySelectorAll("body.tool .controls").forEach(foldTool);
     document.querySelectorAll("body.studio .workarea .controls").forEach(foldStudio);

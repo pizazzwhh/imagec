@@ -385,17 +385,19 @@ function makeBlob(){
       target=off;
     }
     try{
-      target.toBlob(blob=>resolve(blob),mime,mime==='image/png'?undefined:q);
+      target.toBlob(blob=>resolve(blob?.type===mime?blob:null),mime,mime==='image/png'?undefined:q);
     }catch(e){resolve(null);}
   });
 }
 function scheduleMeasure(){
   clearTimeout(scheduleMeasure.timer);
-  scheduleMeasure.timer=setTimeout(runMeasure,80);
-}
-async function runMeasure(){
   const id=++measureSeq;
+  outputBlob=null;
   $('#download').disabled=true;
+  scheduleMeasure.timer=setTimeout(()=>runMeasure(id),80);
+}
+async function runMeasure(id){
+  if(id!==measureSeq||status!=='ready')return;
   const blob=await makeBlob();
   if(id!==measureSeq||status!=='ready')return;
   if(!blob){showBanner('errExport');return;}

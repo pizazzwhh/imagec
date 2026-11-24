@@ -2086,3 +2086,8 @@ html[dir="rtl"] .searchWrap.has-fav .searchInput { padding-left: 84px; padding-r
     min-height: 160px;
   }
 }
+
+:is(label.drop, #dropzone, #wmUpload):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}

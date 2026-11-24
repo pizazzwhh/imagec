@@ -442,7 +442,8 @@ setLanguage(language);
   }
 
   function drawTextWatermark(w, h, scale){
-    const text = wmText.value || 'Watermark';
+    const text = wmText.value;
+    if(!text.trim())return;
     const size = Math.max(1, Math.round(parseInt(fontSize.value, 10) * scale));
     const color = textColor.value;
     const op = parseFloat(opacity.value);
@@ -473,7 +474,9 @@ setLanguage(language);
     } else {
       const textW = ctx.measureText(text).width;
       const pos = getPosition(w, h, textW, size, position, padding);
-      ctx.fillText(text, pos.x, pos.y + size / 2);
+      ctx.translate(pos.x + textW / 2, pos.y + size / 2);
+      ctx.rotate(angle * Math.PI / 180);
+      ctx.fillText(text, -textW / 2, 0);
     }
     ctx.restore();
   }
@@ -508,7 +511,9 @@ setLanguage(language);
       }
     } else {
       const pos = getPosition(w, h, wmW, wmH, position, padding);
-      ctx.drawImage(wmImage, pos.x, pos.y, wmW, wmH);
+      ctx.translate(pos.x + wmW / 2, pos.y + wmH / 2);
+      ctx.rotate(angle * Math.PI / 180);
+      ctx.drawImage(wmImage, -wmW / 2, -wmH / 2, wmW, wmH);
     }
     ctx.restore();
   }
@@ -529,7 +534,7 @@ setLanguage(language);
     }
   });
 
-  wmUpload.addEventListener('click', () => wmFile.click());
+  wmUpload.addEventListener('click', e => { if(e.target!==wmFile)wmFile.click(); });
   wmFile.addEventListener('change', e => { if(e.target.files[0]) loadWmFile(e.target.files[0]); });
 
   typeTabs.addEventListener('click', e => {

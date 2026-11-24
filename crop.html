@@ -213,17 +213,18 @@
           <label for="sizePreset" data-i18n="labelPresets">预设尺寸</label>
           <select id="sizePreset" disabled>
             <option value="" data-i18n="btnMatch">跟随选区</option>
-              <option value="1920x1080" data-i18n="presetFullHD">Full HD</option>
-              <option value="1280x720" data-i18n="presetHD">HD</option>
-              <option value="1080x1080" data-i18n="presetIg">Instagram</option>
-              <option value="1080x1920" data-i18n="presetStory">竖版 Story</option>
-              <option value="1200x1200" data-i18n="presetShop">电商主图</option>
-              <option value="800x800" data-i18n="presetSquare">正方形</option>
-              <option value="295x413" data-i18n="presetId1">一寸</option>
-              <option value="413x579" data-i18n="presetId2">二寸</option>
-              <option value="500x500" data-i18n="presetThumb">缩略图</option>
-              <option value="1200x630" data-i18n="presetOg">社媒封面</option>
+              <option value="1920x1080" data-i18n="presetFullHD" data-size-label="1920 × 1080">Full HD</option>
+              <option value="1280x720" data-i18n="presetHD" data-size-label="1280 × 720">HD</option>
+              <option value="1080x1080" data-i18n="presetIg" data-size-label="1080 × 1080">Instagram</option>
+              <option value="1080x1920" data-i18n="presetStory" data-size-label="1080 × 1920">竖版 Story</option>
+              <option value="1200x1200" data-i18n="presetShop" data-size-label="1200 × 1200">电商主图</option>
+              <option value="800x800" data-i18n="presetSquare" data-size-label="800 × 800">正方形</option>
+              <option value="295x413" data-i18n="presetId1" data-size-label="295 × 413">一寸</option>
+              <option value="413x579" data-i18n="presetId2" data-size-label="413 × 579">二寸</option>
+              <option value="500x500" data-i18n="presetThumb" data-size-label="500 × 500">缩略图</option>
+              <option value="1200x630" data-i18n="presetOg" data-size-label="1200 × 630">社媒封面</option>
           </select>
+          <output id="exportSize" aria-live="polite"></output>
         </div>
 
         <div class="actions">
@@ -349,6 +350,7 @@ function render(){
   setField($('#pw'),sel.w);
   setField($('#ph'),sel.h);
   markRatio();
+  $('#exportSize').textContent=sizePreset.value ? sizePreset.value.replace('x',' × ')+' px' : '';
   box.classList.toggle('circle',circle);
   $('#cropTag').textContent=sel.w+' × '+sel.h;
   $('#meta').textContent=canvas.width+' × '+canvas.height+' px';
@@ -385,13 +387,16 @@ function fitCanvasDisplay(attempt){
   canvas.style.height=Math.round(oh*scale)+'px';
   layoutBox();
 }
+let loadRevision=0;
 function load(blob,filename){
   if(!blob||!blob.type.startsWith('image/')){if(blob)imagecAlert('errType');return;}
-  origName=filename||'image';
+  const revision=++loadRevision;
   const img=new Image();
   const url=URL.createObjectURL(blob);
   img.onload=()=>{
     URL.revokeObjectURL(url);
+    if(revision!==loadRevision)return;
+    origName=filename||'image';
     sourceImg=img;
     canvas.width=img.naturalWidth;
     canvas.height=img.naturalHeight;
@@ -554,7 +559,8 @@ overlay.addEventListener('pointerdown',e=>{
   if(!sourceImg)return;
   e.preventDefault();
   overlay.setPointerCapture(e.pointerId);
-  const kind=hitTest(e);
+  let kind=hitTest(e);
+  if(kind==='move'&&sel.w===canvas.width&&sel.h===canvas.height)kind='new';
   const p=kind==='move'?pointerRaw(e):pointerImage(e,true);
   drag={kind,origin:{...sel},ax:p.x,ay:p.y,anchor:{...p},cx:e.clientX,cy:e.clientY};
   overlay.style.cursor=cursorFor(kind);
@@ -626,7 +632,12 @@ document.querySelectorAll('#ratioSeg button').forEach(btn=>{
 });
 
 sizePreset.onchange=()=>{
-  if(!sourceImg || !sizePreset.value)return;
+  if(!sourceImg)return;
+  if(!sizePreset.value){
+    ratioNum=null;
+    render();
+    return;
+  }
   const [width,height]=sizePreset.value.split('x').map(Number);
   circle=false;
   ratioNum=width/height;
@@ -637,6 +648,7 @@ sizePreset.onchange=()=>{
 $('#download').onclick=()=>{
   if(!sourceImg)return;
   const sx=sel.x,sy=sel.y,sw=sel.w,sh=sel.h;
+  const outputName=imagecDownloadName(origName,'png');
   let [dw,dh]=sizePreset.value ? sizePreset.value.split('x').map(Number) : [sw,sh];
   const cv=document.createElement('canvas');
   const cx=cv.getContext('2d');
@@ -660,7 +672,7 @@ $('#download').onclick=()=>{
     if(!blob)return;
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download=imagecDownloadName(origName,'png');
+    a.download=outputName;
     a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   },'image/png');
@@ -747,7 +759,9 @@ function setLanguage(lang){
   document.documentElement.dir=rtl?'rtl':'ltr';
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const k=el.getAttribute('data-i18n');const v=messages[lang][k];
-    if(typeof v==='string'){el.innerHTML=v;}
+    if(el.dataset.sizeLabel){
+      el.textContent=(v||messages.en[k])+' · '+el.dataset.sizeLabel;
+    }else if(typeof v==='string'){el.innerHTML=v;}
   });
   document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
     const k=el.getAttribute('data-i18n-ph');el.placeholder=messages[lang][k]||el.placeholder;
