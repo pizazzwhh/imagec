@@ -580,6 +580,11 @@ export default {
       } catch (e) {}
     }
 
+    const seoPages = "__IMAGEC_SEO_PAGES__";
+    if (typeof seoPages === "object" && Object.hasOwn(seoPages, pathname.slice(1))) {
+      return new Response(seoPages[pathname.slice(1)], { headers: assetHeaders });
+    }
+
     response = new Response("Not Found", { status: 404 });
     return response;
   },

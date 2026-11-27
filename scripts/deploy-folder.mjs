@@ -126,12 +126,13 @@ async function main() {
   const feedbackToken = dryRun ? "dry-run-placeholder" : resolveFeedbackToken(folderPath);
   console.log(`Feedback admin token: injected (${feedbackToken.length} chars from env/data)`);
   const siteVersion = readSiteVersion(folderPath);
+  const seoPages = buildSeoPages(folderPath);
   const routineCode = injectFeedbackToken(ROUTINE_CODE, feedbackToken).replace(
     '"__IMAGEC_SITE_VERSION__"', () => JSON.stringify(siteVersion),
   );
   console.log(`站点版本：${siteVersion.短号}　${siteVersion.时间}${siteVersion.有未提交改动 === "是" ? "　有未提交改动" : ""}　${siteVersion.说明}`);
   const zip = new JSZip();
-  zip.folder("routine").file("index.js", routineCode);
+  zip.folder("routine").file("index.js", routineCode.replace('"__IMAGEC_SEO_PAGES__"', () => JSON.stringify(Object.fromEntries(seoPages))));
   const assetsFolder = zip.folder("assets");
   assetsFolder.file("version.json", JSON.stringify(siteVersion, null, 2) + "\n");
   for (const f of staticFiles) {
@@ -141,7 +142,7 @@ async function main() {
     for (let i = 0; i < relParts.length - 1; i++) folder = folder.folder(relParts[i]);
     folder.file(relParts[relParts.length - 1], content);
   }
-  for (const [asset, html] of buildSeoPages(folderPath)) assetsFolder.file(asset, html);
+  for (const [asset, html] of seoPages) assetsFolder.file(asset, html);
   const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
   console.log(`Package size: ${(zipBuffer.length / 1024).toFixed(2)} KB`);
 
