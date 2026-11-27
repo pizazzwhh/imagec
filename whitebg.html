@@ -14,20 +14,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/favicon.svg" />
   <link rel="canonical" href="https://imagec.xin/whitebg" />
-  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/whitebg?lang=zh" />
-  <link rel="alternate" hreflang="en" href="https://imagec.xin/whitebg?lang=en" />
-  <link rel="alternate" hreflang="ja" href="https://imagec.xin/whitebg?lang=ja" />
-  <link rel="alternate" hreflang="ko" href="https://imagec.xin/whitebg?lang=ko" />
-  <link rel="alternate" hreflang="es" href="https://imagec.xin/whitebg?lang=es" />
-  <link rel="alternate" hreflang="fr" href="https://imagec.xin/whitebg?lang=fr" />
-  <link rel="alternate" hreflang="de" href="https://imagec.xin/whitebg?lang=de" />
-  <link rel="alternate" hreflang="ru" href="https://imagec.xin/whitebg?lang=ru" />
-  <link rel="alternate" hreflang="pt" href="https://imagec.xin/whitebg?lang=pt" />
-  <link rel="alternate" hreflang="ar" href="https://imagec.xin/whitebg?lang=ar" />
-  <link rel="alternate" hreflang="vi" href="https://imagec.xin/whitebg?lang=vi" />
-  <link rel="alternate" hreflang="id" href="https://imagec.xin/whitebg?lang=id" />
-  <link rel="alternate" hreflang="th" href="https://imagec.xin/whitebg?lang=th" />
-  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/whitebg" />
+
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="imagec" />
   <meta property="og:title" content="图片去白底 - 在线白底转透明 PNG｜imagec" />
@@ -65,7 +52,8 @@
 <main class="shell">
   <header class="topbar"><a class="brand" href="/"><span class="mark"><svg viewBox="0 0 64 64" width="26" height="26" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="6" fill="#FAFAF9"/><path fill="#1C1917" fill-rule="evenodd" d="M8 2h48a6 6 0 0 1 6 6v48a6 6 0 0 1-6 6H8a6 6 0 0 1-6-6V8a6 6 0 0 1 6-6zm5 5h38a1 1 0 0 1 1 1v38a1 1 0 0 1-1 1H13a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><rect x="36" y="36" width="26" height="26" rx="6" fill="#2563EB"/></svg></span><span class="brand-name">imagec</span></a><div class="topbar-right"><a class="searchBtn" href="/?focus=search" aria-label="搜索工具" data-chrome-aria="searchTools"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></a><select class="langSelect" id="langSelect"></select></div></header>
   <div class="contentGrid"><section class="panel">
-    <div class="hero"><h1 data-i18n="title">图片去白底（白底转透明）</h1><p data-i18n="subtitle">去掉白底，导出透明 PNG。</p><div class="privacyLine safeBadge"><span data-i18n="privacy">本地处理 · 不上传服务器</span></div></div>
+    <div class="hero"><h1 data-i18n="title">图片去白底（白底转透明）</h1><p data-i18n="subtitle">去掉白底，导出透明 PNG。</p>
+      <p class="exportNote" data-export-copy="transparent">透明效果使用 PNG 导出。</p><div class="privacyLine safeBadge"><span data-i18n="privacy">本地处理 · 不上传服务器</span></div></div>
     <div class="workspace">
       <aside class="controls">
         <label class="drop" id="drop" for="file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg><strong data-i18n="upload">点击选择或拖入图片</strong><small data-i18n="formats">支持 PNG、JPG、WebP<br>也可直接粘贴图片</small><small><a href="/heic" data-i18n="heicTip">暂不支持 HEIC，请先转成 JPG 或 PNG</a></small></label>
@@ -83,6 +71,17 @@
     </div>
   </section></div>
 
+
+  <section class="tool-guide" lang="zh">
+    <h2>怎样把白底变成透明 PNG？</h2>
+    <p>选择 PNG、JPG 或 WebP 图片，预览后按需调节白色阈值和边缘柔化，再导出透明 PNG。签名、深色 Logo 和白底商品图适合先用这个工具。主体也有白色时，试试「仅去除外侧白底」。背景有多种颜色时，可改用 AI 抠图。</p>
+    <ul><li><a href="/cutout">使用 AI 抠图</a></li><li><a href="/blog/white-to-transparent-guide">查看白底转透明指南</a></li></ul>
+  </section>
+  <section class="tool-guide" lang="en">
+    <h2>How do I turn a white background transparent?</h2>
+    <p>Open a PNG, JPG, or WebP image, preview the result, then adjust the white threshold or edge softness and export a transparent PNG. This works well for signatures and dark logos on white. If the subject also contains white areas, try removing only white connected to the edges.</p>
+    <ul><li><a href="/cutout">Use AI background removal</a></li></ul>
+  </section>
 
 <section class="toolsShowcase" id="relatedTools">
     <h2 data-i18n="relatedTools">更多免费图片工具</h2>

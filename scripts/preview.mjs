@@ -24,8 +24,10 @@ import {
   updateFeedback
 } from "./feedback-store.mjs";
 import { readSiteVersion, siteVersionJson } from "./site-version.mjs";
+import { buildSeoPages } from "./seo-pages.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const seoPages = buildSeoPages(ROOT);
 const PORT = Number(process.env.PORT || 8080);
 const HOST = process.env.HOST || "127.0.0.1";
 
@@ -173,6 +175,17 @@ function serveStatic(req, res, url) {
     res.writeHead(405);
     res.end("Method Not Allowed");
     return;
+  }
+  const route = url.pathname.replace(/\/+$/, "") || "/";
+  const asset = route === "/" ? "index.html" : route.slice(1) + (route.endsWith(".html") ? "" : ".html");
+  if ((asset === "en.html" || asset === "en/compress.html") && url.pathname !== route.replace(/\.html$/, "")) {
+    res.writeHead(308, { Location: route.replace(/\.html$/, "") + url.search });
+    return res.end();
+  }
+  const html = seoPages.get(asset);
+  if (html) {
+    res.writeHead(200, { "Content-Type": TYPES[".html"], "Cache-Control": "no-cache" });
+    return res.end(req.method === "HEAD" ? undefined : html);
   }
   const file = resolveFile(url.pathname);
   if (!file) {

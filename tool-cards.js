@@ -39,8 +39,8 @@
     return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
   }
 
-  function cardHtml(tool) {
-    return '<a href="/' + tool.file + '" class="toolCard" data-id="' + tool.file + '" data-tool="' + tool.file + '" data-keywords="' + esc(tool.keywords) + '">' +
+  function cardHtml(tool, href) {
+    return '<a href="' + (href || '/' + tool.file) + '" class="toolCard" data-id="' + tool.file + '" data-tool="' + tool.file + '" data-keywords="' + esc(tool.keywords) + '">' +
       '<span class="tc-icon">' + SVG_OPEN + tool.svg + '</svg></span>' +
       '<span class="tc-body"><strong data-i18n="' + tool.titleKey + '">' + esc(tool.title) + '</strong>' +
       '<span class="tc-desc" data-i18n="' + tool.descKey + '">' + esc(tool.desc) + '</span></span></a>';
@@ -395,9 +395,10 @@
   function mount(root, excludeFile) {
     if (!root) return;
     var html = "";
+    var englishHome = location.pathname === '/en' || location.pathname === '/en.html';
     for (var i = 0; i < TOOLS.length; i++) {
       if (excludeFile && TOOLS[i].file === excludeFile) continue;
-      html += cardHtml(TOOLS[i]);
+      html += cardHtml(TOOLS[i], englishHome && TOOLS[i].file === 'compress' ? '/en/compress' : undefined);
     }
     root.innerHTML = html;
     root.setAttribute("data-cards-source", "tool-cards");
@@ -423,6 +424,12 @@
     }
     if (!favUiBound) {
       favUiBound = true;
+      var languageLink = document.querySelector('[data-pilot-language]');
+      if (languageLink && languageLink.dataset.pilotLanguage) {
+        languageLink.addEventListener('click', function () {
+          try { localStorage.setItem('language', languageLink.dataset.pilotLanguage); } catch (e) {}
+        });
+      }
       var sel = document.getElementById("langSelect");
       if (sel) {
         sel.addEventListener("change", function () {
@@ -434,6 +441,7 @@
 
   window.imagecToolCards = {
     tools: TOOLS,
+    cardHtml: cardHtml,
     mountAll: mountAll,
     applyHomeFilter: function () {
       var homeSection = document.querySelector("body.home .tools");

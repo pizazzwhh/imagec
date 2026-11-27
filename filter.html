@@ -14,20 +14,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/favicon.svg" />
   <link rel="canonical" href="https://imagec.xin/filter" />
-  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/filter?lang=zh" />
-  <link rel="alternate" hreflang="en" href="https://imagec.xin/filter?lang=en" />
-  <link rel="alternate" hreflang="ja" href="https://imagec.xin/filter?lang=ja" />
-  <link rel="alternate" hreflang="ko" href="https://imagec.xin/filter?lang=ko" />
-  <link rel="alternate" hreflang="es" href="https://imagec.xin/filter?lang=es" />
-  <link rel="alternate" hreflang="fr" href="https://imagec.xin/filter?lang=fr" />
-  <link rel="alternate" hreflang="de" href="https://imagec.xin/filter?lang=de" />
-  <link rel="alternate" hreflang="ru" href="https://imagec.xin/filter?lang=ru" />
-  <link rel="alternate" hreflang="pt" href="https://imagec.xin/filter?lang=pt" />
-  <link rel="alternate" hreflang="ar" href="https://imagec.xin/filter?lang=ar" />
-  <link rel="alternate" hreflang="vi" href="https://imagec.xin/filter?lang=vi" />
-  <link rel="alternate" hreflang="id" href="https://imagec.xin/filter?lang=id" />
-  <link rel="alternate" hreflang="th" href="https://imagec.xin/filter?lang=th" />
-  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/filter" />
+
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="imagec" />
   <meta property="og:title" content="图片滤镜调色 - 在线免费调整图片色彩 | imagec" />
@@ -151,7 +138,7 @@ const file = $('#file'), drop = $('#drop'), canvas = $('#canvas'), ctx = canvas.
 const empty = $('#empty');
 
 let source = null;
-let name = 'image';
+let name = 'image', sourceFormat = 'png';
 let currentPreset = 'original';
 
 const filters = { brightness: 0, contrast: 0, saturate: 0, sepia: 0, grayscale: 0, invert: 0, hueRotate: 0, blur: 0, sharpen: 0 };
@@ -311,13 +298,15 @@ function updateMeta() {
 }
 
 function load(blob, filename = 'image.png') {
-  if (!blob || !blob.type.startsWith('image/')) { if (blob) imagecAlert('errType'); return; }
+  const format = imagecSourceFormat(blob);
+  if (!format) { if (blob) imagecAlert('errType'); return; }
   const img = new Image();
   const url = URL.createObjectURL(blob);
   img.onload = () => {
     URL.revokeObjectURL(url);
     source = img;
     name = filename || 'image.png';
+    sourceFormat = format;
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
     empty.style.display = 'none';
@@ -418,13 +407,7 @@ $('#reset').onclick = () => {
 
 $('#download').onclick = () => {
   if (!source) return;
-  canvas.toBlob(blob => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = imagecDownloadName(name, 'png');
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  }, 'image/png');
+  imagecSaveCanvas(canvas, name, sourceFormat);
 };
 
 setLanguage(language);

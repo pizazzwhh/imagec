@@ -8,6 +8,7 @@ import JSZip from "jszip";
 import FormData from "form-data";
 import https from "https";
 import { readSiteVersion } from "./site-version.mjs";
+import { buildSeoPages } from "./seo-pages.mjs";
 
 function resolveFeedbackToken(siteDir) {
   if (process.env.FEEDBACK_TOKEN && String(process.env.FEEDBACK_TOKEN).trim()) {
@@ -140,6 +141,7 @@ async function main() {
     for (let i = 0; i < relParts.length - 1; i++) folder = folder.folder(relParts[i]);
     folder.file(relParts[relParts.length - 1], content);
   }
+  for (const [asset, html] of buildSeoPages(folderPath)) assetsFolder.file(asset, html);
   const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
   console.log(`Package size: ${(zipBuffer.length / 1024).toFixed(2)} KB`);
 

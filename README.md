@@ -25,6 +25,8 @@ Use the ESA routine deployment for a manually approved production release. First
 
 Tool pages keep concise introductions and links to related tools. Longer usage guides live under `/blog`. Keep any visible FAQ and its structured data in sync.
 
+The preview and ESA packaging generate the Chinese and English SEO variants of the homepage and compressor from `index.html`, `compress.html`, `tool-cards.js`, and `chrome.js`. Edit those sources for both languages. The public English URLs are `/en` and `/en/compress`.
+
 ## 🛠 Image Tools
 
 | Tool | What it does | Link |

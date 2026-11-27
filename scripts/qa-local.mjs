@@ -25,6 +25,31 @@ try {
   assert.match(String(startup), /imagec preview/);
   const sitemap = await readFile("sitemap.xml", "utf8");
   const routes = [...sitemap.matchAll(/<loc>https:\/\/imagec\.xin([^<]+)<\/loc>/g)].map((match) => match[1]);
+  assert.equal(routes.length, new Set(routes).size, "Unique sitemap URLs");
+  for (const route of routes) {
+    const response = await fetch(origin + route, { redirect: "manual" });
+    assert.equal(response.status, 200, route);
+    const html = await response.text();
+    assert.ok(html.includes(`rel="canonical" href="https://imagec.xin${route}"`), route + " canonical");
+    assert.doesNotMatch(html, /<meta[^>]*name="robots"[^>]*noindex/i, route);
+  }
+  for (const [zh, en, englishHeading] of [["/", "/en", "Free online image tools"], ["/compress", "/en/compress", "Image Compressor"]]) {
+    for (const route of [zh, en]) {
+      const html = await (await fetch(origin + route)).text();
+      assert.ok(html.includes(`hreflang="zh-CN" href="https://imagec.xin${zh}"`));
+      assert.ok(html.includes(`hreflang="en" href="https://imagec.xin${en}"`));
+      assert.ok(html.includes(`hreflang="x-default" href="https://imagec.xin${zh}"`));
+      if (route === en) {
+        assert.match(html, /<html lang="en"/);
+        assert.ok(html.includes(`>${englishHeading}</h1>`));
+        assert.ok(html.includes(`href="${zh}" lang="zh-CN"`));
+      }
+    }
+    const redirect = await fetch(origin + en + ".html?ref=qa", { redirect: "manual" });
+    assert.equal(redirect.status, 308);
+    assert.equal(redirect.headers.get("location"), en + "?ref=qa");
+  }
+  console.log("PASS sitemap canonicals and static Chinese/English pilot pages");
   for (const route of new Set([...routes, "/inbox", "/version.json", "/robots.txt", "/sitemap.xml"])) {
     assert.equal((await fetch(origin + route)).status, 200, route);
   }
@@ -93,10 +118,30 @@ try {
   await page.locator("#file").setInputFiles(file("sample.png"));
   await click('[data-mode="target"]');
   await click('[data-kb="50"]');
-  const compressed = await download("#download");
-  assert.ok(compressed.length <= 50 * 1024);
-  assert.equal(await page.locator("#compSize").innerText(), (compressed.length / 1024).toFixed(1) + " KB");
+  const original = await download('#download');
+  assert.equal(original.subarray(0, 4).toString('hex'), '89504e47');
+  assert.ok(original.length < Buffer.from(source, 'base64').length, 'PNG must shrink before changing formats');
+  const compressed = original;
+  assert.equal(await page.locator("#compressionOutput").count(), 0);
+  assert.equal(await page.locator("#compSize").innerText(), compressed.length < 1048576 ? (compressed.length / 1024).toFixed(1) + " KB" : (compressed.length / 1048576).toFixed(2) + " MB");
   console.log("PASS compression target and reported bytes");
+
+  await page.goto(origin + "/en", { waitUntil: "domcontentloaded" });
+  await page.locator('#toolsGrid a[href="/en/compress"]').click();
+  assert.equal(new URL(page.url()).pathname, "/en/compress");
+  assert.equal(await page.locator("html").getAttribute("lang"), "en");
+  assert.ok(await page.locator('.tool-guide[lang="en"]').isVisible());
+  assert.ok(!(await page.locator('.tool-guide[lang="zh"]').isVisible()));
+  await page.locator("#file").setInputFiles(file("sample.png"));
+  await click('[data-mode="target"]');
+  await click('[data-kb="100"]');
+  const englishCompressed = await download("#download");
+  assert.ok(englishCompressed.length < Buffer.from(source, "base64").length);
+  assert.equal(englishCompressed.subarray(0, 4).toString("hex"), "89504e47");
+  await page.locator('[data-pilot-language="zh"]').click();
+  assert.equal(new URL(page.url()).pathname, "/compress");
+  assert.equal(await page.locator("html").getAttribute("lang"), "zh");
+  console.log(`PASS English compression and Chinese link (${Buffer.from(source, "base64").length} → ${englishCompressed.length} bytes)`);
 
   await go("/batch");
   await page.locator("#file").setInputFiles([file("one.png"), file("two.png"), file("broken.png", Buffer.from("invalid"))]);
@@ -108,6 +153,39 @@ try {
   for (const entry of Object.values(zip.files)) assert.deepEqual(await inspect(await entry.async("nodebuffer")), [600, 400, 255]);
   assert.match(await page.locator("#queue").innerText(), /broken\.png[\s\S]*加载失败/);
   console.log("PASS batch output dimensions and corrupt-file handling");
+
+  await go("/batch");
+  const samples = await page.evaluate(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = 32;
+    const context = canvas.getContext("2d");
+    context.fillStyle = "red";
+    context.fillRect(8, 8, 16, 16);
+    return ["png", "jpeg", "webp"].map((format) => canvas.toDataURL("image/" + format).split(",")[1]);
+  });
+  const formats = ["png", "jpeg", "webp"];
+  const headersByFormat = ["89504e47", "ffd8ff", "52494646"];
+  const mixed = formats.map((format, i) => ({
+    name: "mixed." + (format === "jpeg" ? "jpg" : format),
+    mimeType: "image/" + format,
+    buffer: Buffer.from(samples[i], "base64"),
+  }));
+  for (const [i, item] of mixed.entries()) {
+    await go("/compress");
+    await page.locator("#file").setInputFiles(item);
+    const result = await download("#download");
+    assert.ok(result.toString("hex").startsWith(headersByFormat[i]));
+    if (i === 0 || i === 2) assert.equal((await inspect(result))[2], 0);
+  }
+  await go("/batch");
+  await page.locator("#file").setInputFiles(mixed);
+  const mixedZip = await JSZip.loadAsync(await download("#zipBtn"));
+  for (const [i, item] of mixed.entries()) {
+    const bytes = await mixedZip.file(item.name).async("nodebuffer");
+    assert.ok(bytes.toString("hex").startsWith(headersByFormat[i]));
+    if (i === 0 || i === 2) assert.equal((await inspect(bytes))[2], 0);
+  }
+  console.log("PASS original formats and transparency in single and mixed batch compression");
 
   const api = origin + "/api/feedback";
   const headers = { "Content-Type": "application/json", Authorization: "Bearer " + token };

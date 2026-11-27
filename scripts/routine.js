@@ -424,6 +424,10 @@ export default {
     }
 
     var cleanPath = pathname.replace(/\/+$/, "") || "/";
+    const englishPath = cleanPath.replace(/\.html$/, "");
+    if ((englishPath === "/en" || englishPath === "/en/compress") && pathname !== englishPath) {
+      return new Response(null, { status: 308, headers: { location: englishPath + url.search } });
+    }
     if (cleanPath === "/api/feedback" || cleanPath.indexOf("/api/feedback/") === 0) {
       return handleFeedbackApi(request, url, cleanPath);
     }

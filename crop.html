@@ -13,20 +13,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/favicon.svg" />
   <link rel="canonical" href="https://imagec.xin/crop" />
-  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/crop?lang=zh" />
-  <link rel="alternate" hreflang="en" href="https://imagec.xin/crop?lang=en" />
-  <link rel="alternate" hreflang="ja" href="https://imagec.xin/crop?lang=ja" />
-  <link rel="alternate" hreflang="ko" href="https://imagec.xin/crop?lang=ko" />
-  <link rel="alternate" hreflang="es" href="https://imagec.xin/crop?lang=es" />
-  <link rel="alternate" hreflang="fr" href="https://imagec.xin/crop?lang=fr" />
-  <link rel="alternate" hreflang="de" href="https://imagec.xin/crop?lang=de" />
-  <link rel="alternate" hreflang="ru" href="https://imagec.xin/crop?lang=ru" />
-  <link rel="alternate" hreflang="pt" href="https://imagec.xin/crop?lang=pt" />
-  <link rel="alternate" hreflang="ar" href="https://imagec.xin/crop?lang=ar" />
-  <link rel="alternate" hreflang="vi" href="https://imagec.xin/crop?lang=vi" />
-  <link rel="alternate" hreflang="id" href="https://imagec.xin/crop?lang=id" />
-  <link rel="alternate" hreflang="th" href="https://imagec.xin/crop?lang=th" />
-  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/crop" />
+
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="imagec" />
   <meta property="og:title" content="图片裁剪缩放工具 - 在线裁剪/改尺寸 | imagec" />
@@ -228,6 +215,7 @@
         </div>
 
         <div class="actions">
+          <p id="circleExportNote" class="exportNote" data-export-copy="transparent" hidden>透明效果使用 PNG 导出。</p>
           <button class="primary" id="download" disabled data-i18n="btnDownload">下载结果图片</button>
         </div>
       </aside>
@@ -275,7 +263,7 @@ const overlay=$('#cropOverlay'),box=$('#cropBox');
 const PAD=14;
 
 let sourceImg=null;
-let origName='image';
+let origName='image', sourceFormat='png';
 let sel={x:0,y:0,w:0,h:0};
 let ratioNum=null;
 let circle=false;
@@ -350,6 +338,7 @@ function render(){
   setField($('#pw'),sel.w);
   setField($('#ph'),sel.h);
   markRatio();
+  $('#circleExportNote').hidden=!circle;
   $('#exportSize').textContent=sizePreset.value ? sizePreset.value.replace('x',' × ')+' px' : '';
   box.classList.toggle('circle',circle);
   $('#cropTag').textContent=sel.w+' × '+sel.h;
@@ -389,7 +378,8 @@ function fitCanvasDisplay(attempt){
 }
 let loadRevision=0;
 function load(blob,filename){
-  if(!blob||!blob.type.startsWith('image/')){if(blob)imagecAlert('errType');return;}
+  const format=imagecSourceFormat(blob);
+  if(!format){if(blob)imagecAlert('errType');return;}
   const revision=++loadRevision;
   const img=new Image();
   const url=URL.createObjectURL(blob);
@@ -397,6 +387,7 @@ function load(blob,filename){
     URL.revokeObjectURL(url);
     if(revision!==loadRevision)return;
     origName=filename||'image';
+    sourceFormat=format;
     sourceImg=img;
     canvas.width=img.naturalWidth;
     canvas.height=img.naturalHeight;
@@ -648,7 +639,7 @@ sizePreset.onchange=()=>{
 $('#download').onclick=()=>{
   if(!sourceImg)return;
   const sx=sel.x,sy=sel.y,sw=sel.w,sh=sel.h;
-  const outputName=imagecDownloadName(origName,'png');
+  const format=circle?'png':sourceFormat;
   let [dw,dh]=sizePreset.value ? sizePreset.value.split('x').map(Number) : [sw,sh];
   const cv=document.createElement('canvas');
   const cx=cv.getContext('2d');
@@ -668,14 +659,7 @@ $('#download').onclick=()=>{
     cv.width=dw;cv.height=dh;
     cx.drawImage(sourceImg,sx,sy,sw,sh,0,0,dw,dh);
   }
-  cv.toBlob(blob=>{
-    if(!blob)return;
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download=outputName;
-    a.click();
-    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-  },'image/png');
+  imagecSaveCanvas(cv,origName,format);
 };
 
 window.addEventListener('keydown',e=>{

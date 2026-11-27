@@ -14,20 +14,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/favicon.svg" />
   <link rel="canonical" href="https://imagec.xin/splice" />
-  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/splice?lang=zh" />
-  <link rel="alternate" hreflang="en" href="https://imagec.xin/splice?lang=en" />
-  <link rel="alternate" hreflang="ja" href="https://imagec.xin/splice?lang=ja" />
-  <link rel="alternate" hreflang="ko" href="https://imagec.xin/splice?lang=ko" />
-  <link rel="alternate" hreflang="es" href="https://imagec.xin/splice?lang=es" />
-  <link rel="alternate" hreflang="fr" href="https://imagec.xin/splice?lang=fr" />
-  <link rel="alternate" hreflang="de" href="https://imagec.xin/splice?lang=de" />
-  <link rel="alternate" hreflang="ru" href="https://imagec.xin/splice?lang=ru" />
-  <link rel="alternate" hreflang="pt" href="https://imagec.xin/splice?lang=pt" />
-  <link rel="alternate" hreflang="ar" href="https://imagec.xin/splice?lang=ar" />
-  <link rel="alternate" hreflang="vi" href="https://imagec.xin/splice?lang=vi" />
-  <link rel="alternate" hreflang="id" href="https://imagec.xin/splice?lang=id" />
-  <link rel="alternate" hreflang="th" href="https://imagec.xin/splice?lang=th" />
-  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/splice" />
+
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="imagec" />
   <meta property="og:title" content="图片拼接工具 - 在线横向/纵向拼接图片 | imagec" />
@@ -116,6 +103,7 @@
         </div>
 
         <div class="actions">
+          <p id="mixedExportNote" class="exportNote" data-export-copy="mixed" hidden>输入格式混合，拼接结果使用 PNG 导出。</p>
           <button class="primary" id="download" disabled data-i18n="download">下载拼接图片</button>
           <button class="secondary" id="clear" disabled data-i18n="clear">清空全部</button>
         </div>
@@ -287,14 +275,14 @@ function setMeta(attr,name,content){
 langSelect.onchange=()=>setLanguage(langSelect.value);
 
 function loadFiles(files) {
-  const list = [...files].filter(f => f.type.startsWith('image/'));
+  const list = [...files].filter(f => imagecSourceFormat(f));
   if (!list.length) { if (files && files.length) imagecAlert('errType'); return; }
   list.forEach(f => {
     const img = new Image();
     const url = URL.createObjectURL(f);
     img.onload = () => {
       // 不立即revokeObjectURL，保留URL用于缩略图显示，删除时统一清理
-      images.push({ img, url, name: f.name.replace(/\.[^.]+$/, ''), fileName: f.name || 'image', w: img.naturalWidth, h: img.naturalHeight });
+      images.push({ img, url, name: f.name.replace(/\.[^.]+$/, ''), fileName: f.name || 'image', format: imagecSourceFormat(f), w: img.naturalWidth, h: img.naturalHeight });
       renderList();
       renderPreview();
     };
@@ -304,6 +292,7 @@ function loadFiles(files) {
 }
 
 function renderList() {
+  $('#mixedExportNote').hidden = !images.some(item => item.format !== images[0].format);
   thumbList.innerHTML = '';
   images.forEach((item, i) => {
     const div = document.createElement('div');
@@ -456,13 +445,9 @@ $('#clear').onclick = () => {
 
 $('#download').onclick = () => {
   if (images.length < 2) return;
-  canvas.toBlob(blob => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = imagecDownloadName((images[0] && images[0].fileName) || 'image', 'png');
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  }, 'image/png');
+  const first = images[0];
+  const format = images.every(item => item.format === first.format) ? first.format : 'png';
+  imagecSaveCanvas(canvas, first.fileName, format);
 };
 
 setLanguage(language);

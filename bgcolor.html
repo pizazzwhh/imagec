@@ -14,20 +14,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="apple-touch-icon" href="/favicon.svg" />
 <link rel="canonical" href="https://imagec.xin/bgcolor" />
-<link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/bgcolor?lang=zh" />
-<link rel="alternate" hreflang="en" href="https://imagec.xin/bgcolor?lang=en" />
-<link rel="alternate" hreflang="ja" href="https://imagec.xin/bgcolor?lang=ja" />
-<link rel="alternate" hreflang="ko" href="https://imagec.xin/bgcolor?lang=ko" />
-<link rel="alternate" hreflang="es" href="https://imagec.xin/bgcolor?lang=es" />
-<link rel="alternate" hreflang="fr" href="https://imagec.xin/bgcolor?lang=fr" />
-<link rel="alternate" hreflang="de" href="https://imagec.xin/bgcolor?lang=de" />
-<link rel="alternate" hreflang="ru" href="https://imagec.xin/bgcolor?lang=ru" />
-<link rel="alternate" hreflang="pt" href="https://imagec.xin/bgcolor?lang=pt" />
-<link rel="alternate" hreflang="ar" href="https://imagec.xin/bgcolor?lang=ar" />
-<link rel="alternate" hreflang="vi" href="https://imagec.xin/bgcolor?lang=vi" />
-<link rel="alternate" hreflang="id" href="https://imagec.xin/bgcolor?lang=id" />
-<link rel="alternate" hreflang="th" href="https://imagec.xin/bgcolor?lang=th" />
-<link rel="alternate" hreflang="x-default" href="https://imagec.xin/bgcolor" />
+
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="imagec" />
 <meta property="og:title" content="透明PNG加背景色 - 给透明图片添加底色 | imagec" />
@@ -155,13 +142,6 @@
             </div>
           </div>
 
-          <div class="controlGroup">
-            <label data-i18n="outFormat">输出格式</label>
-            <div class="formatBtns" id="formatBtns">
-              <button data-fmt="png" class="active" data-i18n="fmtPNG">PNG（保留细节）</button>
-              <button data-fmt="jpg" data-i18n="fmtJPG">JPG（文件更小）</button>
-            </div>
-          </div>
 
           <div class="btnRow">
             <button class="btn primary" id="downloadBtn"><span data-i18n="download">下载图片</span></button>
@@ -349,28 +329,28 @@ setLanguage(language);
   const gradColor1 = document.getElementById('gradColor1');
   const gradColor2 = document.getElementById('gradColor2');
   const dirBtns = document.getElementById('dirBtns');
-  const formatBtns = document.getElementById('formatBtns');
   const downloadBtn = document.getElementById('downloadBtn');
   const resetBtn = document.getElementById('resetBtn');
 
   // ============ 状态变量 ============
   let sourceImage = null;
-  let sourceName = 'image.png';
+  let sourceName = 'image.png', sourceFormat = 'png';
   let bgType = 'solid';
   let solidColor = '#FFFFFF';
   let gradDir = 'horizontal';
-  let outFormat = 'png';
 
   window.doRender = function(){ if(sourceImage) render(); };
 
   // ============ 加载图片文件 ============
   function loadFile(file){
-    if(!file || !file.type.startsWith('image/')){ if(file) imagecAlert('errType'); return; }
-    sourceName = file.name || 'image.png';
+    const format = imagecSourceFormat(file);
+    if(!format){ if(file) imagecAlert('errType'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
-      img.onload = () => { sourceImage = img; showWorkarea(); render(); };
+      img.onload = () => {
+        sourceName = file.name || 'image.png';
+        sourceFormat = format; sourceImage = img; showWorkarea(); render(); };
       img.onerror = () => imagecAlert('errLoad');
       img.src = e.target.result;
     };
@@ -482,36 +462,12 @@ setLanguage(language);
     render();
   });
 
-  // ============ 事件：输出格式 ============
-  formatBtns.addEventListener('click', e => {
-    const btn = e.target.closest('button');
-    if(!btn) return;
-    formatBtns.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    outFormat = btn.dataset.fmt;
-  });
-
   // ============ 事件：下载 ============
   downloadBtn.addEventListener('click', () => {
     if(!sourceImage) return;
     const origW = sourceImage.width, origH = sourceImage.height;
     renderAtSize(origW, origH);
-    const link = document.createElement('a');
-    if(outFormat === 'jpg'){
-      const tmpCanvas = document.createElement('canvas');
-      tmpCanvas.width = origW;
-      tmpCanvas.height = origH;
-      const tmpCtx = tmpCanvas.getContext('2d');
-      tmpCtx.fillStyle = '#FFFFFF';
-      tmpCtx.fillRect(0, 0, origW, origH);
-      tmpCtx.drawImage(preview, 0, 0);
-      link.download = imagecDownloadName(sourceName, 'jpg');
-      link.href = tmpCanvas.toDataURL('image/jpeg', 0.92);
-    } else {
-      link.download = imagecDownloadName(sourceName, 'png');
-      link.href = preview.toDataURL('image/png');
-    }
-    link.click();
+    imagecSaveCanvas(preview, sourceName, sourceFormat);
     render();
   });
 

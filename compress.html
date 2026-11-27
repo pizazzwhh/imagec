@@ -13,20 +13,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/favicon.svg" />
   <link rel="canonical" href="https://imagec.xin/compress" />
-  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/compress?lang=zh" />
-  <link rel="alternate" hreflang="en" href="https://imagec.xin/compress?lang=en" />
-  <link rel="alternate" hreflang="ja" href="https://imagec.xin/compress?lang=ja" />
-  <link rel="alternate" hreflang="ko" href="https://imagec.xin/compress?lang=ko" />
-  <link rel="alternate" hreflang="es" href="https://imagec.xin/compress?lang=es" />
-  <link rel="alternate" hreflang="fr" href="https://imagec.xin/compress?lang=fr" />
-  <link rel="alternate" hreflang="de" href="https://imagec.xin/compress?lang=de" />
-  <link rel="alternate" hreflang="ru" href="https://imagec.xin/compress?lang=ru" />
-  <link rel="alternate" hreflang="pt" href="https://imagec.xin/compress?lang=pt" />
-  <link rel="alternate" hreflang="ar" href="https://imagec.xin/compress?lang=ar" />
-  <link rel="alternate" hreflang="vi" href="https://imagec.xin/compress?lang=vi" />
-  <link rel="alternate" hreflang="id" href="https://imagec.xin/compress?lang=id" />
-  <link rel="alternate" hreflang="th" href="https://imagec.xin/compress?lang=th" />
-  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/compress" />
+
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="imagec" />
   <meta property="og:title" content="在线图片压缩 - 免费压缩 PNG/JPG/WebP｜imagec" />
@@ -59,6 +46,7 @@
   <script type="application/ld+json" id="ldjson">{"@context":"https://schema.org","@type":"WebApplication","name":"在线图片压缩","alternateName":"imagec","url":"https://imagec.xin/compress","image":"https://imagec.xin/og-image.jpg","applicationCategory":"MultimediaApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"在线图片压缩，支持 PNG、JPG、WebP 格式，多级压缩等级选择，PNG智能压缩，实时预览。所有处理在浏览器本地完成，图片不上传服务器。","inLanguage":["zh-CN","en","ja","ko","es","fr","de","ru","pt","ar","vi","id","th"],"featureList":["多级压缩等级选择","PNG/JPG/WebP 压缩","PNG智能压缩","智能格式推荐","实时压缩预览","浏览器本地处理不上传"],"screenshot":"https://imagec.xin/og-image.jpg"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://imagec.xin/"},{"@type":"ListItem","position":2,"name":"图片压缩","item":"https://imagec.xin/compress"}]}</script>
 <link rel="stylesheet" href="/site.css" />
+<script src="/assets/compression-quality.js"></script>
 </head>
 <body class="tool">
 <main class="shell">
@@ -104,15 +92,15 @@
               </div>
               <div class="levelCard active" data-level="standard">
                 <span class="levelName" data-i18n="lvStd">标准</span>
-                <span class="levelDesc" data-i18n="lvStdDesc">推荐 · 平衡</span>
+                <span class="levelDesc" data-i18n="lvStdDesc">肉眼几乎看不出变化</span>
               </div>
               <div class="levelCard" data-level="strong">
                 <span class="levelName" data-i18n="lvStrong">强力</span>
-                <span class="levelDesc" data-i18n="lvStrongDesc">体积大幅减小</span>
+                <span class="levelDesc" data-i18n="lvStrongDesc">轻微损失 · 明显缩小</span>
               </div>
               <div class="levelCard" data-level="extreme">
                 <span class="levelName" data-i18n="lvExtreme">极致</span>
-                <span class="levelDesc" data-i18n="lvExtremeDesc">最小体积</span>
+                <span class="levelDesc" data-i18n="lvExtremeDesc">在可接受画质下尽量缩小</span>
               </div>
             </div>
           </div>
@@ -121,9 +109,9 @@
             <div class="labelrow">
               <label for="quality" id="qualityLabel" data-i18n="quality">压缩质量</label>
               <span class="tooltip" data-i18n="qualityTipQ">?</span>
-              <span class="value" id="qualityV">75</span>
+              <span class="value" id="qualityV">60</span>
             </div>
-            <input id="quality" type="range" min="1" max="100" value="75">
+            <input id="quality" type="range" min="1" max="100" value="60">
           </div>
         </div>
 
@@ -200,10 +188,24 @@
   </section>
 
 
+  <section class="tool-guide" lang="zh">
+    <h2>怎样把图片压到 100 KB？</h2>
+    <p>选择「目标大小」，设为 100 KB，检查压缩后的文件大小和预览再下载。如果仍超出限制，先缩小图片尺寸，再重新压缩。需要保留透明背景时，下载前确认输出格式支持透明。</p>
+    <p>用一张 1200 × 800 的高噪点 PNG 实测，原图为 3.15 MiB，选择 100 KB 目标后，导出文件为 96.7 KiB。结果取决于图片内容和压缩设置。</p>
+    <ul><li><a href="/batch">批量压缩多张图片</a></li></ul>
+  </section>
+  <section class="tool-guide" lang="en">
+    <h2>How do I compress an image to 100 KB?</h2>
+    <p>Choose Target size and set it to 100 KB. Check the output size and preview before downloading. If the file is still too large, reduce the image dimensions and try again. Choose a format that supports transparency if you need to keep it.</p>
+    <p>In a test with a 1200 × 800 PNG filled with random noise, the 3.15 MiB source produced a 96.7 KiB download at the 100 KB setting. Output size depends on the image and settings.</p>
+    <ul><li><a href="/batch">Compress multiple images</a></li></ul>
+  </section>
+
 <section class="relatedTools">
     <h2 data-i18n="moreTools">更多图片工具</h2>
     <div class="toolsGrid" data-tool-cards></div>
   </section>
+  <p class="pilot-language"><a data-pilot-language href="/en/compress" lang="en">English</a></p>
 
 </main>
 
@@ -313,8 +315,8 @@ const SEO={
 };
 
 const messages={
-zh:{targetMiss:'未达到目标体积，可缩小宽度后重试',brand:'imagec',toolWhitebg:'去白底',toolCompress:'压缩',toolConvert:'转换',toolCrop:'裁剪',toolIdphoto:'证件照',toolWatermark:'水印',toolBgcolor:'换底色',toolSplice:'拼接',toolImg2pdf:'转PDF',toolFilter:'滤镜',title:'在线图片压缩',subtitle:'压缩 PNG / JPG / WebP，尽量保住画质。',privacy:'本地处理 · 不上传服务器',upload:'点击选择或拖入图片',formats:'支持 PNG、JPG、WebP<br>也可直接粘贴图片',compressMode:'压缩方式',modeQuality:'质量档',modeTarget:'目标体积',targetKb:'目标大小',compareOrig:'原图',compareNew:'压缩后',level:'压缩等级',lvLight:'轻度',lvLightDesc:'画质几乎不变',lvStd:'标准',lvStdDesc:'推荐 · 平衡',lvStrong:'强力',lvStrongDesc:'体积大幅减小',lvExtreme:'极致',lvExtremeDesc:'最小体积',quality:'压缩质量',scale:'宽度缩放',byPercent:'按百分比',byPixel:'按像素',download:'下载压缩后图片',reset:'恢复默认',waiting:'等待图片',emptyTitle:'把图片放进来试试',origSize:'原始大小',compSize:'压缩后大小',saved:'压缩率',savedPrefix:'节省',increased:'体积增加',noChange:'体积无变化',methodPalette:'调色板压缩',methodWebp:'WebP 压缩',methodLossy:'有损压缩',methodLossless:'无损压缩',methodJpeg:'JPG 压缩',smartChoice:'智能选择',moreTools:'更多图片工具',rcCompress:'图片压缩',rcConvert:'格式转换',rcCrop:'裁剪缩放',rcIdphoto:'证件照换底色',rcWatermark:'加水印',rcBgcolor:'换背景色',rcSplice:'图片拼接',rcImg2pdf:'转PDF',rcFilter:'滤镜调色'},
-en:{targetMiss:'Target size not reached. Try reducing the image width.',brand:'imagec',toolWhitebg:'Remove White',toolCompress:'Compress',toolConvert:'Convert',toolCrop:'Crop',toolIdphoto:'ID Photo',toolWatermark:'Watermark',toolBgcolor:'BG Color',toolSplice:'Splice',toolImg2pdf:'to PDF',toolFilter:'Filters',title:'Image Compressor',subtitle:'Compress PNG, JPG, and WebP while keeping detail.',privacy:'Local · no upload',upload:'Choose or drop an image',formats:'PNG, JPG, and WebP supported<br>You can also paste an image',compressMode:'Mode',modeQuality:'Quality',modeTarget:'Target size',targetKb:'Target size',compareOrig:'Original',compareNew:'Compressed',level:'Compression level',lvLight:'Light',lvLightDesc:'Nearly identical quality',lvStd:'Standard',lvStdDesc:'Recommended · Balanced',lvStrong:'Strong',lvStrongDesc:'Much smaller size',lvExtreme:'Extreme',lvExtremeDesc:'Minimum size',quality:'Compression quality',scale:'Width scaling',byPercent:'By percent',byPixel:'By pixels',download:'Download compressed image',reset:'Reset defaults',waiting:'Waiting for image',emptyTitle:'Drop an image here',origSize:'Original size',compSize:'Compressed size',saved:'Saved',savedPrefix:'saved',increased:'Size increased by',noChange:'No change in size',methodPalette:'Palette compression',methodWebp:'WebP compression',methodLossy:'Lossy compression',methodLossless:'Lossless compression',methodJpeg:'JPEG compression',smartChoice:'Smart choice',moreTools:'More image tools',rcCompress:'Compress',rcConvert:'Convert Format',rcCrop:'Crop & Resize',rcIdphoto:'ID Photo BG',rcWatermark:'Watermark',rcBgcolor:'BG Color',rcSplice:'Splice',rcImg2pdf:'To PDF',rcFilter:'Filters'},
+zh:{qualityAuto:'自动',targetMiss:'未达到目标体积，可缩小宽度后重试',brand:'imagec',toolWhitebg:'去白底',toolCompress:'压缩',toolConvert:'转换',toolCrop:'裁剪',toolIdphoto:'证件照',toolWatermark:'水印',toolBgcolor:'换底色',toolSplice:'拼接',toolImg2pdf:'转PDF',toolFilter:'滤镜',title:'在线图片压缩',subtitle:'压缩 PNG / JPG / WebP，尽量保住画质。',privacy:'本地处理 · 不上传服务器',upload:'点击选择或拖入图片',formats:'支持 PNG、JPG、WebP<br>也可直接粘贴图片',compressMode:'压缩方式',modeQuality:'质量档',modeTarget:'目标体积',targetKb:'目标大小',compareOrig:'原图',compareNew:'压缩后',level:'压缩等级',lvLight:'轻度',lvLightDesc:'画质几乎不变',lvStd:'标准',lvStdDesc:'肉眼几乎看不出变化',lvStrong:'强力',lvStrongDesc:'轻微损失 · 明显缩小',lvExtreme:'极致',lvExtremeDesc:'在可接受画质下尽量缩小',quality:'压缩质量',scale:'宽度缩放',byPercent:'按百分比',byPixel:'按像素',download:'下载压缩后图片',reset:'恢复默认',waiting:'等待图片',emptyTitle:'把图片放进来试试',origSize:'原始大小',compSize:'压缩后大小',saved:'压缩率',savedPrefix:'节省',increased:'体积增加',noChange:'体积无变化',methodPalette:'减色压缩（保留透明度）',methodWebp:'WebP 压缩',methodLossy:'有损压缩',methodLossless:'无损压缩',methodJpeg:'JPG 压缩',smartChoice:'已保留原文件',moreTools:'更多图片工具',rcCompress:'图片压缩',rcConvert:'格式转换',rcCrop:'裁剪缩放',rcIdphoto:'证件照换底色',rcWatermark:'加水印',rcBgcolor:'换背景色',rcSplice:'图片拼接',rcImg2pdf:'转PDF',rcFilter:'滤镜调色'},
+en:{qualityAuto:'Auto',targetMiss:'Target size not reached. Try reducing the image width.',brand:'imagec',toolWhitebg:'Remove White',toolCompress:'Compress',toolConvert:'Convert',toolCrop:'Crop',toolIdphoto:'ID Photo',toolWatermark:'Watermark',toolBgcolor:'BG Color',toolSplice:'Splice',toolImg2pdf:'to PDF',toolFilter:'Filters',title:'Image Compressor',subtitle:'Compress PNG, JPG, and WebP while keeping detail.',privacy:'Local · no upload',upload:'Choose or drop an image',formats:'PNG, JPG, and WebP supported<br>You can also paste an image',compressMode:'Mode',modeQuality:'Quality',modeTarget:'Target size',targetKb:'Target size',compareOrig:'Original',compareNew:'Compressed',level:'Compression level',lvLight:'Light',lvLightDesc:'Nearly identical quality',lvStd:'Standard',lvStdDesc:'Hardly any visible change',lvStrong:'Strong',lvStrongDesc:'Smaller files with slight quality loss',lvExtreme:'Extreme',lvExtremeDesc:'Smallest within the quality limit',quality:'Compression quality',scale:'Width scaling',byPercent:'By percent',byPixel:'By pixels',download:'Download compressed image',reset:'Reset defaults',waiting:'Waiting for image',emptyTitle:'Drop an image here',origSize:'Original size',compSize:'Compressed size',saved:'Saved',savedPrefix:'saved',increased:'Size increased by',noChange:'No change in size',methodPalette:'Color reduction (preserves transparency)',methodWebp:'WebP compression',methodLossy:'Lossy compression',methodLossless:'Lossless compression',methodJpeg:'JPEG compression',smartChoice:'Original file kept',moreTools:'More image tools',rcCompress:'Compress',rcConvert:'Convert Format',rcCrop:'Crop & Resize',rcIdphoto:'ID Photo BG',rcWatermark:'Watermark',rcBgcolor:'BG Color',rcSplice:'Splice',rcImg2pdf:'To PDF',rcFilter:'Filters'},
 ja:{brand:'imagec',toolWhitebg:'白抜き',toolCompress:'圧縮',toolConvert:'変換',toolCrop:'切り抜き',toolIdphoto:'証明写真',toolWatermark:'透かし',toolBgcolor:'背景色',toolSplice:'結合',toolImg2pdf:'PDF変換',toolFilter:'フィルタ',title:'画像圧縮ツール',subtitle:'PNG・JPG・WebP画像をオンラインで無料圧縮。複数レベルの圧縮、PNGスマート圧縮、リアルタイムプレビュー。ブラウザ内でローカル処理。',privacy:'端末内処理 · 送信しません',upload:'クリックして選択または画像をドロップ',formats:'PNG、JPG、WebP対応<br>画像の貼り付けも可能',level:'圧縮レベル',lvLight:'軽度',lvLightDesc:'画質ほぼそのまま',lvStd:'標準',lvStdDesc:'推奨 · バランス',lvStrong:'強力',lvStrongDesc:'大幅に軽量化',lvExtreme:'极致',lvExtremeDesc:'最小サイズ',quality:'圧縮品質',scale:'幅スケーリング',byPercent:'パーセントで',byPixel:'ピクセルで',download:'圧縮後の画像をダウンロード',reset:'デフォルトに戻す',waiting:'画像待ち',emptyTitle:'画像をドロップしてください',origSize:'元のサイズ',compSize:'圧縮後サイズ',saved:'圧縮率',savedPrefix:'削減',increased:'サイズ増加',noChange:'サイズ変化なし',methodPalette:'パレット圧縮',methodWebp:'WebP圧縮',methodLossy:'非可逆圧縮',methodLossless:'可逆圧縮',methodJpeg:'JPEG圧縮',smartChoice:'スマート選択',moreTools:'その他の画像ツール',rcCompress:'画像圧縮',rcConvert:'形式変換',rcCrop:'切り抜き・サイズ変更',rcIdphoto:'証明写真背景',rcWatermark:'透かし',rcBgcolor:'背景色',rcSplice:'画像結合',rcImg2pdf:'PDF変換',rcFilter:'フィルタ調整'},
 ko:{brand:'imagec',toolWhitebg:'흰배경제거',toolCompress:'압축',toolConvert:'변환',toolCrop:'자르기',toolIdphoto:'증명사진',toolWatermark:'워터마크',toolBgcolor:'배경색',toolSplice:'이어붙이기',toolImg2pdf:'PDF변환',toolFilter:'필터',title:'이미지 압축 도구',subtitle:'PNG/JPG/WebP 이미지를 온라인에서 무료 압축. 다중 레벨 압축, PNG 스마트 압축, 실시간 미리보기. 브라우저에서 로컬 처리.',privacy:'기기에서 처리 · 업로드 없음',upload:'클릭하여 선택하거나 이미지를 드롭',formats:'PNG, JPG, WebP 지원<br>이미지 붙여넣기도 가능',level:'압축 레벨',lvLight:'가벼움',lvLightDesc:'품질 거의 동일',lvStd:'표준',lvStdDesc:'추천 · 균형',lvStrong:'강력',lvStrongDesc:'훨씬 작은 크기',lvExtreme:'극한',lvExtremeDesc:'최소 크기',quality:'압축 품질',scale:'너비 크기 조절',byPercent:'비율로',byPixel:'픽셀로',download:'압축된 이미지 다운로드',reset:'기본값으로 재설정',waiting:'이미지 대기 중',emptyTitle:'이미지를 드롭하세요',origSize:'원본 크기',compSize:'압축 후 크기',saved:'압축률',savedPrefix:'절약',increased:'크기 증가',noChange:'크기 변화 없음',methodPalette:'팔레트 압축',methodWebp:'WebP 압축',methodLossy:'손실 압축',methodLossless:'무손실',methodJpeg:'JPEG 압축',smartChoice:'스마트 선택',moreTools:'더 많은 이미지 도구',rcCompress:'이미지 압축',rcConvert:'형식 변환',rcCrop:'자르기 및 크기 조절',rcIdphoto:'증명사진 배경',rcWatermark:'워터마크',rcBgcolor:'배경색',rcSplice:'이미지 이어붙이기',rcImg2pdf:'PDF 변환',rcFilter:'필터 보정'},
 es:{brand:'imagec',toolWhitebg:'Quitar Blanco',toolCompress:'Comprimir',toolConvert:'Convertir',toolCrop:'Recortar',toolIdphoto:'Foto ID',toolWatermark:'Marca',toolBgcolor:'Color Fondo',toolSplice:'Unir',toolImg2pdf:'a PDF',toolFilter:'Filtros',title:'Compresor de Imágenes',subtitle:'Compresión de imágenes online gratuita para PNG/JPG/WebP con compresión multinivel, compresión inteligente PNG y vista previa en tiempo real. Procesado local en el navegador.',privacy:'Local · sin subir',upload:'Elige o suelta una imagen',formats:'PNG, JPG y WebP soportados<br>También puedes pegar una imagen',level:'Nivel de compresión',lvLight:'Ligero',lvLightDesc:'Calidad casi idéntica',lvStd:'Estándar',lvStdDesc:'Recomendado · Equilibrado',lvStrong:'Fuerte',lvStrongDesc:'Mucho más pequeño',lvExtreme:'Extremo',lvExtremeDesc:'Tamaño mínimo',quality:'Calidad de compresión',scale:'Escalado de ancho',byPercent:'Por porcentaje',byPixel:'Por píxeles',download:'Descargar imagen comprimida',reset:'Restablecer valores',waiting:'Esperando imagen',emptyTitle:'Suelta una imagen aquí',origSize:'Tamaño original',compSize:'Tamaño comprimido',saved:'Ahorro',savedPrefix:'ahorrado',increased:'Tamaño aumentado en',noChange:'Sin cambio de tamaño',methodPalette:'Paleta',methodWebp:'Compresión WebP',methodLossy:'Compresión con pérdida',methodLossless:'Compresión sin pérdida',methodJpeg:'Compresión JPEG',smartChoice:'Elección inteligente',moreTools:'Más herramientas de imagen',rcCompress:'Comprimir',rcConvert:'Convertir Formato',rcCrop:'Recortar y Redimensionar',rcIdphoto:'Fondo Foto ID',rcWatermark:'Marca de agua',rcBgcolor:'Color Fondo',rcSplice:'Unir Imágenes',rcImg2pdf:'A PDF',rcFilter:'Filtros'},
@@ -339,13 +341,7 @@ function debounce(fn,ms){
 }
 
 function levelToQuality(level){
-  switch(level){
-    case'light':return 90;
-    case'standard':return 75;
-    case'strong':return 50;
-    case'extreme':return 25;
-    default:return 75;
-  }
+  return (imagecCompressionQuality.profiles[level]||imagecCompressionQuality.profiles.standard).quality;
 }
 
 const LANG_NAMES={zh:'中文',en:'English',ja:'日本語',ko:'한국어',es:'Español',fr:'Français',de:'Deutsch',ru:'Русский',pt:'Português',ar:'العربية',vi:'Tiếng Việt',id:'Bahasa Indonesia',th:'ไทย'};
@@ -361,7 +357,7 @@ let state={
   compressedSize:0,
   compressedUrl:null,
   method:'',
-  quality:75,
+  quality:levelToQuality('standard'),
   level:'standard',
   compressMode:'quality',
   targetKb:200,
@@ -376,6 +372,7 @@ function t(key){
 }
 
 function applyI18n(){
+  if(state.level)$('#qualityV').textContent=t('qualityAuto');
   document.documentElement.lang=state.lang;
   const dir=state.lang==='ar'?'rtl':'ltr';
   document.documentElement.dir=dir;
@@ -405,7 +402,7 @@ function updateToolNav(){
 
 function initLang(){
   const params=new URLSearchParams(location.search);
-  const lang=params.get('lang')||localStorage.getItem('language')||'zh';
+  const lang=params.get('lang')||(document.documentElement.dataset.pageLanguage==='en'?'en':localStorage.getItem('language'))||'zh';
   state.lang=messages[lang]?lang:'zh';
   const sel=$('#langSelect');
   Object.keys(messages).forEach(k=>{
@@ -425,14 +422,15 @@ function initLang(){
 
 function onFileSelected(file){
   if(!file)return;
-  if(!file.type.startsWith('image/')){imagecAlert('errType');return;}
+  const format=imagecSourceFormat(file);
+  if(!format){imagecAlert('errType');return;}
   if(state.compressedUrl){URL.revokeObjectURL(state.compressedUrl);state.compressedUrl=null;}
   const reader=new FileReader();
   reader.onload=e=>{
     const img=new Image();
     img.onload=()=>{
       state.img=img;
-      state.imgType=file.type;
+      state.imgType='image/'+format;
       state.originalSize=file.size;
       state.originalBlob=file;
       const canvas=document.createElement('canvas');
@@ -492,92 +490,38 @@ function applyScale(){
 
 function encoderQuality(quality){
   const q=Math.max(1,Math.min(100,Math.round(Number(quality)||75)))/100;
-  // Above ~0.92 the browser JPEG encoder switches to 4:4:4 and the file balloons.
-  return q>0.92?0.92:q;
+  return q;
 }
 
 function canvasToBlob(canvas,mime,quality){
   return new Promise(resolve=>{
-    canvas.toBlob(blob=>resolve(blob||null),mime,quality);
+    canvas.toBlob(blob=>resolve(blob?.type===mime?blob:null),mime,quality);
   });
 }
 
-async function imageHasAlpha(imageData){
-  const d=imageData.data;
-  const pixels=d.length/4;
-  const chunk=250000;
-  for(let p=0;p<pixels;p+=chunk){
-    const end=Math.min(p+chunk,pixels);
-    for(let i=p;i<end;i++){
-      if(d[i*4+3]<250)return true;
-    }
-    if(end<pixels)await new Promise(r=>setTimeout(r,0));
-  }
-  return false;
+async function encodePng(canvas,quality,targetBytes,level){
+  const result=await imagecCompressPng(canvas,quality,targetBytes,level);
+  return {blob:result.blob,method:result.reducedColors?'palette':'lossless',ext:'png'};
 }
 
-async function compressJpeg(canvas,quality){
-  const bg=document.createElement('canvas');
-  bg.width=canvas.width;bg.height=canvas.height;
-  const ctx=bg.getContext('2d');
-  ctx.fillStyle='#ffffff';
-  ctx.fillRect(0,0,bg.width,bg.height);
-  ctx.drawImage(canvas,0,0);
-  return canvasToBlob(bg,'image/jpeg',encoderQuality(quality));
-}
-
-async function compressWebp(canvas,quality){
-  return canvasToBlob(canvas,'image/webp',encoderQuality(quality));
-}
-
-function pickSmaller(jpg,webp){
-  if(jpg&&webp){
-    return webp.size<jpg.size
-      ?{blob:webp,method:'webp-lossy',ext:'webp'}
-      :{blob:jpg,method:'jpeg',ext:'jpg'};
-  }
-  if(webp)return{blob:webp,method:'webp-lossy',ext:'webp'};
-  if(jpg)return{blob:jpg,method:'jpeg',ext:'jpg'};
-  return null;
-}
-
-async function encodeLossy(canvas,quality,alpha){
-  if(alpha){
-    const webp=await compressWebp(canvas,quality);
-    if(webp)return{blob:webp,method:'webp-lossy',ext:'webp'};
-    const jpg=await compressJpeg(canvas,quality);
-    if(jpg)return{blob:jpg,method:'jpeg',ext:'jpg'};
-    return null;
-  }
-  const [jpg,webp]=await Promise.all([
-    compressJpeg(canvas,quality),
-    compressWebp(canvas,quality)
-  ]);
-  return pickSmaller(jpg,webp);
-}
-
-async function encodeOnce(canvas,quality,alpha){
-  const isPng=state.imgType==='image/png';
-  const isWebp=state.imgType==='image/webp';
-  const extFallback=isPng?'png':isWebp?'webp':'jpg';
-  if(alpha===undefined && (isPng||isWebp)){
-    const ctx=canvas.getContext('2d',{willReadFrequently:true});
-    alpha=await imageHasAlpha(ctx.getImageData(0,0,canvas.width,canvas.height));
-  }
-  const encoded=await encodeLossy(canvas,quality,alpha);
-  if(encoded)return encoded;
-  return{blob:state.originalBlob,method:'original',ext:extFallback};
+async function encodeOnce(canvas,quality,level,revision){
+  if(state.imgType==='image/png')return encodePng(canvas,quality,undefined,level);
+  const webp=state.imgType==='image/webp';
+  const encode=q=>canvasToBlob(canvas,webp?'image/webp':'image/jpeg',encoderQuality(q));
+  const resized=canvas.width!==state.originalCanvas.width||canvas.height!==state.originalCanvas.height;
+  const blob=level?await imagecCompressionQuality.encodePreset(canvas,level,encode,resized,()=>revision===compressionRevision):await encode(quality);
+  return {blob,method:webp?'webp-lossy':'jpeg',ext:webp?'webp':'jpg'};
 }
 
 let compressionRevision=0;
 
 async function compressToTarget(canvas,targetBytes,revision){
-  const ctx=canvas.getContext('2d');
-  const alpha=await imageHasAlpha(ctx.getImageData(0,0,canvas.width,canvas.height));
+  if(state.imgType==='image/png')return encodePng(canvas,state.quality,targetBytes);
   let lo=1,hi=95,best=null,smallest=null;
   while(lo<=hi && revision===compressionRevision){
     const quality=Math.floor((lo+hi)/2);
-    const result=await encodeOnce(canvas,quality,alpha);
+    const result=await encodeOnce(canvas,quality);
+    if(!result.blob)return result;
     if(!smallest || result.blob.size<smallest.blob.size)smallest=result;
     if(result.blob.size<=targetBytes){
       best=result;
@@ -599,15 +543,16 @@ async function doCompress(revision){
     if(state.compressMode==='target'){
       result=await compressToTarget(canvas,state.targetKb*1024,revision);
     }else{
-      result=await encodeOnce(canvas,state.quality);
+      result=await encodeOnce(canvas,state.quality,state.level,revision);
     }
     if(revision!==compressionRevision)return;
     const isPng=state.imgType==='image/png';
     const isWebp=state.imgType==='image/webp';
     const dimsSame=!state.originalCanvas||(canvas.width===state.originalCanvas.width&&canvas.height===state.originalCanvas.height);
-    if(dimsSame&&result.blob.size>=state.originalSize&&state.compressMode!=='target'){
+    if(dimsSame&&(!result?.blob||result.blob.size>=state.originalSize)){
       result={blob:state.originalBlob,method:'original',ext:isPng?'png':isWebp?'webp':'jpg'};
     }
+    if(!result?.blob){imagecAlert('errLoad');return;}
     state.compressedBlob=result.blob;
     state.compressedSize=result.blob.size;
     state.method=result.method;
@@ -628,9 +573,10 @@ async function doCompress(revision){
       ratioEl.innerHTML=`<span class="neutral">${t('noChange')}</span>`;
     }
     ratioEl.style.display='block';
-    const methodMap={'palette':'methodPalette','webp-lossy':'methodWebp','jpeg':'methodJpeg','original':'smartChoice'};
+    const methodMap={'palette':'methodPalette','lossless':'methodLossless','webp-lossy':'methodWebp','jpeg':'methodJpeg','original':'smartChoice'};
     const methodKey=methodMap[result.method]||'smartChoice';
-    let strategy=t(methodKey);
+    const outputFormat={png:'PNG',webp:'WebP',jpg:'JPG'}[result.ext];
+    let strategy=outputFormat+' · '+t(methodKey);
     if(state.compressMode==='target'){
       strategy+=' · '+state.targetKb+' KB';
       if(result.blob.size>state.targetKb*1024)strategy+=' · '+t('targetMiss');
@@ -639,6 +585,7 @@ async function doCompress(revision){
     strategyEl.style.display='block';
     $('#download').disabled=false;
   }catch(err){
+    if(revision===compressionRevision)imagecAlert('errLoad');
     console.error(err);
   }finally{
     if(revision===compressionRevision)$('#wrap').parentElement.classList.remove('computing');
@@ -718,6 +665,8 @@ function setupEvents(){
   }
   quality.addEventListener('input',()=>{
     state.quality=+quality.value;
+    state.level=null;
+    levelGroup.querySelectorAll('.active').forEach(card=>card.classList.remove('active'));
     qualityV.textContent=quality.value;
     scheduleCompress();
   });
@@ -730,7 +679,7 @@ function setupEvents(){
     state.level=card.dataset.level;
     state.quality=levelToQuality(state.level);
     quality.value=state.quality;
-    qualityV.textContent=state.quality;
+    qualityV.textContent=t('qualityAuto');
     scheduleCompress();
   });
   const scaleMode=$('#scaleMode');
@@ -774,10 +723,10 @@ function setupEvents(){
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   });
   $('#reset').addEventListener('click',()=>{
-    state.quality=75;state.level='standard';
+    state.quality=levelToQuality('standard');state.level='standard';
     state.compressMode='quality';state.targetKb=200;
     state.scaleMode='percent';state.scaleValue=100;
-    quality.value=75;$('#qualityV').textContent='75';
+    quality.value=state.quality;$('#qualityV').textContent=t('qualityAuto');
     if(targetKb)targetKb.value=200;
     if(targetKbV)targetKbV.textContent='200 KB';
     setCompressMode('quality');
@@ -818,11 +767,11 @@ function init(){
   setupEvents();
   const params=new URLSearchParams(location.search);
   const presetLevel=params.get('level');
-  if(presetLevel){
+  if(Object.hasOwn(imagecCompressionQuality.profiles,presetLevel)){
     state.level=presetLevel;
     state.quality=levelToQuality(presetLevel);
     $('#quality').value=state.quality;
-    $('#qualityV').textContent=state.quality;
+    $('#qualityV').textContent=t('qualityAuto');
     document.querySelectorAll('#levelGroup .levelCard').forEach(c=>{
       c.classList.toggle('active',c.dataset.level===presetLevel);
     });
@@ -859,6 +808,7 @@ init();
     <a class="icp" id="icp" href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">ICP备案号申请中</a>
   </div>
 </footer>
+<script src="/assets/png-compression.js"></script>
 <script src="/tool-cards.js"></script>
 <script src="/chrome.js"></script>
 </body>

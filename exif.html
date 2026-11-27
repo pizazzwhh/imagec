@@ -14,20 +14,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="apple-touch-icon" href="/favicon.svg" />
   <link rel="canonical" href="https://imagec.xin/exif" />
-  <link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/exif?lang=zh" />
-  <link rel="alternate" hreflang="en" href="https://imagec.xin/exif?lang=en" />
-  <link rel="alternate" hreflang="ja" href="https://imagec.xin/exif?lang=ja" />
-  <link rel="alternate" hreflang="ko" href="https://imagec.xin/exif?lang=ko" />
-  <link rel="alternate" hreflang="es" href="https://imagec.xin/exif?lang=es" />
-  <link rel="alternate" hreflang="fr" href="https://imagec.xin/exif?lang=fr" />
-  <link rel="alternate" hreflang="de" href="https://imagec.xin/exif?lang=de" />
-  <link rel="alternate" hreflang="ru" href="https://imagec.xin/exif?lang=ru" />
-  <link rel="alternate" hreflang="pt" href="https://imagec.xin/exif?lang=pt" />
-  <link rel="alternate" hreflang="ar" href="https://imagec.xin/exif?lang=ar" />
-  <link rel="alternate" hreflang="vi" href="https://imagec.xin/exif?lang=vi" />
-  <link rel="alternate" hreflang="id" href="https://imagec.xin/exif?lang=id" />
-  <link rel="alternate" hreflang="th" href="https://imagec.xin/exif?lang=th" />
-  <link rel="alternate" hreflang="x-default" href="https://imagec.xin/exif" />
+
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="imagec" />
   <meta property="og:title" content="清除图片元数据 - 去掉 EXIF/GPS｜imagec" />
@@ -74,14 +61,6 @@
         <input id="file" type="file" accept="image/png,image/jpeg,image/webp" />
 
         <div class="pin">
-          <div class="group">
-            <div class="labelrow"><label data-i18n="targetFmt">导出格式</label></div>
-            <div class="seg" id="fmtSeg" role="group">
-              <button type="button" class="active" data-fmt="jpeg">JPG</button>
-              <button type="button" data-fmt="png">PNG</button>
-              <button type="button" data-fmt="webp">WebP</button>
-            </div>
-          </div>
           <div class="group" id="qualityGroup">
             <div class="labelrow">
               <label for="quality"><span data-i18n="quality">质量</span> <span class="hint" data-i18n="qualityHint">JPG / WebP</span></label>
@@ -269,10 +248,7 @@ function kindOf(file){
   const name=(file.name||'').toLowerCase();
   const type=(file.type||'').toLowerCase();
   if(type.indexOf('heic')!==-1||type.indexOf('heif')!==-1||name.endsWith('.heic')||name.endsWith('.heif'))return 'heic';
-  if(type==='image/png'||name.endsWith('.png'))return 'png';
-  if(type==='image/jpeg'||type==='image/jpg'||name.endsWith('.jpg')||name.endsWith('.jpeg'))return 'jpeg';
-  if(type==='image/webp'||name.endsWith('.webp'))return 'webp';
-  return '';
+  return imagecSourceFormat(file);
 }
 function loadImage(blob){
   return new Promise((resolve,reject)=>{
@@ -296,9 +272,6 @@ function paintMeta(){
   meta.textContent=t('waiting');
 }
 function syncFmt(){
-  $('#fmtSeg').querySelectorAll('button').forEach(btn=>{
-    btn.classList.toggle('active',btn.getAttribute('data-fmt')===fmt);
-  });
   const lossy=fmt==='jpeg'||fmt==='webp';
   $('#qualityGroup').style.display=lossy?'':'none';
   $('#jpgNote').style.display=fmt==='jpeg'?'':'none';
@@ -411,6 +384,8 @@ async function load(file){
     source=img;
     originalSize=file.size||0;
     baseName=file.name||'image';
+    fmt=kind;
+    syncFmt();
     renderPreview();
     scheduleMeasure();
   }catch(e){
@@ -441,13 +416,6 @@ document.addEventListener('paste',e=>{
       if(file){load(file);break;}
     }
   }
-});
-$('#fmtSeg').addEventListener('click',e=>{
-  const btn=e.target.closest('button[data-fmt]');
-  if(!btn)return;
-  fmt=btn.getAttribute('data-fmt');
-  syncFmt();
-  if(source)scheduleMeasure();
 });
 $('#quality').addEventListener('input',()=>{
   $('#qualityV').textContent=$('#quality').value;

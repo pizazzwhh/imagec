@@ -671,7 +671,7 @@
     var saved = "";
     try { saved = localStorage.getItem("language") || ""; } catch (e) {}
     var html = (document.documentElement.lang || "").toLowerCase();
-    var code = (saved || html || "zh").slice(0, 2);
+    var code = (document.documentElement.dataset.pageLanguage ? html : saved || html || "zh").slice(0, 2);
     if (code === "zh") return "zh";
     return CHROME[code] ? code : "en";
   }
@@ -725,6 +725,12 @@
     });
   }
   function applyCopy() {
+    var exportCopy = currentLang() === "zh"
+      ? { transparent: "透明效果使用 PNG 导出。", mixed: "输入格式混合，拼接结果使用 PNG 导出。" }
+      : { transparent: "Exports as PNG to preserve transparency.", mixed: "Mixed input formats. The combined image exports as PNG." };
+    document.querySelectorAll("[data-export-copy]").forEach(function (el) {
+      el.textContent = exportCopy[el.dataset.exportCopy];
+    });
     syncBlogCards();
     ensureSisterLink();
     ensureFeedbackLink();
@@ -934,7 +940,62 @@
     });
   }
 
+  function integrateDownloadFormats() {
+    var choices = document.querySelector("#fmtGrid, body:not(.barcode) #fmtSeg");
+    var download = document.querySelector("#download, #downloadBtn, body.batch #zipBtn");
+    if (!download || !choices) return;
+
+    var split = document.createElement("div");
+    split.className = "downloadSplit";
+    download.before(split);
+    split.append(download);
+
+    function addPicker(control, group) {
+      var picker = document.createElement("div");
+      picker.className = "downloadPicker";
+      split.append(picker);
+      var details = document.createElement("details");
+      var summary = document.createElement("summary");
+      var pane = document.createElement("div");
+      pane.className = "downloadPickerPane";
+      details.append(summary, pane);
+      pane.append(control);
+      picker.append(details);
+      function syncChoice() {
+        var active = control.querySelector(".active[data-fmt]");
+        var labels = { jpeg: "JPG", png: "PNG", webp: "WebP", avif: "AVIF", bmp: "BMP" };
+        summary.textContent = labels[active?.dataset.fmt] || "Format";
+        summary.setAttribute("aria-label", (currentLang() === "zh" ? "输出格式 " : "Output format ") + summary.textContent);
+      }
+      syncChoice();
+      new MutationObserver(syncChoice).observe(control, { subtree: true, attributes: true, attributeFilter: ["class"] });
+      control.addEventListener("click", function (event) {
+        if (!event.target.closest("[data-fmt]")) return;
+        details.open = false;
+        summary.focus();
+      });
+      details.addEventListener("keydown", function (event) {
+        if (event.key !== "Escape" || !details.open) return;
+        details.open = false;
+        summary.focus();
+      });
+      document.addEventListener("click", function (event) {
+        if (!details.contains(event.target)) details.open = false;
+      });
+      if (group.id === "fmtWrap") {
+        function syncVisibility() { picker.hidden = group.hidden; }
+        syncVisibility();
+        new MutationObserver(syncVisibility).observe(group, { attributes: true, attributeFilter: ["hidden"] });
+      }
+      if (group.parentElement?.classList.contains("pin") && group.parentElement.childElementCount === 1) group = group.parentElement;
+      group.style.display = "none";
+    }
+
+    addPicker(choices, choices.closest(".group"));
+  }
+
   function boot() {
+    integrateDownloadFormats();
     enableKeyboardUploads();
     if (window.imagecToolCards) window.imagecToolCards.mountAll();
     document.querySelectorAll("body.tool .controls").forEach(foldTool);
@@ -993,6 +1054,44 @@
     if (out && origNorm === out) return stem + "." + origExt;
     if (!out) return stem;
     return stem + "." + out;
+  };
+  window.imagecSourceFormat = function (file) {
+    if (!file) return null;
+    var mime = (file.type || "").toLowerCase();
+    if (mime === "image/png") return "png";
+    if (mime === "image/jpeg" || mime === "image/jpg") return "jpeg";
+    if (mime === "image/webp") return "webp";
+    if (mime && mime !== "application/octet-stream") return null;
+    var match = (file.name || "").match(/\.(png|jpe?g|webp)$/i);
+    if (!match) return null;
+    var ext = match[1].toLowerCase();
+    return ext === "jpg" ? "jpeg" : ext;
+  };
+  window.imagecSaveCanvas = function (canvas, name, format) {
+    var mime = "image/" + format;
+    var filename = window.imagecDownloadName(name, format);
+    var output = canvas;
+    if (format === "jpeg") {
+      output = document.createElement("canvas");
+      output.width = canvas.width;
+      output.height = canvas.height;
+      var ctx = output.getContext("2d");
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, output.width, output.height);
+      ctx.drawImage(canvas, 0, 0);
+    }
+    output.toBlob(function (blob) {
+      if (!blob || blob.type !== mime) {
+        window.imagecAlert("errLoad");
+        return;
+      }
+      var link = document.createElement("a");
+      var url = URL.createObjectURL(blob);
+      link.href = url;
+      link.download = filename;
+      link.click();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    }, mime, format === "png" ? undefined : 0.92);
   };
   void nativeAlert;
 })();

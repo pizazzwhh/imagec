@@ -1,58 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://imagec.xin/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-11-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://imagec.xin/?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://imagec.xin/?lang=ja"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://imagec.xin/?lang=ko"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://imagec.xin/?lang=es"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://imagec.xin/?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://imagec.xin/?lang=de"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://imagec.xin/?lang=ru"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://imagec.xin/?lang=pt"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://imagec.xin/?lang=ar"/>
-    <xhtml:link rel="alternate" hreflang="vi" href="https://imagec.xin/?lang=vi"/>
-    <xhtml:link rel="alternate" hreflang="id" href="https://imagec.xin/?lang=id"/>
-    <xhtml:link rel="alternate" hreflang="th" href="https://imagec.xin/?lang=th"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://imagec.xin/"/>
   </url>
   <url>
     <loc>https://imagec.xin/blog/white-to-transparent-guide</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-11-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://imagec.xin/blog/ecommerce-white-background</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-11-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://imagec.xin/whitebg</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-11-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
-    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/whitebg?lang=zh"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://imagec.xin/whitebg?lang=en"/>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://imagec.xin/whitebg?lang=ja"/>
-    <xhtml:link rel="alternate" hreflang="ko" href="https://imagec.xin/whitebg?lang=ko"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://imagec.xin/whitebg?lang=es"/>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://imagec.xin/whitebg?lang=fr"/>
-    <xhtml:link rel="alternate" hreflang="de" href="https://imagec.xin/whitebg?lang=de"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://imagec.xin/whitebg?lang=ru"/>
-    <xhtml:link rel="alternate" hreflang="pt" href="https://imagec.xin/whitebg?lang=pt"/>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://imagec.xin/whitebg?lang=ar"/>
-    <xhtml:link rel="alternate" hreflang="vi" href="https://imagec.xin/whitebg?lang=vi"/>
-    <xhtml:link rel="alternate" hreflang="id" href="https://imagec.xin/whitebg?lang=id"/>
-    <xhtml:link rel="alternate" hreflang="th" href="https://imagec.xin/whitebg?lang=th"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://imagec.xin/whitebg"/>
   </url>
-  <url><loc>https://imagec.xin/compress</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://imagec.xin/compress</loc><lastmod>2026-11-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://imagec.xin/convert</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://imagec.xin/batch</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://imagec.xin/qr</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
@@ -62,17 +34,25 @@
   <url><loc>https://imagec.xin/watermark</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://imagec.xin/bgcolor</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://imagec.xin/splice</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
-  <url><loc>https://imagec.xin/img2pdf</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://imagec.xin/img2pdf</loc><lastmod>2026-11-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://imagec.xin/filter</loc><lastmod>2026-10-28</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://imagec.xin/pdf2img</loc><lastmod>2026-11-12</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://imagec.xin/palette</loc><lastmod>2026-11-12</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://imagec.xin/favicon</loc><lastmod>2026-11-12</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://imagec.xin/barcode</loc><lastmod>2026-11-12</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://imagec.xin/gifsplit</loc><lastmod>2026-11-12</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
-  <url><loc>https://imagec.xin/heic</loc><lastmod>2026-11-11</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://imagec.xin/heic</loc><lastmod>2026-11-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://imagec.xin/rotate</loc><lastmod>2026-11-11</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://imagec.xin/exif</loc><lastmod>2026-11-11</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
-  <url><loc>https://imagec.xin/cutout</loc><lastmod>2026-11-11</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://imagec.xin/cutout</loc><lastmod>2026-11-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://imagec.xin/ocr</loc><lastmod>2026-11-12</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
   <url><loc>https://imagec.xin/svgopt</loc><lastmod>2026-11-12</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url>
+    <loc>https://imagec.xin/en</loc>
+    <lastmod>2026-11-24</lastmod>
+  </url>
+  <url>
+    <loc>https://imagec.xin/en/compress</loc>
+    <lastmod>2026-11-24</lastmod>
+  </url>
 </urlset>

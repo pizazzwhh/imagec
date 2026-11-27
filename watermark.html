@@ -13,20 +13,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="apple-touch-icon" href="/favicon.svg" />
 <link rel="canonical" href="https://imagec.xin/watermark" />
-<link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/watermark?lang=zh" />
-<link rel="alternate" hreflang="en" href="https://imagec.xin/watermark?lang=en" />
-<link rel="alternate" hreflang="ja" href="https://imagec.xin/watermark?lang=ja" />
-<link rel="alternate" hreflang="ko" href="https://imagec.xin/watermark?lang=ko" />
-<link rel="alternate" hreflang="es" href="https://imagec.xin/watermark?lang=es" />
-<link rel="alternate" hreflang="fr" href="https://imagec.xin/watermark?lang=fr" />
-<link rel="alternate" hreflang="de" href="https://imagec.xin/watermark?lang=de" />
-<link rel="alternate" hreflang="ru" href="https://imagec.xin/watermark?lang=ru" />
-<link rel="alternate" hreflang="pt" href="https://imagec.xin/watermark?lang=pt" />
-<link rel="alternate" hreflang="ar" href="https://imagec.xin/watermark?lang=ar" />
-<link rel="alternate" hreflang="vi" href="https://imagec.xin/watermark?lang=vi" />
-<link rel="alternate" hreflang="id" href="https://imagec.xin/watermark?lang=id" />
-<link rel="alternate" hreflang="th" href="https://imagec.xin/watermark?lang=th" />
-<link rel="alternate" hreflang="x-default" href="https://imagec.xin/watermark" />
+
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="imagec" />
 <meta property="og:title" content="图片加水印 - 在线免费添加文字/图片水印 | imagec" />
@@ -364,7 +351,7 @@ setLanguage(language);
   const resetBtn = document.getElementById('resetBtn');
 
   let sourceImage = null;
-  let sourceName = 'image.png';
+  let sourceName = 'image.png', sourceFormat = 'png';
   let wmType = 'text';
   let wmImage = null;
   let position = 'tl';
@@ -372,12 +359,18 @@ setLanguage(language);
   window.doRender = function(){ if(sourceImage) render(); };
 
   function loadFile(file){
-    if(!file || !file.type.startsWith('image/')){ if(file) imagecAlert('errType'); return; }
-    sourceName = file.name || 'image.png';
+    const format = imagecSourceFormat(file);
+    if(!format){ if(file) imagecAlert('errType'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
-      img.onload = () => { sourceImage = img; showWorkarea(); render(); };
+      img.onload = () => {
+        sourceImage = img;
+        sourceName = file.name || 'image.png';
+        sourceFormat = format;
+        showWorkarea();
+        render();
+      };
       img.onerror = () => imagecAlert('errLoad');
       img.src = e.target.result;
     };
@@ -576,10 +569,7 @@ setLanguage(language);
     const origW = sourceImage.width, origH = sourceImage.height;
     const scale = origW / previewWidth();
     renderAtSize(origW, origH, scale);
-    const link = document.createElement('a');
-    link.download = imagecDownloadName(sourceName, 'png');
-    link.href = preview.toDataURL('image/png');
-    link.click();
+    imagecSaveCanvas(preview, sourceName, sourceFormat);
     render();
   });
 

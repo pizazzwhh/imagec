@@ -13,20 +13,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="apple-touch-icon" href="/favicon.svg" />
 <link rel="canonical" href="https://imagec.xin/idphoto" />
-<link rel="alternate" hreflang="zh-CN" href="https://imagec.xin/idphoto?lang=zh" />
-<link rel="alternate" hreflang="en" href="https://imagec.xin/idphoto?lang=en" />
-<link rel="alternate" hreflang="ja" href="https://imagec.xin/idphoto?lang=ja" />
-<link rel="alternate" hreflang="ko" href="https://imagec.xin/idphoto?lang=ko" />
-<link rel="alternate" hreflang="es" href="https://imagec.xin/idphoto?lang=es" />
-<link rel="alternate" hreflang="fr" href="https://imagec.xin/idphoto?lang=fr" />
-<link rel="alternate" hreflang="de" href="https://imagec.xin/idphoto?lang=de" />
-<link rel="alternate" hreflang="ru" href="https://imagec.xin/idphoto?lang=ru" />
-<link rel="alternate" hreflang="pt" href="https://imagec.xin/idphoto?lang=pt" />
-<link rel="alternate" hreflang="ar" href="https://imagec.xin/idphoto?lang=ar" />
-<link rel="alternate" hreflang="vi" href="https://imagec.xin/idphoto?lang=vi" />
-<link rel="alternate" hreflang="id" href="https://imagec.xin/idphoto?lang=id" />
-<link rel="alternate" hreflang="th" href="https://imagec.xin/idphoto?lang=th" />
-<link rel="alternate" hreflang="x-default" href="https://imagec.xin/idphoto" />
+
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="imagec" />
 <meta property="og:title" content="证件照换底色 - 在线免费换照片背景色 | imagec" />
@@ -332,7 +319,7 @@ setLanguage(language);
   const resetBtn = document.getElementById('resetBtn');
 
   let sourceImage = null;
-  let sourceName = 'image.png';
+  let sourceName = 'image.png', sourceFormat = 'png';
   let originalBg = null;
   let currentColor = '#FFFFFF';
   let outputSize = null;
@@ -354,12 +341,14 @@ setLanguage(language);
   }
 
   function loadFile(file){
-    if(!file || !file.type.startsWith('image/')){ if(file) imagecAlert('errType'); return; }
-    sourceName = file.name || 'image.png';
+    const format = imagecSourceFormat(file);
+    if(!format){ if(file) imagecAlert('errType'); return; }
     const reader = new FileReader();
     reader.onload = e => {
       const img = new Image();
       img.onload = () => {
+        sourceName = file.name || 'image.png';
+        sourceFormat = format;
         sourceImage = img;
         originalBg = sampleBackgroundColor(img);
         showWorkarea();
@@ -541,10 +530,7 @@ setLanguage(language);
   downloadBtn.addEventListener('click', () => {
     if(!sourceImage || !originalBg) return;
     if(!outputSize) renderAtSize(true);
-    const link = document.createElement('a');
-    link.download = imagecDownloadName(sourceName, 'png');
-    link.href = preview.toDataURL('image/png');
-    link.click();
+    imagecSaveCanvas(preview, sourceName, sourceFormat);
     if(!outputSize) render();
   });
 
